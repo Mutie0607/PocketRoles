@@ -186,28 +186,17 @@ namespace PocketRoles.Game
         }
 
         /// <summary>v0.5.0 shared gate: true while the target's Mad Stuntman shield absorbs kills. Consumed by the Samurai bystander filter and the Evil Nekomata candidate filter (no life spent there); presses go through TryStuntmanGuard.</summary>
-        internal static bool IsShielded(byte targetId) => MadStuntman.Remaining(targetId) > 0;
+        internal static bool IsShielded(byte targetId) => MadStuntman.Remaining(targetId) > 0 || (_hostShieldLeft > 0 && Game.IsHost(targetId) && !Registration.CompatMode);
 
         /// <summary>Killers whose kill goes through vanilla CheckMurder (HandleCheckMurder returns true): vanilla refuses moving-platform / ladder / vent-entering targets itself.</summary>
         private static bool IsVanillaKillPath(CustomRole role) =>
             role == CustomRole.None || role == CustomRole.Lovers || role == CustomRole.Assassin || role == CustomRole.EvilHawk || role == CustomRole.EvilNekomata
             || role == CustomRole.Mafia; // an unblocked Mafia press also returns to vanilla CheckMurder (review round 1)
 
-        /// <summary>
-        /// Mad Stuntman guard (v0.5.0): true when <paramref name="target"/> is a Mad Stuntman with lives left and the kill of
-        /// <paramref name="killer"/> (custom role <paramref name="role"/>) would otherwise have succeeded. Consumes one life, restarts the
-        /// killer's cooldown with its own cooldown (≥ 1 s) and notifies both. Anything that is not a plain kill (Mafia gate, Sheriff misfire,
-        /// Arsonist douse, Worshipper convert, invalid murder, a target vanilla itself refuses) returns false so the normal path answers it.
-        /// </summary>
-        private static bool TryStuntmanGuard(PlayerControl killer, PlayerControl target, CustomRole role)
+        /// <summary>v0.5.2 (shared by the Mad Stuntman guard and the host shield): whether this press would be a real kill, and the killer's cooldown to restart.</summary>
+        private static bool WouldKill(byte killerId, byte targetId, CustomRole role, out float cooldownOut)
         {
-            byte killerId = killer.PlayerId, targetId = target.PlayerId;
-            if (Game.RoleOf(targetId) != CustomRole.MadStuntman) return false;
-            if (MadStuntman.Remaining(targetId) <= 0) return false;      // lives spent: the normal path decides (vanilla kill, shot, bite, spell, slash)
-            if (!IsValidMurder(killer, target)) return false;            // meeting / vent / GA shield / dead: no life spent, the normal path answers
-            // Vanilla CheckMurder refuses these targets itself (Airship moving platform / ladders, vent-enter animation) and the mod's
-            // custom-killer paths never checked them: let vanilla answer a vanilla-path press (no life, no reset).
-            if (IsVanillaKillPath(role) && (target.inMovingPlat || target.onLadder || target.walkingToVent)) return false;
+            cooldownOut = 0f;
             bool wouldKill;
             float cooldown;
             switch (role)
@@ -236,6 +225,56 @@ namespace PocketRoles.Game
                     wouldKill = false; cooldown = 0f; break;
             }
             if (!wouldKill) return false;
+            cooldownOut = cooldown;
+            return true;
+        }
+
+        // ------------------------------------------------------------------ v0.5.2: host shield ([Host] ShieldKills, phrase-locked)
+
+        private static int _hostShieldLeft;
+        internal static int HostShieldLeft => _hostShieldLeft;
+        /// <summary>New game (RoleAssignment.BeginVanillaSelection): the host's kills to absorb this game.</summary>
+        internal static void ResetHostShield()
+        {
+            _hostShieldLeft = Registration.CompatMode ? 0 : Options.HostShieldKills;
+            if (_hostShieldLeft > 0) PocketRolesPlugin.Logger.LogInfo($"Kills: host shield armed ({_hostShieldLeft} kill(s))");
+        }
+
+        /// <summary>
+        /// Host shield: true when the kill of <paramref name="killer"/> on the host would have succeeded and a shield charge absorbs
+        /// it (registered lobby only — an unregistered lobby has no host authority over kills). Same rules as the Mad Stuntman guard:
+        /// the killer's cooldown restarts (FailedProtected on its client), nothing else changes; the host sees a local line.
+        /// </summary>
+        private static bool TryHostShieldGuard(PlayerControl killer, PlayerControl target, CustomRole role)
+        {
+            byte killerId = killer.PlayerId, targetId = target.PlayerId;
+            if (_hostShieldLeft <= 0 || !Game.IsHost(targetId) || killerId == targetId || Registration.CompatMode) return false;
+            if (!IsValidMurder(killer, target)) return false;
+            if (IsVanillaKillPath(role) && (target.inMovingPlat || target.onLadder || target.walkingToVent)) return false;
+            if (!WouldKill(killerId, targetId, role, out float cooldown)) return false;
+            _hostShieldLeft--;
+            Rpc.ResetKillCooldown(killer, Mathf.Max(1f, cooldown));
+            PocketRolesPlugin.Logger.LogInfo($"Kills: host shield absorbed a kill by #{killerId} {Game.NameOf(killerId)} ({role}); {_hostShieldLeft} left");
+            Chat.Chat.Local(Chat.Chat.Title, Lang.TF("host.shield.hit", "シールドがキルを防ぎました（残り {0} 回）。", "Your shield absorbed a kill ({0} left).", _hostShieldLeft));
+            return true;
+        }
+
+        /// <summary>
+        /// Mad Stuntman guard (v0.5.0): true when <paramref name="target"/> is a Mad Stuntman with lives left and the kill of
+        /// <paramref name="killer"/> (custom role <paramref name="role"/>) would otherwise have succeeded. Consumes one life, restarts the
+        /// killer's cooldown with its own cooldown (≥ 1 s) and notifies both. Anything that is not a plain kill (Mafia gate, Sheriff misfire,
+        /// Arsonist douse, Worshipper convert, invalid murder, a target vanilla itself refuses) returns false so the normal path answers it.
+        /// </summary>
+        private static bool TryStuntmanGuard(PlayerControl killer, PlayerControl target, CustomRole role)
+        {
+            byte killerId = killer.PlayerId, targetId = target.PlayerId;
+            if (Game.RoleOf(targetId) != CustomRole.MadStuntman) return false;
+            if (MadStuntman.Remaining(targetId) <= 0) return false;      // lives spent: the normal path decides (vanilla kill, shot, bite, spell, slash)
+            if (!IsValidMurder(killer, target)) return false;            // meeting / vent / GA shield / dead: no life spent, the normal path answers
+            // Vanilla CheckMurder refuses these targets itself (Airship moving platform / ladders, vent-enter animation) and the mod's
+            // custom-killer paths never checked them: let vanilla answer a vanilla-path press (no life, no reset).
+            if (IsVanillaKillPath(role) && (target.inMovingPlat || target.onLadder || target.walkingToVent)) return false;
+            if (!WouldKill(killerId, targetId, role, out float cooldown)) return false;
             // ≥ 1 s: at a 0 s lobby cooldown (VanillaRanges) every press of a mashed button would otherwise cost a life and send an options
             // pair + a MurderPlayer to that client (GameDataTo bursts kick the host, findings #49/#52).
             Rpc.ResetKillCooldown(killer, Mathf.Max(1f, cooldown));   // host: SetKillTimer; client: options ×2 + FailedProtected + options back
@@ -363,6 +402,7 @@ namespace PocketRoles.Game
             // v0.5.0 Mad Stuntman: the first [MadStuntman] Lives kill attempts on it fail. Decided here, before the vanilla path, so a
             // vanilla impostor's kill is caught too; the killer's button restarts as if it had killed (Rpc.ResetKillCooldown, the Vampire
             // pattern) and no MurderPlayer reaches anyone. A pressed shielded target absorbs a Samurai's whole slash (no bystanders).
+            if (target != null && TryHostShieldGuard(killer, target, role)) return false;   // v0.5.2
             if (target != null && TryStuntmanGuard(killer, target, role)) return false;
 
             if (role == CustomRole.None) return true;

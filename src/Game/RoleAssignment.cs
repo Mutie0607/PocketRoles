@@ -114,6 +114,8 @@ namespace PocketRoles.Game
                     if (pc != null && pc.Data != null && !pc.Data.Disconnected) connected++;
                 _selectTarget = connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
                 HostWish.OnBegin();
+                Kills.ResetHostShield();   // v0.5.2
+                GuardianLimit.Reset();
             }
             catch (Exception e)
             {

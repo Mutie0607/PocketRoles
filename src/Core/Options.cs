@@ -137,6 +137,11 @@ namespace PocketRoles.Core
         private static ConfigEntry<bool> _permAdminLobby;
         private static ConfigEntry<bool> _revealOnDeath;
         private static ConfigEntry<bool> _revealOnLeave, _revealLeaveToAll;
+        private static ConfigEntry<int> _hostShieldKills, _vanGaUses;
+        private static ConfigEntry<string> _hostShieldKey;
+        /// <summary>SHA-256 (hex) of the phrase that enables [Host] ShieldKills (v0.5.2). The phrase itself is not in the mod.</summary>
+        private const string HostShieldKeyHash = "768ee31f58561903359dec96d44227272258e5231864d9476f0949e5eccdb2d3";
+        private static bool? _hostShieldUnlocked;
         private static ConfigEntry<bool> _hostGhostRoleList;
         private static ConfigEntry<float> _compatWelcomeInterval;
 
@@ -258,6 +263,9 @@ namespace PocketRoles.Core
             _compatCommonTasks = cfg.Bind("Compat", "CommonTasks", 0, new ConfigDescription("Unregistered lobby: common tasks actually handed out per player (0 = the lobby setting; the synced setting stays inside the vanilla range)", new AcceptableValueRange<int>(0, 60)));
             _compatShortTasks = cfg.Bind("Compat", "ShortTasks", 0, new ConfigDescription("Unregistered lobby: short tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
             _compatLongTasks = cfg.Bind("Compat", "LongTasks", 0, new ConfigDescription("Unregistered lobby: long tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
+            _hostShieldKills = cfg.Bind("Host", "ShieldKills", 0, new ConfigDescription("Registered lobby only: kill attempts on the host that fail before the host dies (0 = off). No effect unless [Host] ShieldKey is the right phrase (/opt host.shieldkey <phrase>)", new AcceptableValueRange<int>(0, 9)));
+            _hostShieldKey = cfg.Bind("Host", "ShieldKey", "", "Phrase that enables [Host] ShieldKills (only its hash is in the mod)");
+            _vanGaUses = cfg.Bind("Vanilla", "GuardianAngelUses", 0, new ConfigDescription("Registered lobby only: how many times each Guardian Angel may protect per game (0 = vanilla, unlimited). Unregistered lobby: raise the cooldown instead (/vset gacd 600)", new AcceptableValueRange<int>(0, 9)));
             _compatAllowRisky = cfg.Bind("Compat", "AllowRiskyRoles", false,
                 "Unregistered-compatible mode (RegisterAsModdedLobby=false, the lobby shows in the vanilla public list): also assign roles whose kills come from a non-Impostor (Sheriff, Jackal). " +
                 "Without mod-lobby registration (host authority) the official server may reject those kills. Off = Sheriff and Jackal are skipped in compat mode (/opt compat.risky on|off)");
@@ -450,6 +458,33 @@ namespace PocketRoles.Core
         public static int CompatCommonTasks { get => _compatCommonTasks?.Value ?? 0; set { if (_compatCommonTasks != null) _compatCommonTasks.Value = Math.Max(0, Math.Min(60, value)); } }
         public static int CompatShortTasks { get => _compatShortTasks?.Value ?? 0; set { if (_compatShortTasks != null) _compatShortTasks.Value = Math.Max(0, Math.Min(60, value)); } }
         public static int CompatLongTasks { get => _compatLongTasks?.Value ?? 0; set { if (_compatLongTasks != null) _compatLongTasks.Value = Math.Max(0, Math.Min(60, value)); } }
+        /// <summary>v0.5.2: true while [Host] ShieldKey hashes to <see cref="HostShieldKeyHash"/> (cached; /opt host.shieldkey clears the cache).</summary>
+        public static bool HostShieldUnlocked
+        {
+            get
+            {
+                if (_hostShieldUnlocked == null)
+                {
+                    try { _hostShieldUnlocked = Sha256Hex((_hostShieldKey?.Value ?? "").Trim()) == HostShieldKeyHash; }
+                    catch (Exception) { _hostShieldUnlocked = false; }
+                }
+                return _hostShieldUnlocked.Value;
+            }
+        }
+        /// <summary>[Host] ShieldKills (v0.5.2): kill attempts on the host absorbed per game; 0 unless unlocked.</summary>
+        public static int HostShieldKills => HostShieldUnlocked ? Math.Max(0, Math.Min(9, _hostShieldKills?.Value ?? 0)) : 0;
+        /// <summary>[Vanilla] GuardianAngelUses (v0.5.2): protects per Guardian Angel per game in a registered lobby (0 = unlimited).</summary>
+        public static int GuardianAngelUses { get => _vanGaUses?.Value ?? 0; set { if (_vanGaUses != null) _vanGaUses.Value = Math.Max(0, Math.Min(9, value)); } }
+        private static string Sha256Hex(string s)
+        {
+            using (var sha = System.Security.Cryptography.SHA256.Create())
+            {
+                var bytes = sha.ComputeHash(System.Text.Encoding.UTF8.GetBytes(s ?? ""));
+                var sb = new System.Text.StringBuilder(bytes.Length * 2);
+                foreach (var b in bytes) sb.Append(b.ToString("x2"));
+                return sb.ToString();
+            }
+        }
         /// <summary>[Compat] AllowRiskyRoles: assign Sheriff / Jackal even in the unregistered compat mode (default off).</summary>
         public static bool AllowRiskyRoles { get => _compatAllowRisky != null && _compatAllowRisky.Value; set { if (_compatAllowRisky != null) _compatAllowRisky.Value = value; } }
 
@@ -1081,6 +1116,8 @@ namespace PocketRoles.Core
                 .Tip("議論時間の最大値（秒）。", "Highest discussion time (s).", "讨论时间的最大值（秒）。"));
             _descriptors.Add(Int("vanilla.emergencymax", hJa, hEn, "緊急会議CD最大(秒)", "Emergency cooldown max (s)", _vanEmergencyMax, 0, 600, 10)
                 .Tip("緊急会議クールダウンの最大値（秒）。", "Highest emergency-meeting cooldown (s).", "紧急会议冷却的最大值（秒）。"));
+            _descriptors.Add(Int("vanilla.gauses", hJa, hEn, "守護天使の回数(登録あり,0=無制限)", "Guardian Angel uses (reg., 0=unlimited)", _vanGaUses, 0, 9, 1));
+            if (HostShieldUnlocked) _descriptors.Add(Int("host.shield", hJa, hEn, "ホストのシールド回数(登録あり)", "Host shield kills (reg.)", _hostShieldKills, 0, 9, 1));
             _descriptors.Add(Int("compat.tasks.common", hJa, hEn, "配るコモン数(登録オフ,0=設定)", "Common tasks dealt (unreg., 0=setting)", _compatCommonTasks, 0, 60, 1));
             _descriptors.Add(Int("compat.tasks.short", hJa, hEn, "配るショート数(登録オフ,0=設定)", "Short tasks dealt (unreg., 0=setting)", _compatShortTasks, 0, 60, 1));
             _descriptors.Add(Int("compat.tasks.long", hJa, hEn, "配るロング数(登録オフ,0=設定)", "Long tasks dealt (unreg., 0=setting)", _compatLongTasks, 0, 60, 1));
@@ -1336,6 +1373,19 @@ namespace PocketRoles.Core
                 case "compat.tasks.common": case "compat.common": return SetInt(_compatCommonTasks, value, 0, 60, "compat.tasks.common", out message);
                 case "compat.tasks.short": case "compat.short": return SetInt(_compatShortTasks, value, 0, 60, "compat.tasks.short", out message);
                 case "compat.tasks.long": case "compat.long": return SetInt(_compatLongTasks, value, 0, 60, "compat.tasks.long", out message);
+                case "vanilla.gauses": case "gauses": case "guardianuses": case "vanilla.guardianangeluses": return SetInt(_vanGaUses, value, 0, 9, "vanilla.gauses", out message);
+                case "host.shieldkey": case "shieldkey":
+                {
+                    bool ok = SetString(_hostShieldKey, value, "host.shieldkey", out message);
+                    _hostShieldUnlocked = null;
+                    if (ok) message = HostShieldUnlocked
+                        ? Lang.T("opt.shield.unlocked", "ホストのシールドが使えるようになりました（/opt host.shield <回数>）。", "Host shield unlocked (/opt host.shield <n>).")
+                        : Lang.T("opt.shield.locked", "合言葉が違います。", "Wrong phrase.");
+                    return ok;
+                }
+                case "host.shield": case "shield": case "hostshield":
+                    if (!HostShieldUnlocked) break;
+                    return SetInt(_hostShieldKills, value, 0, 9, "host.shield", out message);
                 case "vanilla.taskmax": case "vanilla.taskcountmax": case "vanilla.tasks": return SetInt(_vanTaskMax, value, 1, 60, "vanilla.taskmax", out message);
                 // v0.4e guide room
                 case "guide.overlay": case "guide.showcodeoverlay": case "guide.codeoverlay": case "codeoverlay": return SetBool(_guideShowCodeOverlay, value, "guide.overlay", out message);
