@@ -83,12 +83,90 @@ namespace PocketRoles.Game
 
         // ------------------------------------------------------------------ initial assignment
 
+        // ------------------------------------------------------------------ vanilla SelectRoles watch (v0.5.1)
+
+        /// <summary>True between the RoleManager.SelectRoles prefix and postfix: every RpcSetRole in that window is vanilla's own.</summary>
+        internal static bool VanillaSelecting;
+        private static int _selectImpostorsSeen, _selectTarget;
+        private static readonly List<string> _selectRestored = new List<string>();
+
+        /// <summary>
+        /// SelectRoles prefix (both lobby modes, not for haison games): remember how many impostors this game should have
+        /// (GetAdjustedNumImpostors; 0 with fewer than 3 players = never convert) so that <see cref="TakeImpostorDefault"/>
+        /// can recognise the impostor pass's Crewmate defaults.
+        /// </summary>
+        internal static void BeginVanillaSelection()
+        {
+            try
+            {
+                VanillaSelecting = true;
+                _selectImpostorsSeen = 0;
+                _selectRestored.Clear();
+                int connected = 0;
+                foreach (var pc in Core.Game.AllPlayers())
+                    if (pc != null && pc.Data != null && !pc.Data.Disconnected) connected++;
+                _selectTarget = connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
+            }
+            catch (Exception e)
+            {
+                PocketRolesPlugin.Logger.LogError($"RoleAssignment.BeginVanillaSelection: {e}");
+                _selectTarget = 0;
+            }
+        }
+
+        /// <summary>
+        /// Vanilla's RpcSetRole during SelectRoles (from the RpcSetRole prefix). 2026.8.18 quirk (live 2026-09-14: 14
+        /// players, 3 impostors, Shapeshifter + Phantom at 100 % — the third impostor pick was sent Crewmate; the 3-player
+        /// tests: the only pick was sent Crewmate): once the impostor pass's special-role list is used up, its remaining
+        /// picks get the pass's default, which is Crewmate, while the crew pass never sends a plain Crewmate at all
+        /// (finding #39). So a Crewmate handed out while the impostor count is still short IS an impostor pick: that
+        /// player gets the plain Impostor instead — vanilla's own choice, and the first (only) SetRole any client sees for
+        /// it. Returns true when the role must be replaced by Impostor.
+        /// </summary>
+        internal static bool TakeImpostorDefault(PlayerControl pc, RoleTypes role)
+        {
+            try
+            {
+                if (!VanillaSelecting || pc == null) return false;
+                if (IsImpostorRole(role)) { _selectImpostorsSeen++; return false; }
+                if (role != RoleTypes.Crewmate || _selectImpostorsSeen >= _selectTarget) return false;
+                if (Core.Game.GameMasterActive && Core.Game.IsHost(pc.PlayerId)) return false;   // the Game Master never plays
+                _selectImpostorsSeen++;
+                _selectRestored.Add(Core.Game.NameOf(pc.PlayerId));
+                PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: vanilla SelectRoles sent Crewmate to #{pc.PlayerId} {Core.Game.NameOf(pc.PlayerId)} while its impostor count was {_selectImpostorsSeen - 1} of {_selectTarget} — the impostor pick keeps Impostor");
+                return true;
+            }
+            catch (Exception e)
+            {
+                PocketRolesPlugin.Logger.LogError($"RoleAssignment.TakeImpostorDefault: {e}");
+                return false;
+            }
+        }
+
+        /// <summary>SelectRoles postfix, first thing: vanilla is done; tell the host what was restored.</summary>
+        internal static void EndVanillaSelection()
+        {
+            if (!VanillaSelecting) return;
+            VanillaSelecting = false;
+            if (_selectRestored.Count == 0) return;
+            try
+            {
+                Chat.Chat.Local(Chat.Chat.Title, Lang.TF("assign.impostors.filled",
+                    "インポスターが {0} 人中 {1} 人しかいなかったので、{2} をインポスターにしました。",
+                    "Only {1} of {0} impostors were assigned; promoted {2} to Impostor.",
+                    _selectTarget, _selectImpostorsSeen - _selectRestored.Count, string.Join(", ", _selectRestored)));
+            }
+            catch (Exception e) { PocketRolesPlugin.Logger.LogError($"RoleAssignment.EndVanillaSelection: {e}"); }
+            _selectRestored.Clear();
+        }
+
         /// <summary>
         /// Impostor count guard (v0.5.1, generalising the 2026-09-09 safety net of findings #49/#50): vanilla 2026.8.18
         /// hands out fewer impostors than the lobby setting when its special-role pass eats the plain-Impostor fill —
         /// seen live 2026-09-14 (14 players, 3 impostors set, Shapeshifter 1 / 100 % + Phantom 1 / 100 %: the third
         /// impostor pick was sent Crewmate), and the 3-player tests of 2026-09-09 got no impostor at all. The official
         /// server also disconnects the host ("Hacking", ban points) for a role table without any Impostor-type role.
+        /// Fallback: <see cref="TakeImpostorDefault"/> normally keeps vanilla's own impostor picks; this runs afterwards.
         /// Promotes random plain crewmates (vanilla crew specials only when no plain crewmate is left) until the count
         /// matches GetAdjustedNumImpostors(players) — the vanilla clamp
         /// of the lobby setting (test mode: the TestMode patch value); never demotes. With fewer than 3 players nothing
@@ -539,6 +617,7 @@ namespace PocketRoles.Game
                     PocketRolesPlugin.Logger.LogInfo("Assign: haison game, custom roles skipped");
                     return;
                 }
+                RoleAssignment.BeginVanillaSelection();   // v0.5.1: watch vanilla's own RpcSetRole calls (impostor-pass Crewmate defaults)
                 // Unregistered lobby (compat / 便利ホスト, findings #21/#22): the server disconnects the host for any
                 // client-addressed message (GameDataTo) — which is exactly what the per-client role views are. Vanilla
                 // roles only and nothing dispatched; the game runs like a haison game (the mod stays out of it).
@@ -574,6 +653,7 @@ namespace PocketRoles.Game
         {
             try
             {
+                RoleAssignment.EndVanillaSelection();
                 RestoreVanillaRoles();
                 if (!Core.Game.IsHostActive)
                 {
@@ -742,12 +822,14 @@ namespace PocketRoles.Game
     [HarmonyPriority(Priority.High)]
     internal static class Assign_RpcSetRolePatch
     {
-        private static bool Prefix(PlayerControl __instance, RoleTypes roleType, bool canOverrideRole)
+        private static bool Prefix(PlayerControl __instance, ref RoleTypes roleType, bool canOverrideRole)
         {
             try
             {
                 if (!Core.Game.IsHostActive || __instance == null) return true;
                 byte id = __instance.PlayerId;
+                // v0.5.1: vanilla's impostor pass hands its leftover picks a Crewmate (2026.8.18) — they stay impostors
+                if (RoleAssignment.TakeImpostorDefault(__instance, roleType)) roleType = RoleTypes.Impostor;
 
                 if (Core.Game.AssigningRoles)
                 {
