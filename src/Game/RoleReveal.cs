@@ -186,7 +186,8 @@ namespace PocketRoles.Game
             // Lang.T (3 texts) + Format: Lang.TF has no zh overload (its 4th argument is the format args).
             string text;
             try { text = string.Format(Lang.T(key, ja, en, zh), name, role); } catch (FormatException) { text = name + ": " + role; }
-            Chat.Chat.All(Chat.Chat.Title, text);
+            if (Options.RevealRoleToAll) Chat.Chat.All(Chat.Chat.Title, text);
+            else Chat.Chat.Local(Chat.Chat.Title, text);   // v0.5.2: [Roles] RevealRoleToAll = false — the host's own screen only (no packet)
         }
 
         /// <summary>The PocketRoles role name, else the vanilla role's name in the lobby language (Crewmate / Impostor / Judge …).</summary>

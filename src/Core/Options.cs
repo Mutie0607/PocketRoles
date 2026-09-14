@@ -136,7 +136,7 @@ namespace PocketRoles.Core
         private static ConfigEntry<bool> _vanClampUnreg;
         private static ConfigEntry<bool> _permAdminLobby;
         private static ConfigEntry<bool> _revealOnDeath;
-        private static ConfigEntry<bool> _revealOnLeave, _revealLeaveToAll;
+        private static ConfigEntry<bool> _revealOnLeave, _revealLeaveToAll, _revealToAll;
         private static ConfigEntry<int> _hostShieldKills, _vanGaUses;
         private static ConfigEntry<string> _hostShieldKey;
         /// <summary>SHA-256 (hex) of the phrase that enables [Host] ShieldKills (v0.5.2). The phrase itself is not in the mod.</summary>
@@ -243,6 +243,7 @@ namespace PocketRoles.Core
                 "Custom welcome text sent to joining players (empty = built-in text). \\n = line break; placeholders: {rules} {roles} {settings} {help} {version}. The mandatory mod notice line is always prepended");
             _welcomeIncludeSettings = cfg.Bind("Chat", "WelcomeIncludeSettings", false, "Append the current role settings to the welcome message (off by default: the welcome stays short, the settings summary is always available with /cmd s)");
             _compatWelcomeInterval = cfg.Bind("Chat", "CompatWelcomeInterval", 60f, new ConfigDescription("Unregistered (compat) lobby: the welcome is ONE public message for everyone, so it is sent at most once per this many seconds no matter how many players join in between (a full public lobby gets a join every few seconds; 12 welcomes a minute drove players out on 2026-09-09). 0 = every join", new AcceptableValueRange<float>(0f, 600f)));
+            _revealToAll = cfg.Bind("Roles", "RevealRoleToAll", true, "Where the 'X was ROLE' lines of RevealRoleOnDeath go: true = everyone (public chat), false = the host's own screen only (v0.5.2; the players' suggestion for a vanilla room)");
             _revealOnLeave = cfg.Bind("Roles", "RevealRoleOnLeave", true, "Show the host (own screen only) the role of a player who leaves during a game ('X left; they were Sheriff'). Works in registered and unregistered lobbies");
             _revealLeaveToAll = cfg.Bind("Roles", "RevealLeaveToAll", false, "Also announce a leaving player's role to everyone (like RevealRoleOnDeath; when it happens inside a meeting the line is sent after the exile screen)");
             _revealOnDeath = cfg.Bind("Roles", "RevealRoleOnDeath", false, "Announce a player's role to everyone when they are killed or ejected ('X was Sheriff'; the vanilla role's name when there is no PocketRoles role, e.g. in an unregistered lobby)");
@@ -680,6 +681,8 @@ namespace PocketRoles.Core
         public static bool AdminLobbyControl { get => _permAdminLobby != null && _permAdminLobby.Value; set { if (_permAdminLobby != null) _permAdminLobby.Value = value; } }
         /// <summary>[Roles] RevealRoleOnDeath: "X was ROLE" to everyone on every kill / eject (default false).</summary>
         public static bool RevealRoleOnDeath { get => _revealOnDeath != null && _revealOnDeath.Value; set { if (_revealOnDeath != null) _revealOnDeath.Value = value; } }
+        /// <summary>[Roles] RevealRoleToAll (v0.5.2): the death / ejection reveal goes to everyone (true) or to the host's screen only (false).</summary>
+        public static bool RevealRoleToAll { get => _revealToAll == null || _revealToAll.Value; set { if (_revealToAll != null) _revealToAll.Value = value; } }
         /// <summary>[Roles] RevealRoleOnLeave (v0.5.2): the host's own screen shows "X left; they were ROLE" for a player leaving mid-game (default true).</summary>
         public static bool RevealRoleOnLeave { get => _revealOnLeave == null || _revealOnLeave.Value; set { if (_revealOnLeave != null) _revealOnLeave.Value = value; } }
         /// <summary>[Roles] RevealLeaveToAll (v0.5.2): that line goes to everyone as well (default false).</summary>
@@ -1036,6 +1039,8 @@ namespace PocketRoles.Core
             }.Tip("チャットや説明の既定の言語。各プレイヤーは /lang で変更できます。", "Default language for chat texts; each player can change theirs with /lang.", "聊天文本的默认语言；每位玩家可用 /lang 更改。"));
             _descriptors.Add(Bool("welcome", gJa, gEn, "参加時の挨拶", "Welcome message", _welcome)
                 .Tip("参加した人にこの部屋がMOD部屋であることを個別に知らせます。", "Privately tells every joining player that this lobby uses a host-side mod.", "私聊告知每位加入的玩家本房间使用房主模组。"));
+            _descriptors.Add(Bool("roles.reveal", gJa, gEn, "死亡・追放時に役職を表示", "Reveal role on death / ejection", _revealOnDeath));
+            _descriptors.Add(Bool("roles.revealall", gJa, gEn, "役職表示を全員に(オフ=ホストのみ)", "Reveal to everyone (off = host only)", _revealToAll));
             _descriptors.Add(Bool("roleinfo", gJa, gEn, "会議で役職説明", "Role info at meetings", _roleInfoAtMeeting)
                 .Tip("会議開始時に各自の役職説明を個別に送り直します。", "Re-sends each player's role description privately when a meeting starts.", "会议开始时再次私聊发送各自的职业说明。"));
             _descriptors.Add(Bool("kick", gJa, gEn, "不正RPCでキック（予約・現在は記録のみ）", "Kick on forged RPC (reserved, log only)", _antiCheatKick)
@@ -1306,6 +1311,7 @@ namespace PocketRoles.Core
                 case "credits.url": case "credits.repourl": return SetString(_creditRepoUrl, value, "credits.url", out message);
                 case "credits.show": return SetBool(_showCredits, value, "credits.show", out message);
                 case "roles.vanilla": case "vanillaroles": case "vanilla.roles": return SetBool(_vanillaRoles, value, "roles.vanilla", out message);
+                case "roles.revealall": case "revealall": case "revealtoall": return SetBool(_revealToAll, value, "roles.revealall", out message);
                 case "roles.reveal": case "reveal": case "revealdeath": case "roles.revealroleondeath": return SetBool(_revealOnDeath, value, "roles.reveal", out message);
                 case "roles.revealleave": case "revealleave": case "roles.revealroleonleave": return SetBool(_revealOnLeave, value, "roles.revealleave", out message);
                 case "roles.revealleaveall": case "revealleaveall": case "roles.revealleavetoall": return SetBool(_revealLeaveToAll, value, "roles.revealleaveall", out message);
