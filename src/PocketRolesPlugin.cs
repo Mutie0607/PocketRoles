@@ -20,7 +20,7 @@ namespace PocketRoles
     {
         public const string Id = "jp.pocketroles.mod";
         public const string Name = "PocketRoles";
-        public const string Version = "0.5.0";
+        public const string Version = "0.5.1";
         public const string SupportedGameVersion = "2026.8.18";
 
         public static ManualLogSource Logger;

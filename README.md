@@ -8,7 +8,7 @@
 
 <p align="center"><img src="assets/PocketRoles-256.png" width="128" alt="PocketRoles"></p>
 
-**部屋を作る人だけが入れる、Among Us（2026.8.18 / Steam）の役職 MOD です。** 友達は PC でもスマホでも Switch でも、いつもの Among Us のまま部屋コードを打つだけ。シェリフやジャッカル、ジェスターなど 26 の役職が、名前タグとチャットで本人にだけこっそり届きます。設定はロビーのパソコンから、案内は日本語・中文・English の 3 言語、外国語のチャットは自動で翻訳。ロビーの時間切れや会議の長引きもホストの手元で解決できます。無料・非営利、ソースは GitHub で公開しています（**v0.5.0**、旧名 HostRoles）。
+**部屋を作る人だけが入れる、Among Us（2026.8.18 / Steam）の役職 MOD です。** 友達は PC でもスマホでも Switch でも、いつもの Among Us のまま部屋コードを打つだけ。シェリフやジャッカル、ジェスターなど 26 の役職が、名前タグとチャットで本人にだけこっそり届きます。設定はロビーのパソコンから、案内は日本語・中文・English の 3 言語、外国語のチャットは自動で翻訳。ロビーの時間切れや会議の長引きもホストの手元で解決できます。無料・非営利、ソースは GitHub で公開しています（**v0.5.1**、旧名 HostRoles）。
 
 - **参加者は何も入れなくて OK** — MOD を入れるのはホストの PC 1 台だけ。参加者はバニラのまま、ふだん通りに遊べます
 - **26 役職を 3 言語でこっそり通知** — シェリフ・メイヤー・スニッチ・ジャッカル・ジェスター・ラバーズ…。役職の説明は日本語 / 中文 / English で本人にだけ届き、外国語のチャットは自動翻訳（併用モード）
@@ -28,7 +28,7 @@
 
 ## 3 分で導入（Windows + Steam 版）
 
-1. **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** から 2 つの zip をダウンロードします: `PocketRoles-Setup-0.5.0.zip`（ランチャー）と `PocketRoles-0.5.0.zip`（MOD 本体）。
+1. **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** から 2 つの zip をダウンロードします: `PocketRoles-Setup-0.5.1.zip`（ランチャー）と `PocketRoles-0.5.1.zip`（MOD 本体）。
 2. **2 つとも同じフォルダに展開** します（例: `ドキュメント\PocketRoles`。消さない場所に。ネットにつながっていれば Setup zip だけでも動きます — ランチャーが本体を取りに行きます）。
 3. **「PocketRoles Launcher.cmd」をダブルクリック**。青い「Windows によって PC が保護されました」が出たら「詳細情報」→「実行」（署名証明書を付けていないための表示で、ウイルスではありません）。
 4. **「インストール」** を押します。Steam 版の Among Us をデスクトップの「Among Us PocketRoles」にコピーして、BepInEx と PocketRoles を自動で入れます（数分。Steam 版そのものは書き換えません）。デスクトップが OneDrive でバックアップされている PC では、代わりに `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` にコピーします（クラウドに 1 GB を同期しないため。ランチャーの引数 `-GameDir` で好きなフォルダも選べます）。
@@ -152,7 +152,7 @@
 - バニラ設定の範囲拡張（v0.4b）も、バニラの設定同期をそのまま使います。ホストの設定画面で選んだ値（例: キルクールダウン 5 秒）が、参加者のロビー設定一覧にもそのまま表示されます。
 - チャット翻訳（v0.4b）はホストの PC から Google / DeepL に文章を送って翻訳します。既定でオンで、**併用モード**（外国語のチャットをホストの言語に訳して全員へ、ホストの言葉を外国語の参加者へ個別に）で動きます。文章を外部に送りたくない場合は設定タブ「会話」の「チャット翻訳」か `/opt translate off` でオフにできます（[第 13 章](#13-言語日本語--中文--english)）。
 - 役職を配れるのは **MOD 部屋登録をした部屋だけ** です。登録オフの部屋（便利ホスト）では個別メッセージを送るとホストがサーバーに切断されるため、役職・個別通知は無効になり、バニラの進行にホスト支援ツールだけが付きます（[第 25 章](#25-便利ホスト登録オフと案内部屋)）。
-- ホストの画面左上（ping 表示）に `PocketRoles v0.5.0 (host) · アジア` のように接続中の地域名と、オンラインのロビーでは `ロビー残り mm:ss` が表示され（`/code on` にすると大きな部屋コード `役職部屋 ABCDEF` も出ます。既定オフ）、ゲーム内の MOD スタンプも表示されます。タイトル画面では右側の大きな窓に **PocketRoles のパネル**（アイコン、`v0.5.0 / Among Us 2026.8.18`、作者名、クリックで開く GitHub の行、「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」）が出ます（[第 9 章](#9-歯車メニューのpocketroles-設定パネル)）。
+- ホストの画面左上（ping 表示）に `PocketRoles v0.5.1 (host) · アジア` のように接続中の地域名と、オンラインのロビーでは `ロビー残り mm:ss` が表示され（`/code on` にすると大きな部屋コード `役職部屋 ABCDEF` も出ます。既定オフ）、ゲーム内の MOD スタンプも表示されます。タイトル画面では右側の大きな窓に **PocketRoles のパネル**（アイコン、`v0.5.1 / Among Us 2026.8.18`、作者名、クリックで開く GitHub の行、「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」）が出ます（[第 9 章](#9-歯車メニューのpocketroles-設定パネル)）。
 - 対応モードは **クラシック** のみです（Hide n Seek / Seek Fools では MOD は何もしません）。
 
 バニラ側で実際に何がどう見えるかは [第 26 章](#26-バニラのプレイヤーにはどう見えるか) にまとめています。
@@ -330,7 +330,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
    3. GitHub の最新リリースから `PocketRoles-<ver>.zip` を取得して配置（ランチャーと同じフォルダに `PocketRoles-<ver>.zip` を置いておけばオフラインでも可）。旧 `HostRoles.dll` があれば削除
    4. デスクトップに「PocketRoles Launcher」ショートカットを作成
 5. **Steam を起動してから「起動」** を押します。初回は BepInEx が interop を生成するため、タイトル画面まで **1〜2 分** かかります（途中で黒いコンソール画面が出る場合がありますが、閉じないでください）。
-6. タイトル画面の右側に PocketRoles のパネル、左上に `PocketRoles v0.5.0` が出れば導入完了です。
+6. タイトル画面の右側に PocketRoles のパネル、左上に `PocketRoles v0.5.1` が出れば導入完了です。
 
 途中の手順が失敗した場合は、原因（ネット接続、Steam の場所など）を直してからもう一度「インストール」を押すと、終わっている手順は飛ばして続きから再開します。ランチャーの右上の「言語」で日本語 / 中文 / English を切り替えられます。同梱の `はじめに.txt` にも同じ手順が 3 言語で書いてあります。
 
@@ -340,7 +340,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 2. 上の BepInEx の zip をそのコピー先に展開します（`Among Us.exe` と同じ階層に `winhttp.dll`、`doorstop_config.ini`、`BepInEx\` フォルダが並ぶ状態）。
 3. **Steam を起動した状態で**、コピー先の `Among Us.exe` を **1 回起動** します。初回は BepInEx が `BepInEx\interop` を生成するため、タイトル画面が出るまで **1〜3 分** かかります。タイトルまで出たら閉じて構いません。
 4. GitHub Releases の `PocketRoles-<ver>.zip` をコピー先に展開します（`BepInEx\plugins\PocketRoles.dll` と `BepInEx\PocketRoles\lang\*.json`、README、LICENSE、NOTICE が入っています）。**旧版の `HostRoles.dll` が残っている場合は削除してください**（同じパッチが二重に当たります）。
-5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.0`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx\LogOutput.log` に `PocketRoles v0.5.0 loaded` と出ていることでも確認できます。
+5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.1`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx\LogOutput.log` に `PocketRoles v0.5.1 loaded` と出ていることでも確認できます。
 
 初回起動時に `BepInEx\config\jp.pocketroles.mod.cfg`（設定）、`BepInEx\PocketRoles\lang\`（言語ファイル）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` と `README.txt`（見た目カスタマイズ用）が生成されます。権限ファイル `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` は最初に部屋を作った時に `BepInEx\PocketRoles\` に作られます。DeepL を使う場合の `deepl-key.txt` は自分で作ります（[13 章](#13-言語日本語--中文--english)）。旧 HostRoles の設定 `jp.hostroles.mod.cfg` が同じフォルダにあり、新しい設定ファイルがまだ無い場合は、内容が自動でコピーされます（設定はそのまま引き継がれます）。
 
@@ -531,14 +531,14 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | 行 | 内容 |
 |---|---|
 | アイコンと「PocketRoles」 | MOD に埋め込まれた `PocketRoles-256.png` |
-| `v0.5.0 / Among Us 2026.8.18` | MOD のバージョンと対応するゲームバージョン |
+| `v0.5.1 / Among Us 2026.8.18` | MOD のバージョンと対応するゲームバージョン |
 | `by もみじちゃ` | `[Credits] Author`（空なら出ません） |
 | `GitHub: github.com/wakayamachannel/PocketRoles（クリックで開く）` | `[Credits] RepoUrl`。クリックでブラウザが開きます（空なら出ません） |
 | 「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」 | 部屋の既定言語で表示 |
 
 - オンライン / アカウント / コード入力 / ゲームモード / 部屋作成 / クレジットの各サブメニューを開いている間は隠れ、メイン画面に戻ると再表示されます。
 - `[Credits] ShowInMenu = false`（設定タブ「クレジット表示」、`/opt credits.show off`）でパネルもクレジット行も消えます。
-- ゲームの UI が変わってパネルが作れなかった時は、v0.2 の右下のクレジット行（`PocketRoles v0.5.0  © 2026 もみじちゃ` と URL）が代わりに出ます（バニラのバージョン表示と重ならないように上へ寄せます）。
+- ゲームの UI が変わってパネルが作れなかった時は、v0.2 の右下のクレジット行（`PocketRoles v0.5.1  © 2026 もみじちゃ` と URL）が代わりに出ます（バニラのバージョン表示と重ならないように上へ寄せます）。
 - 何も送信しません（ホストの画面だけ）。
 
 ---
@@ -1473,7 +1473,7 @@ v0.4 の機能を試す時:
 
 v0.4b の機能を試す時（PC + スマホの 2 台。所要 10 分ほど）:
 
-1. **タイトル画面のパネル**: PC のメインメニュー右側に PocketRoles のパネル（アイコン、`v0.5.0 / Among Us 2026.8.18`、GitHub の行）が出て、GitHub の行をクリックするとブラウザが開くこと。オンラインメニューを開くと隠れ、戻ると再表示されること。
+1. **タイトル画面のパネル**: PC のメインメニュー右側に PocketRoles のパネル（アイコン、`v0.5.1 / Among Us 2026.8.18`、GitHub の行）が出て、GitHub の行をクリックするとブラウザが開くこと。オンラインメニューを開くと隠れ、戻ると再表示されること。
 2. **設定タブ**: ロビーのノート PC で「PocketRoles」が一番上、「バニラ設定」で 3 つのバニラボタンが展開すること。役職 / ロビー / チャット / 見た目 / ホスト支援 のページ切り替え、「?」にマウスを乗せると左の説明欄に説明が出ること。
 3. **挨拶**: スマホの挨拶が 2 行 × 3 言語（その人の言語 → 残り 2 言語）で届き、最後に「翻訳あり…」の行が 1 回だけ付くこと。設定の羅列が無いこと（`/cmd s` で出ること）。
 4. **翻訳**: スマホから `Hello, can I be sheriff?` のように **英語で** 書く → PC の画面に `[訳] <名前>: …` の日本語訳が出ること。スマホには「Display language switched to English. Type /cmd lang ja to switch back.」が届き、以後スマホ宛ての MOD メッセージが英語になること（言語の自動判定）。その後 PC から日本語で書く → スマホに `[Tr] <ホスト名>: …` の英訳が届くこと（外国語の人へ翻訳）。`/cmd lang ja` で戻せること。
@@ -1560,6 +1560,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 - v0.4.6: 試合が終わってロビーに戻ると、ホストが「前回の結果: インポスター勝利 / ×名前:ジャッジ 勝名前:ヴァイパー … / キル数: 名前=2」（本体の役職・勝者・死亡・キル数）を全員向けに投稿します（`/cmd l` でも見られます）。参加者の `/cmd s` はここでは 1 行の案内だけです（4 通の役職一覧は流しません）。
 - v0.4.6: ホストが死んだ後の役職一覧（`/who`）とロビーの AFK キック（`[Lobby] AfkKickMinutes`）は便利ホストの部屋でも使えます。
 - v0.5.0: 結果はインポスターの行が最初に来て、途中でぬけた人も「退」付きで役職ごと載ります（v0.4.6 までは最後まで残っていた人だけでした）。翻訳は漢字だけの日本語（「最終通信」など）を中国語扱いしなくなり、英単語 1 つ（hi, gg など）は翻訳せず、案内の言語は外国語で 2 回書いた人だけ切り替えます（日本語で書いたことのある人は切り替えません）。ホストが外国語で書いた時も日本語訳が流れます。参加者向けの案内（`/cmd h`・`/cmd s`・`/lang`。登録ありの部屋では挨拶の 2 行目も）の文言も平易にしました。
+- v0.5.1: 本体の役職選択でインポスターが設定人数より少なかった時（インポスター役職を 100% にしていると起きます）は、開始時に素のクルーから足りない分を補充し、ホストのチャットに「インポスターが 3 人中 2 人しかいなかったので、〇〇 をインポスターにしました。」と出ます。登録ありの部屋でも同じです。
 
 - 役職・名前タグ・個別メッセージは一切送りません。挨拶と案内は全員向けの 1 通にまとまり、`/cmd …` を含むコマンドも全員に見えます（挨拶は「ようこそ! この部屋は普通のAmong Us(役職なし)です。何も入れなくてOK、そのまま遊べます。困ったら /cmd h」の 1 通だけです）。
 - 画面左上に黄字で `(unregistered)` が付き、送信間隔は 0.3 秒、1 パケットは小さめになります。
@@ -1778,7 +1779,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 ### 報告 zip の作り方（ランチャー）
 
 1. ランチャー（PocketRoles Launcher）の **「報告 zip を作る」** を押します。デスクトップに `PocketRoles-report-YYYYMMDD-HHMM.zip` ができます。
-2. 出てきたダイアログの **「メールを開く (不具合)」**（または「(要望)」）を押すと、宛先と件名（`[PocketRoles] 不具合報告 v0.5.0`）と本文のひな形（何が起きたか / いつ・部屋コード・人数 / 参加者からどう見えたか）が入った状態でメールソフトが開きます。**zip はデスクトップから添付してください**（メールソフトが無い場合は「zip の場所を開く」でファイルを確認し、ブラウザの Gmail などから送って構いません）。
+2. 出てきたダイアログの **「メールを開く (不具合)」**（または「(要望)」）を押すと、宛先と件名（`[PocketRoles] 不具合報告 v0.5.1`）と本文のひな形（何が起きたか / いつ・部屋コード・人数 / 参加者からどう見えたか）が入った状態でメールソフトが開きます。**zip はデスクトップから添付してください**（メールソフトが無い場合は「zip の場所を開く」でファイルを確認し、ブラウザの Gmail などから送って構いません）。
 3. 本文に、何が起きたか / いつ（ロビー・試合中・会議中）/ 部屋の人数 / 参加者がバニラかどうか / 気づいたことを書いて送ります。
 
 zip の中身: `LogOutput.log`（MOD のログ）、`jp.pocketroles.mod.cfg`（設定）、`launcher-state.json`、`launcher.log`、`system.txt`（Windows のバージョン、ゲームと MOD と BepInEx のバージョン、plugins の一覧、Steam の状態）。ユーザー名を含むパスは `%USERPROFILE%` に置き換え、API キーの形の文字列は `<api-key-masked>` に置き換えます。**`deepl-key.txt`（DeepL の API キー）は絶対に含めません**。プレイヤー名はログに残るので、伏せたい場合は zip の中のログを編集してから送ってください。
@@ -1803,7 +1804,7 @@ build.cmd
 - 別のフォルダのゲームを参照する場合: `build.cmd -p:GameDir="C:\path\to\Among Us"`
 - ターゲット: net6.0、C# latest、Nullable off、ImplicitUsings off。NuGet のゲームライブラリや Reactor は使いません。
 - `lang\*.json` と `assets\PocketRoles-256.png`（タイトル画面のアイコン）は埋め込みリソースとして DLL に含まれ、言語ファイルは初回起動時に `BepInEx\PocketRoles\lang\` へ書き出されます。文言を変えたい時は DLL を作り直さなくても書き出されたファイルを編集すれば済みます。
-- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx\LogOutput.log` に `PocketRoles v0.5.0 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
+- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx\LogOutput.log` に `PocketRoles v0.5.1 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
 
 配布用 zip の作成: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` でビルドを省略）。`dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README 3 種、LICENSE、NOTICE）と `dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）、`SHA256SUMS.txt` ができます。バージョンは `PocketRoles.csproj` の `<Version>` から取ります。この 2 つを GitHub Releases に添付すると、ランチャーの「更新を確認」「インストール」が最新版を取得できます（リリースの資産名 `PocketRoles-<ver>.zip` を探します）。
 

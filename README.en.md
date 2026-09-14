@@ -8,7 +8,7 @@
 
 <p align="center"><img src="assets/PocketRoles-256.png" width="128" alt="PocketRoles"></p>
 
-**A role mod for Among Us (2026.8.18 / Steam) that only the person who creates the lobby installs.** Your friends keep their everyday Among Us on PC, phone or Switch and just type the room code. Twenty-six roles — Sheriff, Jackal, Jester and more — reach each player privately through their name tag and chat. Settings live in the lobby computer, every notice comes in Japanese / Chinese / English, foreign-language chat is translated automatically, and lobby time-outs or endless meetings are handled from the host's keyboard. Free, non-commercial, source on GitHub (**v0.5.0**, formerly HostRoles).
+**A role mod for Among Us (2026.8.18 / Steam) that only the person who creates the lobby installs.** Your friends keep their everyday Among Us on PC, phone or Switch and just type the room code. Twenty-six roles — Sheriff, Jackal, Jester and more — reach each player privately through their name tag and chat. Settings live in the lobby computer, every notice comes in Japanese / Chinese / English, foreign-language chat is translated automatically, and lobby time-outs or endless meetings are handled from the host's keyboard. Free, non-commercial, source on GitHub (**v0.5.1**, formerly HostRoles).
 
 - **Players install nothing** — the mod runs on the host's PC only. Everyone else joins vanilla and plays as usual
 - **26 roles, whispered in 3 languages** — Sheriff, Mayor, Snitch, Jackal, Jester, Lovers … Role descriptions reach each player privately in Japanese / Chinese / English, and foreign-language chat is auto-translated (combined mode)
@@ -28,7 +28,7 @@ Other languages: **[日本語 (README.md)](README.md)** / **[简体中文 (READM
 
 ## Install in 3 minutes (Windows + Steam)
 
-1. Download the two zips from **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)**: `PocketRoles-Setup-0.5.0.zip` (the launcher) and `PocketRoles-0.5.0.zip` (the mod).
+1. Download the two zips from **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)**: `PocketRoles-Setup-0.5.1.zip` (the launcher) and `PocketRoles-0.5.1.zip` (the mod).
 2. **Extract both into the same folder** (e.g. `Documents\PocketRoles`, somewhere you will keep. With an internet connection the Setup zip alone works — the launcher fetches the mod).
 3. **Double-click "PocketRoles Launcher.cmd"**. If the blue "Windows protected your PC" screen appears, click "More info" → "Run anyway" (it appears because no code-signing certificate is used; it is not malware).
 4. Press **"Install"**. The launcher copies your Steam Among Us to "Among Us PocketRoles" on the Desktop and installs BepInEx and PocketRoles automatically (a few minutes; your Steam copy is not modified). On a PC whose Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` instead (so 1 GB is not synced to the cloud; the launcher argument `-GameDir` lets you pick any folder).
@@ -151,7 +151,7 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 - The extended vanilla ranges (v0.4b) use the normal vanilla settings sync too: the value the host picks in the settings screen (say a 5-second kill cooldown) shows up unchanged in every player's lobby settings list.
 - Chat translation (v0.4b) sends chat text from the host's PC to Google / DeepL. It is on by default and runs in **combined mode** (foreign-language chat translated into the host's language for everyone, the host's words translated privately for foreign players). If you do not want text sent out, turn it off with "Chat translation" on the Chat page of the settings tab or `/opt translate off` ([chapter 13](#13-languages-japanese--chinese--english)).
 - Roles can only be handed out in a **lobby with mod-lobby registration on**. In an unregistered lobby (the "vanilla room") a single private message gets the host disconnected by the server, so roles and private notices are disabled there and only the host tools remain on top of a vanilla game ([chapter 25](#25-vanilla-room-registration-off-and-the-guide-room)).
-- The host's ping display (top left) shows `PocketRoles v0.5.0 (host)` and, in an online lobby, `Lobby mm:ss left`; the in-game mod stamp is shown as well. The title screen shows a **PocketRoles panel** in the big right-hand window (icon, `v0.5.0 / Among Us 2026.8.18`, author, a clickable GitHub line, "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us") ([chapter 9](#9-pocketroles-settings-panel-in-the-gear-menu)).
+- The host's ping display (top left) shows `PocketRoles v0.5.1 (host)` and, in an online lobby, `Lobby mm:ss left`; the in-game mod stamp is shown as well. The title screen shows a **PocketRoles panel** in the big right-hand window (icon, `v0.5.1 / Among Us 2026.8.18`, author, a clickable GitHub line, "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us") ([chapter 9](#9-pocketroles-settings-panel-in-the-gear-menu)).
 - Only **Classic** mode is supported (the mod does nothing in Hide n Seek / Seek Fools).
 
 [Chapter 26](#26-what-vanilla-players-see) lists exactly what vanilla players see.
@@ -327,7 +327,7 @@ Either way the layout is a **copy of the Steam game folder** with BepInEx and th
    3. Fetches `PocketRoles-<ver>.zip` from the latest GitHub release and puts it in place (a `PocketRoles-<ver>.zip` next to the launcher is used instead, so offline installs work). An old `HostRoles.dll` is deleted
    4. Creates the "PocketRoles Launcher" shortcut on the Desktop
 5. **Start Steam, then press "Launch"**. The first launch takes **1–2 minutes** to reach the title screen while BepInEx generates interop (if a black console window appears in between, do not close it).
-6. The PocketRoles panel on the right of the title screen and `PocketRoles v0.5.0` in the top-left corner mean you are done.
+6. The PocketRoles panel on the right of the title screen and `PocketRoles v0.5.1` in the top-left corner mean you are done.
 
 If a step fails, fix the cause (internet connection, Steam location …) and press "Install" again: finished steps are skipped and it resumes where it stopped. "Language" at the top right switches the launcher between Japanese / Chinese / English. The bundled `はじめに.txt` repeats these steps in the three languages.
 
@@ -337,7 +337,7 @@ If a step fails, fix the cause (internet connection, Steam location …) and pre
 2. Extract the BepInEx zip above into the copy (`winhttp.dll`, `doorstop_config.ini` and the `BepInEx\` folder end up next to `Among Us.exe`).
 3. **With Steam running**, start the copied `Among Us.exe` **once**. The first start generates `BepInEx\interop`, so the title screen takes **1–3 minutes** to appear. Close the game once you see it.
 4. Extract `PocketRoles-<ver>.zip` from GitHub Releases into the copy (it contains `BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the READMEs, LICENSE and NOTICE). **Delete an old `HostRoles.dll` if one is still there** (the same patches would be applied twice).
-5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.0` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx\LogOutput.log` contains `PocketRoles v0.5.0 loaded`.
+5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.1` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx\LogOutput.log` contains `PocketRoles v0.5.1 loaded`.
 
 The first start creates `BepInEx\config\jp.pocketroles.mod.cfg` (settings), `BepInEx\PocketRoles\lang\` (language files) and `BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` plus a `README.txt` (cosmetics). The permission files `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` are created in `BepInEx\PocketRoles\` when you first host a lobby. `deepl-key.txt` (only for DeepL) is a file you create yourself ([chapter 13](#13-languages-japanese--chinese--english)). If an old HostRoles config `jp.hostroles.mod.cfg` exists in the same folder and the new file does not, its contents are copied over automatically (your settings carry over).
 
@@ -528,14 +528,14 @@ The big right-hand window of the main menu (where vanilla shows the Among Us log
 | Line | Content |
 |---|---|
 | Icon and "PocketRoles" | The embedded `PocketRoles-256.png` |
-| `v0.5.0 / Among Us 2026.8.18` | Mod version and supported game version |
+| `v0.5.1 / Among Us 2026.8.18` | Mod version and supported game version |
 | `by もみじちゃ` | `[Credits] Author` (omitted when empty) |
 | `GitHub: github.com/wakayamachannel/PocketRoles (click to open)` | `[Credits] RepoUrl`; clicking opens the browser (omitted when empty) |
 | "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us" | In the lobby language |
 
 - Hidden while the Online / Account / Enter code / Game mode / Create game / Credits sub-menus are open; shown again on the main screen.
 - `[Credits] ShowInMenu = false` ("Show credits" in the settings tab, `/opt credits.show off`) removes the panel and the credit line.
-- If the panel cannot be built after a game UI change, the v0.2 credit line at the bottom right (`PocketRoles v0.5.0  © 2026 もみじちゃ` plus the URL) is shown instead, moved up so it never overlaps the vanilla version text.
+- If the panel cannot be built after a game UI change, the v0.2 credit line at the bottom right (`PocketRoles v0.5.1  © 2026 もみじちゃ` plus the URL) is shown instead, moved up so it never overlaps the vanilla version text.
 - Nothing is transmitted (host screen only).
 
 ---
@@ -1470,7 +1470,7 @@ Trying the v0.4 tools:
 
 Trying the v0.4b features (PC + phone, about 10 minutes):
 
-1. **Title-screen panel**: the PC's main menu shows the PocketRoles panel on the right (icon, `v0.5.0 / Among Us 2026.8.18`, GitHub line); clicking the GitHub line opens the browser. It hides while the online menu is open and returns afterwards.
+1. **Title-screen panel**: the PC's main menu shows the PocketRoles panel on the right (icon, `v0.5.1 / Among Us 2026.8.18`, GitHub line); clicking the GitHub line opens the browser. It hides while the online menu is open and returns afterwards.
 2. **Settings tab**: in the lobby laptop "PocketRoles" is the top button and "Vanilla settings" expands the three vanilla buttons. Switch the Roles / Lobby / Chat / Looks / Host tools pages; hovering a "?" writes help into the left info box.
 3. **Welcome**: the phone's welcome arrives as 2 lines × 3 languages (the player's language first, then the two others) with the "Auto-translation is on …" line once at the end, and without the settings dump (`/cmd s` shows it).
 4. **Translation**: from the phone write something **in English** such as `Hello, can I be sheriff?` (with a Japanese or Chinese lobby language) → the PC shows `[訳] <name>: …` / `[译] …` with the translation. The phone receives "Display language switched to English. Type /cmd lang ja to switch back." and mod messages to the phone are in English from then on (auto-detect). Then write in the lobby language on the PC → the phone receives `[Tr] <host name>: …` in English (translate for players). `/cmd lang ja` switches back.
@@ -1557,6 +1557,7 @@ The other way round: gather people in a listed vanilla room (registration off), 
 - v0.4.6: when a game ends and everyone is back in the lobby, the host posts the result to everyone ("Last game: Impostors win / ×name:Judge Wname:Viper … / Kills: name=2" — vanilla roles, winners, deaths, kills; also `/cmd l`). A player's `/cmd s` is one line here (no 4-message role list).
 - v0.4.6: the dead host's role list (`/who`) and the AFK kick (`[Lobby] AfkKickMinutes`) work in vanilla rooms too.
 - v0.5.0: the impostor line comes first and players who left mid-game are listed with their role, marked L (up to v0.4.6 only the players still present were listed). Translation: kanji-only Japanese (最終通信 …) is no longer taken for Chinese, a single Latin word (hi, gg …) is not translated, and a player's guide language switches only after two foreign-language lines (never for someone who already wrote in the lobby language). The host's own foreign-language lines are translated too. The guide texts for players (welcome line 2, `/cmd h`, `/cmd s`, `/lang`) use plain words.
+- v0.5.1: when the vanilla role selection picks fewer impostors than the lobby setting (it happens with impostor roles set to 100%), the missing impostors are drawn from the plain crewmates at game start and the host's chat shows "Only 2 of 3 impostors were assigned; promoted NAME to Impostor." Registered rooms get the same fix.
 
 - No roles, name tags or private messages at all. The welcome and the notices become one broadcast, and every command, `/cmd …` included, is visible to everyone (the second welcome line says so).
 - The top-left display carries a yellow `(unregistered)`; sends are spaced 0.3 s and packets are smaller.
@@ -1775,7 +1776,7 @@ Send bugs, requests and questions any of these ways (Japanese, Chinese or Englis
 ### Making the report zip (launcher)
 
 1. Press **"Create report zip"** in the launcher (PocketRoles Launcher). `PocketRoles-report-YYYYMMDD-HHMM.zip` appears on the Desktop.
-2. In the dialog press **"Open mail (bug)"** (or "(request)"): your mail client opens with the address, the subject (`[PocketRoles] bug report v0.5.0`) and a body template (what happened / when, room code, player count / what the players saw). **Attach the zip from the Desktop yourself** (no mail client? "Show zip location" reveals the file; send it from webmail such as Gmail in the browser).
+2. In the dialog press **"Open mail (bug)"** (or "(request)"): your mail client opens with the address, the subject (`[PocketRoles] bug report v0.5.1`) and a body template (what happened / when, room code, player count / what the players saw). **Attach the zip from the Desktop yourself** (no mail client? "Show zip location" reveals the file; send it from webmail such as Gmail in the browser).
 3. Describe what happened / when (lobby, game, meeting) / the player count / whether the players were vanilla / anything else you noticed, and send.
 
 Contents of the zip: `LogOutput.log` (the mod's log), `jp.pocketroles.mod.cfg` (settings), `launcher-state.json`, `launcher.log`, `system.txt` (Windows version, game / mod / BepInEx versions, the plugins list, Steam state). Paths containing your user name are replaced by `%USERPROFILE%` and anything shaped like an API key by `<api-key-masked>`. **`deepl-key.txt` (the DeepL API key) is never included.** Player names stay in the log — edit the log inside the zip if you want to hide them.
@@ -1800,7 +1801,7 @@ build.cmd
 - Another game folder: `build.cmd -p:GameDir="C:\path\to\Among Us"`
 - Target net6.0, C# latest, Nullable off, ImplicitUsings off; no NuGet game libraries, no Reactor.
 - `lang\*.json` and `assets\PocketRoles-256.png` (the title-screen icon) are embedded resources; the language files are written to `BepInEx\PocketRoles\lang\` on first start — edit the written files instead of rebuilding to change texts.
-- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.0 loaded` and the absence of Harmony patch errors in `BepInEx\LogOutput.log`.
+- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.1 loaded` and the absence of Harmony patch errors in `BepInEx\LogOutput.log`.
 
 Release zips: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1` (`-SkipBuild` skips the build). It produces `dist\PocketRoles-<ver>.zip` (`BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the three READMEs, LICENSE, NOTICE), `dist\PocketRoles-Setup-<ver>.zip` (`PocketRolesLauncher.ps1`, `PocketRoles Launcher.cmd`, `assets\PocketRoles.ico`, `はじめに.txt`) and `SHA256SUMS.txt`. The version comes from `<Version>` in `PocketRoles.csproj`. Attach both zips to a GitHub release and the launcher's "Check for updates" / "Install" find the latest version (they look for an asset named `PocketRoles-<ver>.zip`).
 

@@ -84,45 +84,119 @@ namespace PocketRoles.Game
         // ------------------------------------------------------------------ initial assignment
 
         /// <summary>
-        /// Safety net (2026-09-09, findings #49/#50): the official server disconnects the host ("Hacking", with ban points)
-        /// as soon as a client receives a role table without any Impostor-type role. Vanilla 2026.8.18 handed out no
-        /// impostor at all in the 3-player tests (the impostor pass ran with an empty list and its Crewmate default), and a
-        /// forced crew role on the only impostor (test mode) empties the pool too. With 3+ players, promote one random
-        /// plain crewmate (not forced, no custom role yet) to a real Impostor before the custom roles are drawn.
+        /// Impostor count guard (v0.5.1, generalising the 2026-09-09 safety net of findings #49/#50): vanilla 2026.8.18
+        /// hands out fewer impostors than the lobby setting when its special-role pass eats the plain-Impostor fill —
+        /// seen live 2026-09-14 (14 players, 3 impostors set, Shapeshifter 1 / 100 % + Phantom 1 / 100 %: the third
+        /// impostor pick was sent Crewmate), and the 3-player tests of 2026-09-09 got no impostor at all. The official
+        /// server also disconnects the host ("Hacking", ban points) for a role table without any Impostor-type role.
+        /// Promotes random plain crewmates (vanilla crew specials only when no plain crewmate is left) until the count
+        /// matches GetAdjustedNumImpostors(players) — the vanilla clamp
+        /// of the lobby setting (test mode: the TestMode patch value); never demotes. With fewer than 3 players nothing
+        /// is done (the 2-player tests tolerate an impostor-less game).
+        /// Registered lobby (compat = false): the vanilla roles were recorded and their broadcasts dropped, so the
+        /// promoted player's first (and only) SetRole is its per-client view from DispatchInitialRoles; the host's own
+        /// table is updated here (ApplyRoleLocal). Forced test roles and players already holding a custom role are skipped.
+        /// Unregistered lobby (compat = true, called before AssignPlainRoles): the plain Impostor goes out as the normal
+        /// vanilla broadcast — only players without any SetRole yet qualify, because 2026.8.18 clients apply just the
+        /// first SetRole they receive for a player (2026-09-08 phone test).
         /// </summary>
-        private static void EnsureImpostorPresent(List<PlayerControl> players, HashSet<byte> forced)
+        internal static void FillImpostors(List<PlayerControl> players, HashSet<byte> forced, bool compat)
         {
             try
             {
                 if (players == null || players.Count < 3) return;
-                int impostors = 0;
+                int connected = 0, impostors = 0;
                 var candidates = new List<PlayerControl>();
+                var specials = new List<PlayerControl>();   // vanilla crew specials ([Roles] VanillaRoles = on): last resort only
                 foreach (var pc in players)
                 {
                     if (pc == null || pc.Data == null || pc.Data.Disconnected) continue;
+                    connected++;
                     byte id = pc.PlayerId;
-                    if (IsImpostorRole(Core.Game.VanillaRoleOf(id))) { impostors++; continue; }
-                    if (forced != null && forced.Contains(id)) continue;
-                    if (Core.Game.RoleOf(id) != CustomRole.None) continue;
+                    RoleTypes v = compat
+                        ? (pc.Data.Role != null ? pc.Data.Role.Role : RoleTypes.Crewmate)
+                        : Core.Game.VanillaRoleOf(id);
+                    if (IsImpostorRole(v)) { impostors++; continue; }
+                    if (compat)
+                    {
+                        if (pc.roleAssigned) continue;   // vanilla already sent this player a role: the client ignores a second SetRole
+                    }
+                    else
+                    {
+                        if (forced != null && forced.Contains(id)) continue;
+                        if (Core.Game.RoleOf(id) != CustomRole.None) continue;
+                    }
                     if (Core.Game.GameMasterActive && Core.Game.IsHost(id)) continue;
+                    // [Roles] VanillaRoles = on: a vanilla Scientist / Engineer / … keeps its role while a plain crewmate is available
+                    if (!compat && v != RoleTypes.Crewmate) { specials.Add(pc); continue; }
                     candidates.Add(pc);
                 }
-                if (impostors > 0) return;
-                if (candidates.Count == 0)
+                int target = ExpectedImpostors(connected);
+                if (target < 1) target = 1;   // the old safety net: never an impostor-less table
+                int missing = target - impostors;
+                if (missing <= 0) return;
+                if (candidates.Count == 0 && specials.Count == 0)
                 {
-                    PocketRolesPlugin.Logger.LogWarning("RoleAssignment: vanilla assigned no impostor and nobody can be promoted — every client would see an impostor-less table");
+                    PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: the role table has {impostors} of {target} impostor(s) ({connected} players) and nobody can be promoted");
                     return;
                 }
-                var pick = candidates[new System.Random().Next(candidates.Count)];
-                Core.Game.VanillaRoles[pick.PlayerId] = RoleTypes.Impostor;
-                // the host's own table too (as ApplyForcedRoles / DowngradeImpostorSpecials do), or vanilla on the host
-                // keeps treating the promoted player as a crewmate (exile text, CanBeKilled, ghost role pick)
-                Rpc.ApplyRoleLocal(pick, RoleTypes.Impostor);
-                PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: vanilla assigned no impostor ({players.Count} players) — promoted #{pick.PlayerId} {Core.Game.NameOf(pick.PlayerId)} to Impostor so every role table has one");
+                var rnd = new System.Random();
+                int promoted = 0;
+                var names = new StringBuilder();
+                while (missing > 0 && (candidates.Count > 0 || specials.Count > 0))
+                {
+                    var pool = candidates.Count > 0 ? candidates : specials;
+                    int i = rnd.Next(pool.Count);
+                    var pick = pool[i];
+                    pool.RemoveAt(i);
+                    if (compat)
+                    {
+                        // AssigningRoles is off: the plain vanilla broadcast (+ the host's CoSetRole); roleAssigned becomes true,
+                        // so AssignPlainRoles leaves this player alone
+                        pick.RpcSetRole(RoleTypes.Impostor, false);
+                    }
+                    else
+                    {
+                        Core.Game.VanillaRoles[pick.PlayerId] = RoleTypes.Impostor;
+                        // the host's own table too (as ApplyForcedRoles / DowngradeImpostorSpecials do), or vanilla on the host
+                        // keeps treating the promoted player as a crewmate (exile text, CanBeKilled, ghost role pick)
+                        Rpc.ApplyRoleLocal(pick, RoleTypes.Impostor);
+                    }
+                    promoted++;
+                    missing--;
+                    if (names.Length > 0) names.Append(", ");
+                    names.Append(Core.Game.NameOf(pick.PlayerId));
+                    PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: the role table had {impostors} of {target} impostor(s) ({connected} players) — promoted #{pick.PlayerId} {Core.Game.NameOf(pick.PlayerId)} to Impostor ({(compat ? "vanilla broadcast" : "host table")}{(ReferenceEquals(pool, specials) ? ", was a vanilla crew special" : "")})");
+                }
+                if (missing > 0)
+                    PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: still {missing} impostor(s) short after promoting {promoted} (no candidates left)");
+                Chat.Chat.Local(Chat.Chat.Title, Lang.TF("assign.impostors.filled",
+                    "インポスターが {0} 人中 {1} 人しかいなかったので、{2} をインポスターにしました。",
+                    "Only {1} of {0} impostors were assigned; promoted {2} to Impostor.",
+                    target, impostors, names.ToString()));
             }
             catch (Exception e)
             {
-                PocketRolesPlugin.Logger.LogError($"RoleAssignment.EnsureImpostorPresent: {e}");
+                PocketRolesPlugin.Logger.LogError($"RoleAssignment.FillImpostors: {e}");
+            }
+        }
+
+        /// <summary>
+        /// The impostor count this game should have: the vanilla clamp of the lobby setting (GetAdjustedNumImpostors:
+        /// below 7 players 1, below 9 players 2; test mode: the TestMode patch value). -1 when unavailable.
+        /// </summary>
+        private static int ExpectedImpostors(int playerCount)
+        {
+            try
+            {
+                var gom = GameOptionsManager.Instance;
+                if (gom == null || gom.CurrentGameOptions == null) return -1;
+                return IGameOptionsExtensions.GetAdjustedNumImpostors(gom.CurrentGameOptions, playerCount);
+            }
+            catch (Exception e)
+            {
+                PocketRolesPlugin.Logger.LogWarning($"RoleAssignment.ExpectedImpostors: {e.Message}");
+                return -1;
             }
         }
 
@@ -141,7 +215,7 @@ namespace PocketRoles.Game
             var players = Core.Game.AllPlayers();
             // Test mode (/assign): forced roles first; they are excluded from the random pools below.
             var forced = TestMode.ApplyForcedRoles(players);
-            EnsureImpostorPresent(players, forced);
+            FillImpostors(players, forced, compat: false);
             AssignCustomRoles(players);
             LogAssignment(players);
 
@@ -516,6 +590,7 @@ namespace PocketRoles.Game
                     // end). AssigningRoles is false here, so every RpcSetRole is the plain vanilla broadcast
                     // (same shape as the special roles the vanilla SelectRoles just sent); no custom roles, no views.
                     Core.Game.AssigningRoles = false;
+                    if (!Core.Game.HaisonActive) RoleAssignment.FillImpostors(Core.Game.AllPlayers(), null, compat: true);   // v0.5.1: top the impostor team up before the plain roles go out
                     AssignPlainRoles();
                     return;
                 }

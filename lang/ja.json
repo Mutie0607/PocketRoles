@@ -5,6 +5,7 @@
   "anticheat.forged.target": "{0} 宛ての不正な通信(RPC {1})を無視しました（送信元は特定できません）。",
   "anticheat.kick": "{0} を不正行為でキックしました。",
   "assign.assassin.nocmd": "アサシンはプレイヤーのコマンドが有効な時だけ配られます（/opt chat.playercommands on）。",
+  "assign.impostors.filled": "インポスターが {0} 人中 {1} 人しかいなかったので、{2} をインポスターにしました。",
   "assign.jackalfriends.nojackal": "ジャッカルフレンズはジャッカルが配られた試合だけ配られます（ジャッカルの人数が 0 です: /set jackal 1）。",
   "autostart.cancelled": "人数が{0}人未満になったので自動開始を中止しました。",
   "autostart.go": "{0}人揃いました。{1}秒後に開始します。",

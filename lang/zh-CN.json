@@ -5,6 +5,7 @@
   "anticheat.forged.target": "已忽略发给 {0} 的非法通信（RPC {1}）（无法确定发送者）。",
   "anticheat.kick": "已因作弊行为踢出 {0}。",
   "assign.assassin.nocmd": "只有启用玩家命令时才会分配刺客（/opt chat.playercommands on）。",
+  "assign.impostors.filled": "内鬼只有 {0} 名中的 {1} 名，已把 {2} 补为内鬼。",
   "assign.jackalfriends.nojackal": "只有本局分配了豺狼时才会分配豺狼之友（豺狼人数为 0：/set jackal 1）。",
   "autostart.cancelled": "人数少于{0}人，已中止自动开始。",
   "autostart.go": "已凑齐{0}人。{1}秒后开始。",

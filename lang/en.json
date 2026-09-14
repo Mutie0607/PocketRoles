@@ -5,6 +5,7 @@
   "anticheat.forged.target": "Forged RPC {1} addressed to {0} was dropped (sender unknown).",
   "anticheat.kick": "Kicked {0} for forged RPCs.",
   "assign.assassin.nocmd": "The Assassin is only assigned while player commands are enabled (/opt chat.playercommands on).",
+  "assign.impostors.filled": "Only {1} of {0} impostors were assigned; promoted {2} to Impostor.",
   "assign.jackalfriends.nojackal": "Jackal Friends are only assigned in games that have a Jackal (Jackal count is 0: /set jackal 1).",
   "autostart.cancelled": "Auto start cancelled: fewer than {0} players.",
   "autostart.go": "{0} players are here. Starting in {1} seconds.",
