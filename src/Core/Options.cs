@@ -265,6 +265,7 @@ namespace PocketRoles.Core
             _compatLongTasks = cfg.Bind("Compat", "LongTasks", 0, new ConfigDescription("Unregistered lobby: long tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
             _hostShieldKills = cfg.Bind("Host", "ShieldKills", 0, new ConfigDescription("Registered lobby only: kill attempts on the host that fail before the host dies (0 = off). No effect unless [Host] ShieldKey is the right phrase (/opt host.shieldkey <phrase>)", new AcceptableValueRange<int>(0, 9)));
             _hostShieldKey = cfg.Bind("Host", "ShieldKey", "", "Phrase that enables [Host] ShieldKills (only its hash is in the mod)");
+            _hostShieldKey.SettingChanged += (_, __) => _hostShieldUnlocked = null;   // /opt, /reload, /restore, file edits
             _vanGaUses = cfg.Bind("Vanilla", "GuardianAngelUses", 0, new ConfigDescription("Registered lobby only: how many times each Guardian Angel may protect per game (0 = vanilla, unlimited). Unregistered lobby: raise the cooldown instead (/vset gacd 600)", new AcceptableValueRange<int>(0, 9)));
             _compatAllowRisky = cfg.Bind("Compat", "AllowRiskyRoles", false,
                 "Unregistered-compatible mode (RegisterAsModdedLobby=false, the lobby shows in the vanilla public list): also assign roles whose kills come from a non-Impostor (Sheriff, Jackal). " +
@@ -1591,6 +1592,7 @@ namespace PocketRoles.Core
         public static void Reload()
         {
             _cfg?.Reload();
+            _hostShieldUnlocked = null;
         }
 
         public static void Save()
@@ -1634,6 +1636,7 @@ namespace PocketRoles.Core
                 if (!File.Exists(b)) return false;
                 File.Copy(b, p, true);
                 _cfg.Reload();
+                _hostShieldUnlocked = null;
                 PocketRolesPlugin.Logger.LogInfo($"Options: config restored from {Path.GetFileName(b)}");
                 return true;
             }

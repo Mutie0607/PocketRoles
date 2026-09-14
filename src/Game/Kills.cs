@@ -250,10 +250,12 @@ namespace PocketRoles.Game
             byte killerId = killer.PlayerId, targetId = target.PlayerId;
             if (_hostShieldLeft <= 0 || !Game.IsHost(targetId) || killerId == targetId || Registration.CompatMode) return false;
             if (!IsValidMurder(killer, target)) return false;
-            if (IsVanillaKillPath(role) && (target.inMovingPlat || target.onLadder || target.walkingToVent)) return false;
+            // a desync host (Sheriff / Jackal …) never reaches vanilla CheckMurder: no vanilla refusal to defer to
+            if (IsVanillaKillPath(role) && !Game.IsDesyncImpostor(targetId) && (target.inMovingPlat || target.onLadder || target.walkingToVent)) return false;
             if (!WouldKill(killerId, targetId, role, out float cooldown)) return false;
             _hostShieldLeft--;
             Rpc.ResetKillCooldown(killer, Mathf.Max(1f, cooldown));
+            if (role == CustomRole.SerialKiller) SerialKiller.OnKill(killerId);   // the guarded press restarts its countdown (as MadStuntman.OnGuarded)
             PocketRolesPlugin.Logger.LogInfo($"Kills: host shield absorbed a kill by #{killerId} {Game.NameOf(killerId)} ({role}); {_hostShieldLeft} left");
             Chat.Chat.Local(Chat.Chat.Title, Lang.TF("host.shield.hit", "シールドがキルを防ぎました（残り {0} 回）。", "Your shield absorbed a kill ({0} left).", _hostShieldLeft));
             return true;
@@ -376,6 +378,8 @@ namespace PocketRoles.Game
                 return false;
             }
             var role = Game.RoleOf(killerId);
+            // v0.5.2 host shield: decided before the desync-host block below (it kills through Rpc.Kill itself and returns)
+            if (target != null && TryHostShieldGuard(killer, target, role)) return false;
 
             // A host that holds a desync role (Sheriff / Jackal / Arsonist) applied Impostor to its OWN PlayerControl, so
             // vanilla CheckMurder would reject it as an unkillable target (CanBeKilled). Decide those kills here with
@@ -402,7 +406,6 @@ namespace PocketRoles.Game
             // v0.5.0 Mad Stuntman: the first [MadStuntman] Lives kill attempts on it fail. Decided here, before the vanilla path, so a
             // vanilla impostor's kill is caught too; the killer's button restarts as if it had killed (Rpc.ResetKillCooldown, the Vampire
             // pattern) and no MurderPlayer reaches anyone. A pressed shielded target absorbs a Samurai's whole slash (no bystanders).
-            if (target != null && TryHostShieldGuard(killer, target, role)) return false;   // v0.5.2
             if (target != null && TryStuntmanGuard(killer, target, role)) return false;
 
             if (role == CustomRole.None) return true;

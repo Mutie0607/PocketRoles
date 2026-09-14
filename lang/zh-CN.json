@@ -229,6 +229,7 @@
   "gm.subtitle": "观战/主持（不参与游戏）",
   "gm.title": "游戏主持",
   "gm.warning": "游戏主持: 从下一局起房主没有职业，开场动画后立即死亡，只观战/主持。",
+  "guardian.limit": "本局守护最多 {0} 次。",
   "guess.badrole": "找不到职业：{0}（/cmd r 查看列表；也可填 crew / impostor）",
   "guess.correct": "猜对了！{0} 是 {1}。",
   "guess.dead": "你已死亡，不能猜测。",

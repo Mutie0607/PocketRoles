@@ -229,6 +229,7 @@
   "gm.subtitle": "Spectator / moderator (not part of the game)",
   "gm.title": "Game Master",
   "gm.warning": "Game Master: from the next game the host gets no role, dies right after the intro and only spectates / moderates.",
+  "guardian.limit": "Protect is limited to {0} per game.",
   "guess.badrole": "Unknown role: {0} (/cmd r lists them; crew / impostor allowed)",
   "guess.correct": "Correct! {0} was {1}.",
   "guess.dead": "You are dead and cannot guess.",

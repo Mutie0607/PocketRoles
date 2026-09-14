@@ -42,7 +42,7 @@ namespace PocketRoles.Game
         private static readonly System.Collections.Generic.List<byte> Deferred = new System.Collections.Generic.List<byte>();
 
         /// <summary>New game (RoleManager.SelectRoles): a line deferred in a game that ended inside its meeting must not leak.</summary>
-        internal static void ClearDeferred() { Deferred.Clear(); DeferredLeft.Clear(); LeftAnnounced.Clear(); }
+        internal static void ClearDeferred() { Deferred.Clear(); DeferredLeft.Clear(); LeftAnnounced.Clear(); _exileEndAt = -100f; }
 
         internal static void DeferUntilExileEnd(byte id)
         {
@@ -65,7 +65,16 @@ namespace PocketRoles.Game
         {
             try
             {
-                if (!Active() || exile == null) return;
+                _exileEndAt = UnityEngine.Time.time;   // v0.5.2: RevealLeaveToAll holds its lines 2.6 s past the exile screen (dead-host chat race)
+                if (exile == null) return;
+                if (!Active())
+                {
+                    // [Roles] RevealRoleOnDeath off: only the RevealLeaveToAll lines deferred during the meeting (same 2 s)
+                    Deferred.Clear();
+                    var c = AmongUsClient.Instance;
+                    if (DeferredLeft.Count > 0 && c != null && c.AmHost && c.IsGameStarted) FlushDeferred(2f);
+                    return;
+                }
                 NetworkedPlayerInfo info = null;
                 try { info = exile.initData != null ? exile.initData.networkedPlayer : null; } catch (Exception) { }
                 if (info == null) { FlushDeferred(2f); return; }   // skip / tie: only the in-meeting deaths to announce
@@ -111,6 +120,7 @@ namespace PocketRoles.Game
         /// <summary>Roster players already announced as left (cleared at SelectRoles).</summary>
         internal static readonly System.Collections.Generic.HashSet<byte> LeftAnnounced = new System.Collections.Generic.HashSet<byte>();
         private static readonly System.Collections.Generic.List<byte> DeferredLeft = new System.Collections.Generic.List<byte>();
+        private static float _exileEndAt = -100f;
 
         private static bool LeftText(byte id, out string text)
         {
@@ -148,13 +158,19 @@ namespace PocketRoles.Game
                     LeftAnnounced.Add(e.Id);
                     if (!LeftText(e.Id, out var text)) continue;
                     PocketRolesPlugin.Logger.LogInfo($"RoleReveal: {Lang.StripTags(e.Name ?? "")} → left (reveal.left)");
-                    if (Options.RevealRoleOnLeave) Chat.Chat.Local(Chat.Chat.Title, text);
                     if (Options.RevealLeaveToAll)
                     {
+                        // Chat.All shows the host its own copy. Inside a meeting / exile screen the line waits for FlushDeferred; for
+                        // 2.6 s after the exile screen it is scheduled (a dead host's chat reopens the revive race otherwise).
                         bool meeting = false;
                         try { meeting = MeetingHud.Instance != null || ExileController.Instance != null; } catch (Exception) { }
-                        if (meeting) DeferredLeft.Add(e.Id); else Chat.Chat.All(Chat.Chat.Title, text);
+                        byte id = e.Id;
+                        float hold = _exileEndAt + 2.6f - UnityEngine.Time.time;
+                        if (meeting) DeferredLeft.Add(id);
+                        else if (hold > 0f) Scheduler.After(hold, () => { if (LeftText(id, out var t)) Chat.Chat.All(Chat.Chat.Title, t); }, "reveal.exiled");
+                        else Chat.Chat.All(Chat.Chat.Title, text);
                     }
+                    else if (Options.RevealRoleOnLeave) Chat.Chat.Local(Chat.Chat.Title, text);
                 }
             }
             catch (Exception ex) { PocketRolesPlugin.Logger.LogError($"RoleReveal.OnPlayerLeft: {ex}"); }
