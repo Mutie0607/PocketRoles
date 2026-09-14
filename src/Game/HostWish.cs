@@ -286,6 +286,21 @@ namespace PocketRoles.Game
                     else PocketRolesPlugin.Logger.LogInfo($"HostWish: partner's later {role} dropped");
                     return true;
                 }
+                if (Wish == Kind.Crewmate && _hasPending && !_satisfied && !RoleAssignment.IsImpostorRole(role))
+                {
+                    // a crew role for somebody else while I hold an impostor role: swap — the crew role is mine, my impostor role is theirs
+                    // (both are that player's / my first SetRole; role counts unchanged; the OnEnd fallback covers a game without crew specials)
+                    var me = Find(_me);
+                    if (me == null || me.roleAssigned) return false;
+                    _partner = p;
+                    _satisfied = true;
+                    RoleTypes held = _pendingRole; bool heldOverride = _pendingOverride; _hasPending = false;
+                    Send(me, role, canOverride);
+                    Send(pc, held, heldOverride);
+                    RoleAssignment.RestoredRedirected(_me, p);
+                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me; my held {held} -> #{p}");
+                    return true;
+                }
                 if (!_satisfied && Wish != Kind.Crewmate && Satisfies(role))
                 {
                     var me = Find(_me);
