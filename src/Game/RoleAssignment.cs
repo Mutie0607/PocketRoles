@@ -88,7 +88,14 @@ namespace PocketRoles.Game
         /// <summary>True between the RoleManager.SelectRoles prefix and postfix: every RpcSetRole in that window is vanilla's own.</summary>
         internal static bool VanillaSelecting;
         private static int _selectImpostorsSeen, _selectTarget;
-        private static readonly List<string> _selectRestored = new List<string>();
+        private static readonly List<byte> _selectRestored = new List<byte>();
+
+        /// <summary>HostWish moved a converted Impostor from one player to another: the notice names the player who really holds it.</summary>
+        internal static void RestoredRedirected(byte from, byte to)
+        {
+            int i = _selectRestored.IndexOf(from);
+            if (i >= 0) _selectRestored[i] = to;
+        }
 
         /// <summary>
         /// SelectRoles prefix (both lobby modes, not for haison games): remember how many impostors this game should have
@@ -133,7 +140,7 @@ namespace PocketRoles.Game
                 if (role != RoleTypes.Crewmate || _selectImpostorsSeen >= _selectTarget) return false;
                 if (Core.Game.GameMasterActive && Core.Game.IsHost(pc.PlayerId)) return false;   // the Game Master never plays
                 _selectImpostorsSeen++;
-                _selectRestored.Add(Core.Game.NameOf(pc.PlayerId));
+                _selectRestored.Add(pc.PlayerId);
                 PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: vanilla SelectRoles sent Crewmate to #{pc.PlayerId} {Core.Game.NameOf(pc.PlayerId)} while its impostor count was {_selectImpostorsSeen - 1} of {_selectTarget} — the impostor pick keeps Impostor");
                 return true;
             }
@@ -156,7 +163,7 @@ namespace PocketRoles.Game
                 Chat.Chat.Local(Chat.Chat.Title, Lang.TF("assign.impostors.filled",
                     "インポスターが {0} 人中 {1} 人しかいなかったので、{2} をインポスターにしました。",
                     "Only {1} of {0} impostors were assigned; promoted {2} to Impostor.",
-                    _selectTarget, _selectImpostorsSeen - _selectRestored.Count, string.Join(", ", _selectRestored)));
+                    _selectTarget, _selectImpostorsSeen - _selectRestored.Count, string.Join(", ", _selectRestored.ConvertAll(id => Core.Game.NameOf(id)))));
             }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"RoleAssignment.EndVanillaSelection: {e}"); }
             _selectRestored.Clear();
@@ -619,6 +626,7 @@ namespace PocketRoles.Game
                     PocketRolesPlugin.Logger.LogInfo("Assign: haison game, custom roles skipped");
                     return;
                 }
+                if (!Registration.CompatMode) OptionsDesync.Capture();   // before HostWish may bump a wished role's rate: the per-client option copies must not carry it
                 RoleAssignment.BeginVanillaSelection();   // v0.5.1: watch vanilla's own RpcSetRole calls (impostor-pass Crewmate defaults)
                 // Unregistered lobby (compat / 便利ホスト, findings #21/#22): the server disconnects the host for any
                 // client-addressed message (GameDataTo) — which is exactly what the per-client role views are. Vanilla
@@ -633,7 +641,6 @@ namespace PocketRoles.Game
                     return;
                 }
                 Core.Game.AssigningRoles = true;
-                OptionsDesync.Capture();
                 foreach (var pc in Core.Game.AllPlayers())
                 {
                     if (pc.Data == null) continue;
@@ -655,8 +662,8 @@ namespace PocketRoles.Game
         {
             try
             {
-                RoleAssignment.EndVanillaSelection();
-                RestoreVanillaRoles();
+                RestoreVanillaRoles();                  // inner save/restore pair first (SuppressVanillaRoles saved the rates AFTER HostWish's bump)
+                RoleAssignment.EndVanillaSelection();   // then HostWish.OnEnd restores the rate the host really had
                 if (!Core.Game.IsHostActive)
                 {
                     Core.Game.AssigningRoles = false;

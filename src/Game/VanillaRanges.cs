@@ -322,6 +322,24 @@ namespace PocketRoles.Game
                 Options.CompatCommonTasks, Options.CompatShortTasks, Options.CompatLongTasks);
         }
 
+        /// <summary>v0.5.1: the host moved a task row with the settings-screen arrows in an unregistered lobby — that row's override is dropped (the setting itself is used again).</summary>
+        internal static void OnTaskArrow(NumberOption n)
+        {
+            try
+            {
+                if (n == null || !Net.Rpc.CompatMode) return;
+                var s = Find(n.floatOptionName, n.intOptionName);
+                if (s == null || !IsTaskSpec(s)) return;
+                bool had = (s.Int == Int32OptionNames.NumCommonTasks && Options.CompatCommonTasks > 0)
+                    || (s.Int == Int32OptionNames.NumShortTasks && Options.CompatShortTasks > 0)
+                    || (s.Int == Int32OptionNames.NumLongTasks && Options.CompatLongTasks > 0);
+                if (!had) return;
+                SetCompatTasks(s, 0);
+                PocketRolesPlugin.Logger.LogInfo($"VanillaRanges: compat task override {s.Key} cleared (settings-screen arrow)");
+            }
+            catch (Exception e) { PocketRolesPlugin.Logger.LogWarning($"VanillaRanges.OnTaskArrow: {e.Message}"); }
+        }
+
         public static string Show()
         {
             try
@@ -462,23 +480,27 @@ namespace PocketRoles.Game
                     msg = Lang.TF("vset.badvalue", "数値を指定してください: {0}", "Please give a number: {0}", value ?? "");
                     return false;
                 }
-                // v0.5.1: unregistered lobby — task counts above the vanilla range are handed out by CompatTasks (the synced setting stays legal)
-                if (Net.Rpc.CompatMode && Options.ClampInUnregistered && IsTaskSpec(s))
+                // v0.5.1: unregistered lobby — task counts above the vanilla range are handed out by CompatTasks while the clamp is on
+                // (the synced setting stays legal); inside the range, or with the clamp off, the setting itself is used again
+                bool clearCompat = false;
+                if (Net.Rpc.CompatMode && IsTaskSpec(s))
                 {
                     int want = (int)Math.Round(v);
-                    if (want > (int)s.VanMax)
+                    if (Options.ClampInUnregistered && want > (int)s.VanMax)
                     {
                         if (want > Options.TaskCountMax)
                         {
                             msg = Lang.TF("vset.range", "{0} は {1}〜{2} の範囲で指定してください。", "{0} must be between {1} and {2}.", s.Name, "0", Options.TaskCountMax.ToString());
                             return false;
                         }
+                        int cur = (int)s.VanMax;
+                        try { var oo = GameOptionsManager.Instance?.CurrentGameOptions; if (oo != null) cur = oo.GetInt(s.Int); } catch (Exception) { }
                         SetCompatTasks(s, want);
-                        msg = Lang.TF("vset.compat.tasks", "登録オフの部屋なので設定は {1} のまま、実際に配る{0}だけ {2} にします（/vset show で確認）。", "Unregistered lobby: the setting stays {1}; only the number handed out becomes {2} for {0} (/vset show).", s.Name, (int)s.VanMax, want);
-                        PocketRolesPlugin.Logger.LogInfo($"VanillaRanges: compat task override {s.Key} = {want} (setting stays {(int)s.VanMax})");
+                        msg = Lang.TF("vset.compat.tasks", "登録オフの部屋なので設定は {1} のまま、実際に配る{0}だけ {2} にします（/vset show で確認）。", "Unregistered lobby: the setting stays {1}; only the number handed out becomes {2} for {0} (/vset show).", s.Name, cur, want);
+                        PocketRolesPlugin.Logger.LogInfo($"VanillaRanges: compat task override {s.Key} = {want} (setting stays {cur})");
                         return true;
                     }
-                    SetCompatTasks(s, 0);   // back inside the vanilla range: the setting itself is used again
+                    clearCompat = true;   // cleared once the value is actually applied below
                 }
                 Limits(s, out float min, out float max, out float step);
                 if (s.IsInt) v = (float)Math.Round(v);
@@ -514,6 +536,7 @@ namespace PocketRoles.Game
                 catch (Exception e) { PocketRolesPlugin.Logger.LogWarning($"VanillaRanges: AreInvalid check: {e.Message}"); }
                 try { o.SetInt(Int32OptionNames.RulePreset, (int)RulesPresets.Custom); } catch (Exception) { }
                 try { gom.GameHostOptions = o; } catch (Exception) { }
+                if (clearCompat) SetCompatTasks(s, 0);
                 try { gom.SaveNormalHostOptions(); } catch (Exception e) { PocketRolesPlugin.Logger.LogWarning($"VanillaRanges: save: {e.Message}"); }
 
                 // same broadcast the settings screen triggers (GameOptionsMenu.ValueChanged)
@@ -662,5 +685,18 @@ namespace PocketRoles.Game
             }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"VanillaRanges_NumberInitializePatch: {e}"); }
         }
+    }
+
+    /// <summary>v0.5.1: settings-screen arrows on a task row in an unregistered lobby drop that row's compat override (VanillaRanges.OnTaskArrow).</summary>
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Increase))]
+    internal static class VanillaRanges_TaskIncreasePatch
+    {
+        private static void Postfix(NumberOption __instance) => VanillaRanges.OnTaskArrow(__instance);
+    }
+
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Decrease))]
+    internal static class VanillaRanges_TaskDecreasePatch
+    {
+        private static void Postfix(NumberOption __instance) => VanillaRanges.OnTaskArrow(__instance);
     }
 }

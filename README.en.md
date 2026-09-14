@@ -650,7 +650,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `rules <text>` | Set the rules line (max 200 characters, `\n` = line break; `RulesMode` becomes `custom`) |
 | `rules none` | Back to the built-in "no special rules" line |
 | `test` / `test on|off` | Show / toggle test mode (lobby only) |
-| `me [impostor \| crew \| auto \| <vanilla role>]` | Your own role for the next game (v0.5.1): no test mode needed, works in unregistered lobbies too; also the Host page button. E.g. `/me impostor`, `/me shapeshifter`; `/me` alone shows the current wish |
+| `next [impostor \| crew \| auto \| <vanilla role>]` | Your own role for the next game (v0.5.1): no test mode needed, works in unregistered lobbies too; also the Host page button. E.g. `/next impostor`, `/next shapeshifter`; `/next` alone shows the current wish |
 | `assign <name|id> <role>` | Force a role on that player next game. E.g. `/assign Taro sheriff`, `/assign 2 jackal`; `/assign <name> none` clears one |
 | `assign show` / `assign clear` | List / clear the forced roles |
 | `end` | End the game now (counted as a crew win; ends a test-mode game) |
@@ -1559,7 +1559,7 @@ The other way round: gather people in a listed vanilla room (registration off), 
 - v0.4.6: the dead host's role list (`/who`) and the AFK kick (`[Lobby] AfkKickMinutes`) work in vanilla rooms too.
 - v0.5.0: the impostor line comes first and players who left mid-game are listed with their role, marked L (up to v0.4.6 only the players still present were listed). Translation: kanji-only Japanese (最終通信 …) is no longer taken for Chinese, a single Latin word (hi, gg …) is not translated, and a player's guide language switches only after two foreign-language lines (never for someone who already wrote in the lobby language). The host's own foreign-language lines are translated too. The guide texts for players (welcome line 2, `/cmd h`, `/cmd s`, `/lang`) use plain words.
 - v0.5.1: when the vanilla role selection picks fewer impostors than the lobby setting (it happens with impostor roles set to 100%), the players vanilla picked for the impostor slots keep Impostor (any still missing are drawn from the plain crewmates) and the host's chat shows "Only 2 of 3 impostors were assigned; promoted NAME to Impostor." Registered rooms get the same fix.
-- v0.5.1: `/me impostor` / `/me crew` / `/me <vanilla role>` fixes your own role for the next game in unregistered rooms too (also the Host page button). It only swaps the recipients of the role messages inside the vanilla role selection, so players see an ordinary assignment and the impostor count is unchanged.
+- v0.5.1: `/next impostor` / `/next crew` / `/next <vanilla role>` fixes your own role for the next game in unregistered rooms too (also the Host page button). It only swaps the recipients of the role messages inside the vanilla role selection, so players see an ordinary assignment and the impostor count is unchanged.
 - v0.5.1: task counts: the setting itself stays inside the vanilla range, but `/vset common 4` and the like (above the range) change only the number of tasks actually handed out (`/vset show` shows "Handed out (unregistered)"; the settings tab has the rows "Common tasks dealt (unreg.)" etc.).
 
 - No roles, name tags or private messages at all. The welcome and the notices become one broadcast, and every command, `/cmd …` included, is visible to everyone (the second welcome line says so).

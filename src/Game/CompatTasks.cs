@@ -20,7 +20,7 @@ namespace PocketRoles.Game
         private static bool _applied;
         private static int _common, _short, _long;
 
-        public static bool Active => Registration.CompatMode && (Options.CompatCommonTasks > 0 || Options.CompatShortTasks > 0 || Options.CompatLongTasks > 0);
+        public static bool Active => Registration.CompatMode && Options.ClampInUnregistered && (Options.CompatCommonTasks > 0 || Options.CompatShortTasks > 0 || Options.CompatLongTasks > 0);
 
         private static void Prefix()
         {

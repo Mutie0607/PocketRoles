@@ -8,7 +8,7 @@ namespace PocketRoles.Game
 {
     /// <summary>
     /// "Next game I am …" (v0.5.1, 2026-09-14 request): the host picks Impostor / Crewmate / one vanilla role for the next
-    /// game — without test mode, in registered AND unregistered lobbies — from the ホスト page button (/me in chat).
+    /// game — without test mode, in registered AND unregistered lobbies — from the ホスト page button (/next in chat).
     /// Works inside vanilla's own SelectRoles: the RpcSetRole prefix (RoleAssignment.Assign_RpcSetRolePatch) hands every
     /// role vanilla is about to send to <see cref="Intercept"/>, which swaps recipients so that the wished role reaches
     /// the host and the host's own role goes to the player it was taken from (the "partner"). Only the broadcast
@@ -52,6 +52,9 @@ namespace PocketRoles.Game
 
         public static bool IsSet => Wish != Kind.None;
 
+        /// <summary>The Game Master never plays. GameMasterActive is only set inside SelectRoles (after OnBegin), so the option decides in the lobby.</summary>
+        private static bool GameMasterMode => Core.Game.GameMasterActive || Options.GameMaster;
+
         // ------------------------------------------------------------------ text
 
         /// <summary>The wished role as the host's game shows it ("インポスター", "クルー", the vanilla role's own name).</summary>
@@ -88,8 +91,8 @@ namespace PocketRoles.Game
         public static string Describe()
         {
             return IsSet
-                ? Lang.TF("me.state", "次の試合の自分: {0}（1 試合だけ。解除は /me auto）", "Next game, me: {0} (one game; /me auto clears)", RoleText())
-                : Lang.T("me.state.none", "次の試合の自分: おまかせ（/me impostor | crew | <本体の役職名> で指定）", "Next game, me: random (/me impostor | crew | <vanilla role> sets it)");
+                ? Lang.TF("me.state", "次の試合の自分: {0}（1 試合だけ。解除は /next auto）", "Next game, me: {0} (one game; /next auto clears)", RoleText())
+                : Lang.T("me.state.none", "次の試合の自分: おまかせ（/next impostor | crew | <本体の役職名> で指定）", "Next game, me: random (/next impostor | crew | <vanilla role> sets it)");
         }
 
         // ------------------------------------------------------------------ setting
@@ -130,7 +133,7 @@ namespace PocketRoles.Game
                 message = Lang.T("cmd.modoff", "MODは現在オフです（バニラの試合）。", "The mod is currently off (vanilla game).");
                 return false;
             }
-            if (Core.Game.GameMasterActive && kind != Kind.None)
+            if (GameMasterMode && kind != Kind.None)
             {
                 message = Lang.T("me.gm", "ゲームマスターモード中は自分に役を付けられません。", "The Game Master does not play: no role wish while GM mode is on.");
                 return false;
@@ -150,7 +153,7 @@ namespace PocketRoles.Game
                 PocketRolesPlugin.Logger.LogInfo("HostWish: cleared");
                 return true;
             }
-            message = Lang.TF("me.set", "次の試合の自分: {0}（次の 1 試合だけ。解除は /me auto）", "Next game, me: {0} (one game only; /me auto clears)", RoleText());
+            message = Lang.TF("me.set", "次の試合の自分: {0}（次の 1 試合だけ。解除は /next auto）", "Next game, me: {0} (one game only; /next auto clears)", RoleText());
             if (kind == Kind.Vanilla && !Registration.CompatMode && !Options.VanillaRolesEnabled)
                 message += Lang.T("me.set.plainimp", " この部屋では素のインポスターになります。", " In this lobby it becomes a plain Impostor.");
             if (Core.Game.InProgress) message += Lang.T("cmd.set.next", " — 次の試合から適用", " - applies from the next game");
@@ -194,7 +197,17 @@ namespace PocketRoles.Game
                 if (Wish == Kind.None) return;
                 var lp = PlayerControl.LocalPlayer;
                 if (lp == null || lp.Data == null) return;
-                if (Core.Game.GameMasterActive) { PocketRolesPlugin.Logger.LogInfo("HostWish: ignored (Game Master mode)"); return; }
+                if (GameMasterMode) { PocketRolesPlugin.Logger.LogInfo("HostWish: ignored (Game Master mode)"); Wish = Kind.None; return; }
+                if (Wish == Kind.Vanilla && !Registration.CompatMode && !Options.VanillaRolesEnabled && !RoleAssignment.IsImpostorRole(VanillaRole))
+                {
+                    // [Roles] VanillaRoles was switched off after the wish was set: the crew special cannot exist in this game
+                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {VanillaRole} wish dropped — [Roles] VanillaRoles is off in a registered lobby");
+                    Chat.Chat.Local(Chat.Chat.Title, Lang.T("me.novanilla",
+                        "登録ありで本体の役職がオフ（[Roles] VanillaRoles = off）の部屋では、本体のクルー役職は指定できません（impostor / crew は可）。",
+                        "In a registered lobby with vanilla roles off ([Roles] VanillaRoles = off) a vanilla crew role cannot be wished (impostor / crew still work)."));
+                    Wish = Kind.None;
+                    return;
+                }
                 _me = lp.PlayerId;
                 _active = true;
                 if (Wish == Kind.Vanilla)
@@ -226,7 +239,7 @@ namespace PocketRoles.Game
         /// </summary>
         internal static bool Intercept(PlayerControl pc, RoleTypes role, bool canOverride)
         {
-            if (!_active || Redirecting || pc == null || pc.Data == null) return false;
+            if (!_active || Redirecting || Core.Game.GameMasterActive || pc == null || pc.Data == null) return false;
             try
             {
                 byte p = pc.PlayerId;
@@ -246,17 +259,16 @@ namespace PocketRoles.Game
                         PocketRolesPlugin.Logger.LogInfo($"HostWish: vanilla gave me {role} itself");
                         return false;
                     }
-                    if (Wish == Kind.Crewmate)
+                    if (Wish == Kind.Vanilla && RoleAssignment.IsImpostorRole(role) == RoleAssignment.IsImpostorRole(VanillaRole))
                     {
-                        // vanilla made me an impostor: that role goes to a player who has no role yet
-                        var x = PickPartner();
-                        if (x == null) { PocketRolesPlugin.Logger.LogWarning("HostWish: nobody can take my impostor role"); return false; }
-                        _partner = x.PlayerId;
-                        Send(x, role, canOverride);
-                        PocketRolesPlugin.Logger.LogInfo($"HostWish: my {role} -> #{_partner} {Core.Game.NameOf(_partner)} (I stay crew)");
+                        // same team as the wished vanilla role (vanilla made me the Phantom, I want the Shapeshifter): take it directly
+                        _satisfied = true;
+                        Send(pc, VanillaRole, canOverride);
+                        PocketRolesPlugin.Logger.LogInfo($"HostWish: my {role} -> {VanillaRole} (same team)");
                         return true;
                     }
-                    // Impostor / vanilla-role wish: hold my role until the wished one shows up for somebody else
+                    // hold my role: Impostor / vanilla-role wish — until the wished one shows up for somebody else;
+                    // Crewmate wish — OnEnd hands it to a player vanilla left without any role (never one of its pending impostor picks)
                     _hasPending = true; _pendingRole = role; _pendingOverride = canOverride;
                     PocketRolesPlugin.Logger.LogInfo($"HostWish: holding my {role}");
                     return true;
@@ -306,7 +318,22 @@ namespace PocketRoles.Game
                 if (_hasPending)
                 {
                     var me = Find(_me);
-                    if (me != null && !me.roleAssigned) Send(me, _pendingRole, _pendingOverride);
+                    PlayerControl taker = null;
+                    if (Wish == Kind.Crewmate)
+                    {
+                        // vanilla is done: every player still without a role is a plain crewmate — one of them takes my impostor role
+                        taker = PickPartner();
+                        if (taker != null)
+                        {
+                            _partner = taker.PlayerId;
+                            _satisfied = true;
+                            RoleAssignment.RestoredRedirected(_me, _partner);
+                            Send(taker, _pendingRole, _pendingOverride);
+                            PocketRolesPlugin.Logger.LogInfo($"HostWish: my held {_pendingRole} -> #{_partner} {Core.Game.NameOf(_partner)} (I stay crew)");
+                        }
+                        else PocketRolesPlugin.Logger.LogWarning("HostWish: nobody can take my impostor role");
+                    }
+                    if (taker == null && me != null && !me.roleAssigned) Send(me, _pendingRole, _pendingOverride);
                     _hasPending = false;
                 }
                 if (_rateSaved)

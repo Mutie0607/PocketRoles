@@ -1029,7 +1029,7 @@ namespace PocketRoles.UI
                 new HostAction { Label = () => Lang.T("ui.host.endmeeting", "会議終了", "End meeting", "结束会议"), Enabled = () => Core.Game.IsHostActive && MeetingNow(), Run = HostEndMeeting },
                 new HostAction { Label = TestLabel, Enabled = () => true, Run = HostToggleTest },
                 new HostAction { Label = () => Lang.T("ui.host.show", "設定を表示", "Show settings", "显示设置"), Enabled = () => true, Run = HostShow },
-                new HostAction { Label = () => Game.HostWish.ButtonLabel(), Enabled = () => Core.Game.IsHostActive && !Core.Game.GameMasterActive, Run = HostWishCycle },
+                new HostAction { Label = () => Game.HostWish.ButtonLabel(), Enabled = () => Core.Game.IsHostActive && !Core.Game.GameMasterActive && !Options.GameMaster, Run = HostWishCycle },
             };
             const int perRow = 3;
             int mask = MaskLayer;
