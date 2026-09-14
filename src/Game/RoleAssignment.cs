@@ -106,6 +106,7 @@ namespace PocketRoles.Game
                 foreach (var pc in Core.Game.AllPlayers())
                     if (pc != null && pc.Data != null && !pc.Data.Disconnected) connected++;
                 _selectTarget = connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
+                HostWish.OnBegin();
             }
             catch (Exception e)
             {
@@ -148,6 +149,7 @@ namespace PocketRoles.Game
         {
             if (!VanillaSelecting) return;
             VanillaSelecting = false;
+            HostWish.OnEnd();   // releases a held role, tells the host, consumes the wish
             if (_selectRestored.Count == 0) return;
             try
             {
@@ -829,7 +831,9 @@ namespace PocketRoles.Game
                 if (!Core.Game.IsHostActive || __instance == null) return true;
                 byte id = __instance.PlayerId;
                 // v0.5.1: vanilla's impostor pass hands its leftover picks a Crewmate (2026.8.18) — they stay impostors
-                if (RoleAssignment.TakeImpostorDefault(__instance, roleType)) roleType = RoleTypes.Impostor;
+                if (!HostWish.Redirecting && RoleAssignment.TakeImpostorDefault(__instance, roleType)) roleType = RoleTypes.Impostor;
+                // v0.5.1: "next game I am …" — swap recipients inside vanilla's own SelectRoles (HostWish)
+                if (RoleAssignment.VanillaSelecting && HostWish.Intercept(__instance, roleType, canOverrideRole)) return false;
 
                 if (Core.Game.AssigningRoles)
                 {

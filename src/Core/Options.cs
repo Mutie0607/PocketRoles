@@ -252,6 +252,9 @@ namespace PocketRoles.Core
             _rehostMaxAttempts = cfg.Bind("Lobby", "RehostMaxAttempts", 3, new ConfigDescription("Give up auto re-hosting after this many consecutive attempts", new AcceptableValueRange<int>(1, 10)));
             _afkKickMinutes = cfg.Bind("Lobby", "AfkKickMinutes", 0, new ConfigDescription("Kick (not ban) a lobby player who neither moves nor chats for this many minutes; one warning 30 s before. Host, VIPs, moderators and admins are exempt; nothing happens during the start countdown or a game. Works in unregistered lobbies too. 0 = off", new AcceptableValueRange<int>(0, 30)));
             _maxHostPing = cfg.Bind("Lobby", "MaxHostPing", 0, new ConfigDescription("Offer to re-create the lobby (same settings) while it is still empty when the host's ping to the game server stays above this many ms for 5 s right after the lobby is created (official regions mix near and far servers). The host is ASKED on screen first (Yes/No, once per lobby, or /rehost yes|no) because short-lived lobbies count as deliberate disconnects (ban points). 0 = off; at most 3 re-creations in a row, then the lobby is kept (/opt maxping <ms>)", new AcceptableValueRange<int>(0, 300)));
+            _compatCommonTasks = cfg.Bind("Compat", "CommonTasks", 0, new ConfigDescription("Unregistered lobby: common tasks actually handed out per player (0 = the lobby setting; the synced setting stays inside the vanilla range)", new AcceptableValueRange<int>(0, 60)));
+            _compatShortTasks = cfg.Bind("Compat", "ShortTasks", 0, new ConfigDescription("Unregistered lobby: short tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
+            _compatLongTasks = cfg.Bind("Compat", "LongTasks", 0, new ConfigDescription("Unregistered lobby: long tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
             _compatAllowRisky = cfg.Bind("Compat", "AllowRiskyRoles", false,
                 "Unregistered-compatible mode (RegisterAsModdedLobby=false, the lobby shows in the vanilla public list): also assign roles whose kills come from a non-Impostor (Sheriff, Jackal). " +
                 "Without mod-lobby registration (host authority) the official server may reject those kills. Off = Sheriff and Jackal are skipped in compat mode (/opt compat.risky on|off)");
@@ -439,6 +442,11 @@ namespace PocketRoles.Core
         public static int MaxHostPing { get => _maxHostPing?.Value ?? 0; set { if (_maxHostPing != null) _maxHostPing.Value = Math.Max(0, Math.Min(300, value)); } }
         /// <summary>[Lobby] AfkKickMinutes: kick a lobby player idle (no movement / chat) for this many minutes; 0 = off (default).</summary>
         public static int AfkKickMinutes { get => _afkKickMinutes?.Value ?? 0; set { if (_afkKickMinutes != null) _afkKickMinutes.Value = Math.Max(0, Math.Min(30, value)); } }
+        private static ConfigEntry<int> _compatCommonTasks, _compatShortTasks, _compatLongTasks;
+        /// <summary>[Compat] CommonTasks / ShortTasks / LongTasks (v0.5.1): tasks handed out in an unregistered lobby beyond the vanilla range (0 = the lobby setting).</summary>
+        public static int CompatCommonTasks { get => _compatCommonTasks?.Value ?? 0; set { if (_compatCommonTasks != null) _compatCommonTasks.Value = Math.Max(0, Math.Min(60, value)); } }
+        public static int CompatShortTasks { get => _compatShortTasks?.Value ?? 0; set { if (_compatShortTasks != null) _compatShortTasks.Value = Math.Max(0, Math.Min(60, value)); } }
+        public static int CompatLongTasks { get => _compatLongTasks?.Value ?? 0; set { if (_compatLongTasks != null) _compatLongTasks.Value = Math.Max(0, Math.Min(60, value)); } }
         /// <summary>[Compat] AllowRiskyRoles: assign Sheriff / Jackal even in the unregistered compat mode (default off).</summary>
         public static bool AllowRiskyRoles { get => _compatAllowRisky != null && _compatAllowRisky.Value; set { if (_compatAllowRisky != null) _compatAllowRisky.Value = value; } }
 
@@ -1066,6 +1074,9 @@ namespace PocketRoles.Core
                 .Tip("議論時間の最大値（秒）。", "Highest discussion time (s).", "讨论时间的最大值（秒）。"));
             _descriptors.Add(Int("vanilla.emergencymax", hJa, hEn, "緊急会議CD最大(秒)", "Emergency cooldown max (s)", _vanEmergencyMax, 0, 600, 10)
                 .Tip("緊急会議クールダウンの最大値（秒）。", "Highest emergency-meeting cooldown (s).", "紧急会议冷却的最大值（秒）。"));
+            _descriptors.Add(Int("compat.tasks.common", hJa, hEn, "配るコモン数(登録オフ,0=設定)", "Common tasks dealt (unreg., 0=setting)", _compatCommonTasks, 0, 60, 1));
+            _descriptors.Add(Int("compat.tasks.short", hJa, hEn, "配るショート数(登録オフ,0=設定)", "Short tasks dealt (unreg., 0=setting)", _compatShortTasks, 0, 60, 1));
+            _descriptors.Add(Int("compat.tasks.long", hJa, hEn, "配るロング数(登録オフ,0=設定)", "Long tasks dealt (unreg., 0=setting)", _compatLongTasks, 0, 60, 1));
             _descriptors.Add(Int("vanilla.taskmax", hJa, hEn, "タスク数最大", "Task count max", _vanTaskMax, 1, 60, 1)
                 .Tip("共通・短い・長いタスク数の最大値。", "Highest common / short / long task count.", "普通、短、长任务数量的最大值。"));
 
@@ -1313,6 +1324,9 @@ namespace PocketRoles.Core
                 case "vanilla.votemax": case "vanilla.votingtimemax": return SetInt(_vanVoteMax, value, 15, 3600, "vanilla.votemax", out message);
                 case "vanilla.discussmax": case "vanilla.discussionmax": case "vanilla.discussiontimemax": return SetInt(_vanDiscussMax, value, 0, 3600, "vanilla.discussmax", out message);
                 case "vanilla.emergencymax": case "vanilla.emergencycooldownmax": return SetInt(_vanEmergencyMax, value, 0, 600, "vanilla.emergencymax", out message);
+                case "compat.tasks.common": case "compat.common": return SetInt(_compatCommonTasks, value, 0, 60, "compat.tasks.common", out message);
+                case "compat.tasks.short": case "compat.short": return SetInt(_compatShortTasks, value, 0, 60, "compat.tasks.short", out message);
+                case "compat.tasks.long": case "compat.long": return SetInt(_compatLongTasks, value, 0, 60, "compat.tasks.long", out message);
                 case "vanilla.taskmax": case "vanilla.taskcountmax": case "vanilla.tasks": return SetInt(_vanTaskMax, value, 1, 60, "vanilla.taskmax", out message);
                 // v0.4e guide room
                 case "guide.overlay": case "guide.showcodeoverlay": case "guide.codeoverlay": case "codeoverlay": return SetBool(_guideShowCodeOverlay, value, "guide.overlay", out message);

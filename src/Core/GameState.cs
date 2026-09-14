@@ -291,6 +291,7 @@ namespace PocketRoles.Core
                 // consumes it (SelectRoles returns early), so game end / play-again rejoin / lobby start keep it for
                 // the "next game" the host asked for; leaving the lobby (disconnect, a different lobby) drops it.
                 if (!gameEnd && !lobbyStart && !sameLobby) ForcedRoles.Clear();
+                if (!gameEnd && !lobbyStart && !sameLobby) PocketRoles.Game.HostWish.Clear();   // v0.5.1: the next-game wish belongs to this lobby
                 if (disconnected)
                 {
                     _lastGameId = int.MinValue;

@@ -305,6 +305,23 @@ namespace PocketRoles.Game
         }
 
         /// <summary>Current values of the settings /vset can change (one line).</summary>
+        private static bool IsTaskSpec(Spec s) => s.Int == Int32OptionNames.NumCommonTasks || s.Int == Int32OptionNames.NumShortTasks || s.Int == Int32OptionNames.NumLongTasks;
+
+        private static void SetCompatTasks(Spec s, int n)
+        {
+            if (s.Int == Int32OptionNames.NumCommonTasks) Options.CompatCommonTasks = n;
+            else if (s.Int == Int32OptionNames.NumShortTasks) Options.CompatShortTasks = n;
+            else if (s.Int == Int32OptionNames.NumLongTasks) Options.CompatLongTasks = n;
+        }
+
+        /// <summary>v0.5.1: the unregistered-lobby task override line of /vset show (empty when nothing is overridden).</summary>
+        private static string CompatTasksText()
+        {
+            if (Options.CompatCommonTasks <= 0 && Options.CompatShortTasks <= 0 && Options.CompatLongTasks <= 0) return "";
+            return "\n" + Lang.TF("vset.compat.show", "配る個数（登録オフ）: コモン {0} / ショート {1} / ロング {2}（0 = 設定どおり）", "Handed out (unregistered): common {0} / short {1} / long {2} (0 = as set)",
+                Options.CompatCommonTasks, Options.CompatShortTasks, Options.CompatLongTasks);
+        }
+
         public static string Show()
         {
             try
@@ -321,7 +338,7 @@ namespace PocketRoles.Game
                     o.GetInt(Int32OptionNames.EmergencyCooldown), o.GetInt(Int32OptionNames.NumCommonTasks), o.GetInt(Int32OptionNames.NumShortTasks),
                     o.GetInt(Int32OptionNames.NumLongTasks), Fmt(o.GetFloat(FloatOptionNames.PlayerSpeedMod)),
                     Fmt(o.GetFloat(FloatOptionNames.CrewLightMod)) + "/" + Fmt(o.GetFloat(FloatOptionNames.ImpostorLightMod)), sec, x)
-                    + "\n" + ShowRoles(o);
+                    + "\n" + ShowRoles(o) + CompatTasksText();
             }
             catch (Exception e)
             {
@@ -444,6 +461,24 @@ namespace PocketRoles.Game
                 {
                     msg = Lang.TF("vset.badvalue", "数値を指定してください: {0}", "Please give a number: {0}", value ?? "");
                     return false;
+                }
+                // v0.5.1: unregistered lobby — task counts above the vanilla range are handed out by CompatTasks (the synced setting stays legal)
+                if (Net.Rpc.CompatMode && Options.ClampInUnregistered && IsTaskSpec(s))
+                {
+                    int want = (int)Math.Round(v);
+                    if (want > (int)s.VanMax)
+                    {
+                        if (want > Options.TaskCountMax)
+                        {
+                            msg = Lang.TF("vset.range", "{0} は {1}〜{2} の範囲で指定してください。", "{0} must be between {1} and {2}.", s.Name, "0", Options.TaskCountMax.ToString());
+                            return false;
+                        }
+                        SetCompatTasks(s, want);
+                        msg = Lang.TF("vset.compat.tasks", "登録オフの部屋なので設定は {1} のまま、実際に配る{0}だけ {2} にします（/vset show で確認）。", "Unregistered lobby: the setting stays {1}; only the number handed out becomes {2} for {0} (/vset show).", s.Name, (int)s.VanMax, want);
+                        PocketRolesPlugin.Logger.LogInfo($"VanillaRanges: compat task override {s.Key} = {want} (setting stays {(int)s.VanMax})");
+                        return true;
+                    }
+                    SetCompatTasks(s, 0);   // back inside the vanilla range: the setting itself is used again
                 }
                 Limits(s, out float min, out float max, out float step);
                 if (s.IsInt) v = (float)Math.Round(v);

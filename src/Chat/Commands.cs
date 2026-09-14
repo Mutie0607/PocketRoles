@@ -260,6 +260,7 @@ namespace PocketRoles.Chat
                     case "welcome": HandleWelcome(sender, arg1, RestOfLine(body, tokens[0])); return true;
                     case "test": Reply(sender, ToggleTest(arg1)); return true;
                     case "assign": Reply(sender, Assign(tokens)); return true;
+                    case "me": case "自分": Reply(sender, MeCommand(JoinArgs(tokens, 1))); return true;
                     case "end": Reply(sender, EndGame()); return true;
                     case "rehost": Reply(sender, ToggleRehost(arg1)); return true;
                     case "public": Reply(sender, PublicCommand(arg1)); return true;
@@ -309,7 +310,7 @@ namespace PocketRoles.Chat
             switch (cmd)
             {
                 case "set": case "opt": case "show": case "reset": case "reload": case "mod":
-                case "welcome": case "test": case "assign": case "end": case "rehost": case "public":
+                case "welcome": case "test": case "assign": case "me": case "自分": case "end": case "rehost": case "public":
                 case "start": case "cancel": case "autostart": case "haison": case "廃村":
                 case "endmeeting": case "em": case "results": case "region": case "rules": case "cos": case "cosmetics":
                 case "diag": case "diagnostics": case "診断":
@@ -698,6 +699,11 @@ namespace PocketRoles.Chat
                 "診断: /diag 開始処理・画面の状態をチャットとログに出力（画面が真っ暗な時など）。F7 は 2 回押しで廃村",
                 "Diag: /diag prints the start / screen state to chat and the log (e.g. on a black screen). F7 twice = haison",
                 "诊断: /diag 将开局与画面状态输出到聊天和日志（例如黑屏时）。按两次 F7 = 废村"));
+            sb.Append('\n');
+            sb.Append(Lang.T("help.host.me",
+                "自分の役: /me impostor | crew | auto | <本体の役職名> で次の 1 試合の自分の役を指定（テストモード不要、登録オフでも可。設定タブ「ホスト」の「次の自分」ボタンでも）",
+                "My role: /me impostor | crew | auto | <vanilla role> fixes your own role for the next game (no test mode, unregistered lobby OK; also the ホスト page button)",
+                "自己的职业: /me impostor | crew | auto | <原版职业名> 指定下一局自己的职业（无需测试模式，未注册房间也可；设置页“主持”的按钮亦可）"));
             sb.Append('\n');
             sb.Append(Lang.T("help.host.9",
                 "観戦: 死亡後は全員の役職一覧が自分の画面だけに出ます（会議ごとに再表示）。/who で再表示、/opt ghostlist off で停止",
@@ -1157,6 +1163,16 @@ namespace PocketRoles.Chat
             }
             else if (ok) PocketRolesPlugin.Logger.LogInfo($"Commands: assign '{who}' cleared");
             return s;
+        }
+
+        /// <summary>/me [impostor | crew | auto | vanilla role]: the host's own role for the next game (v0.5.1, HostWish).</summary>
+        private static string MeCommand(string arg)
+        {
+            if (string.IsNullOrWhiteSpace(arg)) return HostWish.Describe();
+            if (!HostWish.TryParse(arg, out var kind, out var vanilla))
+                return Lang.T("me.usage", "使い方: /me impostor | crew | auto | <本体の役職名>（例: /me shapeshifter）。/me だけで現在の指定", "Usage: /me impostor | crew | auto | <vanilla role> (e.g. /me shapeshifter); /me alone shows the current wish");
+            HostWish.Set(kind, vanilla, out var msg);
+            return msg ?? "";
         }
 
         private static string AssignmentsText()

@@ -23,6 +23,12 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+# タスクバーのアイコン (v0.5.1): PowerShell の枠に混ざるとタスクバーが powershell.exe のアイコンを出すので、独自の AppUserModelID を付けて
+# フォームのアイコン (assets\PocketRoles.ico) がそのまま出るようにする。失敗しても起動は続ける
+try {
+    Add-Type -Namespace PocketRoles -Name Taskbar -MemberDefinition '[DllImport("shell32.dll")] public static extern int SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string AppID);' -ErrorAction Stop
+    [void][PocketRoles.Taskbar]::SetCurrentProcessExplicitAppUserModelID('wakayamachannel.PocketRoles.Launcher')
+} catch { }
 if (-not $script:Headless) { [System.Windows.Forms.Application]::EnableVisualStyles() }
 try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 

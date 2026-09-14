@@ -77,7 +77,7 @@ namespace PocketRoles.UI
         internal static Transform HostRow;
         private static float _nextHostRefresh;
         private static readonly Vector2 HostButtonSize = new Vector2(1.25f, 0.32f);
-        private const float HostRowPitch = 0.42f, HostRowStep = 1.0f, HostFontMul = 1.2f;
+        private const float HostRowPitch = 0.42f, HostRowStep = 1.45f, HostFontMul = 1.2f;
         private static readonly Color32 HostColor = new Color32(0, 165, 255, 255);
         private static readonly Color32 HostDisabledColor = new Color32(105, 105, 105, 255);
         internal static GameOptionsMenu Tab;
@@ -991,6 +991,14 @@ namespace PocketRoles.UI
             if (!Chat.Commands.Handle(lp, "/show")) Toast(ModOffText());
         }
 
+        /// <summary>v0.5.1: 次の自分 — おまかせ → インポスター → クルー → おまかせ (HostWish; vanilla roles via /me).</summary>
+        private static void HostWishCycle()
+        {
+            string m = Game.HostWish.Cycle();
+            PocketRolesPlugin.Logger.LogInfo("SettingsTab: host button wish -> " + Game.HostWish.Wish);
+            Toast(m);
+        }
+
         private static string TestLabel()
         {
             return Lang.T("ui.host.test", "テストモード", "Test mode", "测试模式") + ": "
@@ -1021,6 +1029,7 @@ namespace PocketRoles.UI
                 new HostAction { Label = () => Lang.T("ui.host.endmeeting", "会議終了", "End meeting", "结束会议"), Enabled = () => Core.Game.IsHostActive && MeetingNow(), Run = HostEndMeeting },
                 new HostAction { Label = TestLabel, Enabled = () => true, Run = HostToggleTest },
                 new HostAction { Label = () => Lang.T("ui.host.show", "設定を表示", "Show settings", "显示设置"), Enabled = () => true, Run = HostShow },
+                new HostAction { Label = () => Game.HostWish.ButtonLabel(), Enabled = () => Core.Game.IsHostActive && !Core.Game.GameMasterActive, Run = HostWishCycle },
             };
             const int perRow = 3;
             int mask = MaskLayer;
