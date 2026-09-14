@@ -42,7 +42,7 @@ namespace PocketRoles.Game
         private static readonly System.Collections.Generic.List<byte> Deferred = new System.Collections.Generic.List<byte>();
 
         /// <summary>New game (RoleManager.SelectRoles): a line deferred in a game that ended inside its meeting must not leak.</summary>
-        internal static void ClearDeferred() { Deferred.Clear(); }
+        internal static void ClearDeferred() { Deferred.Clear(); DeferredLeft.Clear(); LeftAnnounced.Clear(); }
 
         internal static void DeferUntilExileEnd(byte id)
         {
@@ -81,14 +81,83 @@ namespace PocketRoles.Game
         /// <summary>The in-meeting deaths, one line each, spaced behind the ejected line (Chat.All paces per client anyway).</summary>
         private static void FlushDeferred(float delay)
         {
-            if (Deferred.Count == 0) return;
-            var list = new System.Collections.Generic.List<byte>(Deferred);
-            Deferred.Clear();
-            for (int i = 0; i < list.Count; i++)
+            int n = 0;
+            if (Deferred.Count > 0)
             {
-                byte id = list[i];
-                Scheduler.After(delay + 0.6f * i, () => Announce(id, "reveal.killed", "{0} は {1} でした。", "{0} was {1}.", "{0} 是 {1}。"), "reveal.exiled");
+                var list = new System.Collections.Generic.List<byte>(Deferred);
+                Deferred.Clear();
+                for (int i = 0; i < list.Count; i++)
+                {
+                    byte id = list[i];
+                    Scheduler.After(delay + 0.6f * i, () => Announce(id, "reveal.killed", "{0} は {1} でした。", "{0} was {1}.", "{0} 是 {1}。"), "reveal.exiled");
+                }
+                n = list.Count;
             }
+            // v0.5.2: players who left during the meeting (RevealLeaveToAll), after the deaths
+            if (DeferredLeft.Count > 0)
+            {
+                var left = new System.Collections.Generic.List<byte>(DeferredLeft);
+                DeferredLeft.Clear();
+                for (int i = 0; i < left.Count; i++)
+                {
+                    byte id = left[i];
+                    Scheduler.After(delay + 0.6f * (n + i), () => { if (LeftText(id, out var t)) Chat.Chat.All(Chat.Chat.Title, t); }, "reveal.exiled");
+                }
+            }
+        }
+
+        // ------------------------------------------------------------------ v0.5.2: a player leaving mid-game
+
+        /// <summary>Roster players already announced as left (cleared at SelectRoles).</summary>
+        internal static readonly System.Collections.Generic.HashSet<byte> LeftAnnounced = new System.Collections.Generic.HashSet<byte>();
+        private static readonly System.Collections.Generic.List<byte> DeferredLeft = new System.Collections.Generic.List<byte>();
+
+        private static bool LeftText(byte id, out string text)
+        {
+            text = null;
+            string name = Core.Game.Roster.TryGetValue(id, out var e) ? e.Name : Core.Game.NameOf(id);
+            name = Lang.StripTags(name ?? "").Trim();
+            if (name.Length == 0) name = "#" + id;
+            string role = RoleNameOf(id);
+            if (string.IsNullOrEmpty(role)) return false;
+            try { text = string.Format(Lang.T("reveal.left", "抜けた {0} は {1} でした。", "{0} left; they were {1}.", "退出的 {0} 是 {1}。"), name, role); }
+            catch (FormatException) { text = name + ": " + role; }
+            return true;
+        }
+
+        /// <summary>
+        /// AmongUsClient.OnPlayerLeft postfix (host, game running): every roster player whose data is gone or flagged
+        /// Disconnected gets one line — on the host's own screen ([Roles] RevealRoleOnLeave, default on; Chat.Local
+        /// sends nothing, so an unregistered lobby is fine) and, with [Roles] RevealLeaveToAll, to everyone (deferred
+        /// past the exile screen when it happens inside a meeting, like the in-meeting deaths). The roles come from
+        /// the mod's own tables (RoleNameOf), so they survive the player's data being destroyed.
+        /// </summary>
+        internal static void OnPlayerLeft()
+        {
+            try
+            {
+                if (!Options.RevealRoleOnLeave && !Options.RevealLeaveToAll) return;
+                var client = AmongUsClient.Instance;
+                if (client == null || !client.AmHost || !client.IsGameStarted) return;
+                if (Core.Game.Roster.Count == 0) return;
+                foreach (var e in Core.Game.Roster.Values)
+                {
+                    if (LeftAnnounced.Contains(e.Id)) continue;
+                    var info = Core.Game.Info(e.Id);
+                    if (info != null && !info.Disconnected) continue;
+                    LeftAnnounced.Add(e.Id);
+                    if (!LeftText(e.Id, out var text)) continue;
+                    PocketRolesPlugin.Logger.LogInfo($"RoleReveal: {Lang.StripTags(e.Name ?? "")} → left (reveal.left)");
+                    if (Options.RevealRoleOnLeave) Chat.Chat.Local(Chat.Chat.Title, text);
+                    if (Options.RevealLeaveToAll)
+                    {
+                        bool meeting = false;
+                        try { meeting = MeetingHud.Instance != null || ExileController.Instance != null; } catch (Exception) { }
+                        if (meeting) DeferredLeft.Add(e.Id); else Chat.Chat.All(Chat.Chat.Title, text);
+                    }
+                }
+            }
+            catch (Exception ex) { PocketRolesPlugin.Logger.LogError($"RoleReveal.OnPlayerLeft: {ex}"); }
         }
 
         private static void Announce(byte id, string key, string ja, string en, string zh)
@@ -186,6 +255,17 @@ namespace PocketRoles.Game
         {
             try { RoleReveal.AliveRoles.Clear(); RoleReveal.ClearDeferred(); }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"RoleReveal_SelectRolesPatch: {e}"); }
+        }
+    }
+
+    /// <summary>v0.5.2: the role of a player who leaves mid-game (RoleReveal.OnPlayerLeft).</summary>
+    [HarmonyLib.HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerLeft))]
+    internal static class RoleReveal_OnPlayerLeftPatch
+    {
+        private static void Postfix()
+        {
+            try { RoleReveal.OnPlayerLeft(); }
+            catch (Exception e) { PocketRolesPlugin.Logger.LogError($"RoleReveal_OnPlayerLeftPatch: {e}"); }
         }
     }
 }

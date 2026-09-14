@@ -780,6 +780,7 @@
   "rehost.public": "The lobby is now public.",
   "reveal.exiled": "Ejected {0} was {1}.",
   "reveal.killed": "{0} was {1}.",
+  "reveal.left": "{0} left; they were {1}.",
   "role.arsonist.desc": "Neutral. Your kill button douses instead of killing. Douse every other living player to win alone at once. No sabotage; your tasks are fake.",
   "role.arsonist.name": "Arsonist",
   "role.assassin.desc": "An Impostor. In a meeting type /cmd guess <name> <role>: a correct guess kills the target, a wrong one kills you.",

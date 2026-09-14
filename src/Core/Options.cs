@@ -136,6 +136,7 @@ namespace PocketRoles.Core
         private static ConfigEntry<bool> _vanClampUnreg;
         private static ConfigEntry<bool> _permAdminLobby;
         private static ConfigEntry<bool> _revealOnDeath;
+        private static ConfigEntry<bool> _revealOnLeave, _revealLeaveToAll;
         private static ConfigEntry<bool> _hostGhostRoleList;
         private static ConfigEntry<float> _compatWelcomeInterval;
 
@@ -237,6 +238,8 @@ namespace PocketRoles.Core
                 "Custom welcome text sent to joining players (empty = built-in text). \\n = line break; placeholders: {rules} {roles} {settings} {help} {version}. The mandatory mod notice line is always prepended");
             _welcomeIncludeSettings = cfg.Bind("Chat", "WelcomeIncludeSettings", false, "Append the current role settings to the welcome message (off by default: the welcome stays short, the settings summary is always available with /cmd s)");
             _compatWelcomeInterval = cfg.Bind("Chat", "CompatWelcomeInterval", 60f, new ConfigDescription("Unregistered (compat) lobby: the welcome is ONE public message for everyone, so it is sent at most once per this many seconds no matter how many players join in between (a full public lobby gets a join every few seconds; 12 welcomes a minute drove players out on 2026-09-09). 0 = every join", new AcceptableValueRange<float>(0f, 600f)));
+            _revealOnLeave = cfg.Bind("Roles", "RevealRoleOnLeave", true, "Show the host (own screen only) the role of a player who leaves during a game ('X left; they were Sheriff'). Works in registered and unregistered lobbies");
+            _revealLeaveToAll = cfg.Bind("Roles", "RevealLeaveToAll", false, "Also announce a leaving player's role to everyone (like RevealRoleOnDeath; when it happens inside a meeting the line is sent after the exile screen)");
             _revealOnDeath = cfg.Bind("Roles", "RevealRoleOnDeath", false, "Announce a player's role to everyone when they are killed or ejected ('X was Sheriff'; the vanilla role's name when there is no PocketRoles role, e.g. in an unregistered lobby)");
             _hostGhostRoleList = cfg.Bind("Roles", "HostGhostRoleList", true, "Once the host is dead, list every player's role (alive / dead) on the HOST's screen only: at the host's death, again at every meeting, plus one line per later death. Works in unregistered (compat) lobbies too (vanilla roles). Never sent to other players; /who shows it on demand");
             _compatWelcomeText = cfg.Bind("Chat", "CompatWelcomeText", "", "Unregistered (compat) lobby only: your own one-line public welcome for every joiner (empty = built-in line 'ようこそ! この部屋は普通のAmong Us(役職なし)です…'). One chat message, at most 86 characters; characters a vanilla player cannot type ([ ] < > full-width ！（） etc.) are converted or dropped automatically");
@@ -641,6 +644,10 @@ namespace PocketRoles.Core
         public static bool AdminLobbyControl { get => _permAdminLobby != null && _permAdminLobby.Value; set { if (_permAdminLobby != null) _permAdminLobby.Value = value; } }
         /// <summary>[Roles] RevealRoleOnDeath: "X was ROLE" to everyone on every kill / eject (default false).</summary>
         public static bool RevealRoleOnDeath { get => _revealOnDeath != null && _revealOnDeath.Value; set { if (_revealOnDeath != null) _revealOnDeath.Value = value; } }
+        /// <summary>[Roles] RevealRoleOnLeave (v0.5.2): the host's own screen shows "X left; they were ROLE" for a player leaving mid-game (default true).</summary>
+        public static bool RevealRoleOnLeave { get => _revealOnLeave == null || _revealOnLeave.Value; set { if (_revealOnLeave != null) _revealOnLeave.Value = value; } }
+        /// <summary>[Roles] RevealLeaveToAll (v0.5.2): that line goes to everyone as well (default false).</summary>
+        public static bool RevealLeaveToAll { get => _revealLeaveToAll != null && _revealLeaveToAll.Value; set { if (_revealLeaveToAll != null) _revealLeaveToAll.Value = value; } }
         /// <summary>[Roles] HostGhostRoleList: every player's role on the dead host's own screen (default true; host-local, also in compat lobbies).</summary>
         public static bool HostGhostRoleList { get => _hostGhostRoleList == null || _hostGhostRoleList.Value; set { if (_hostGhostRoleList != null) _hostGhostRoleList.Value = value; } }
         /// <summary>[Chat] CompatWelcomeInterval: seconds between two public welcomes in an unregistered lobby (default 60, 0 = every join).</summary>
@@ -1262,6 +1269,8 @@ namespace PocketRoles.Core
                 case "credits.show": return SetBool(_showCredits, value, "credits.show", out message);
                 case "roles.vanilla": case "vanillaroles": case "vanilla.roles": return SetBool(_vanillaRoles, value, "roles.vanilla", out message);
                 case "roles.reveal": case "reveal": case "revealdeath": case "roles.revealroleondeath": return SetBool(_revealOnDeath, value, "roles.reveal", out message);
+                case "roles.revealleave": case "revealleave": case "roles.revealroleonleave": return SetBool(_revealOnLeave, value, "roles.revealleave", out message);
+                case "roles.revealleaveall": case "revealleaveall": case "roles.revealleavetoall": return SetBool(_revealLeaveToAll, value, "roles.revealleaveall", out message);
                 case "roles.ghostlist": case "ghostlist": case "roles.hostghostrolelist": case "who": return SetBool(_hostGhostRoleList, value, "roles.ghostlist", out message);
                 case "chat.compatwelcomeinterval": case "compatwelcomeinterval": case "chat.welcomeinterval":
                 {
