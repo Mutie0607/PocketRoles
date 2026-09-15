@@ -160,10 +160,21 @@ namespace PocketRoles.Chat
                         // The reply about the NEW language must be built in that language: SetPlayerLang changes what
                         // Lang.PlayerLang returns, but the current scope was opened before the change.
                         string reply = SetPlayerLang(sender, arg1, isHost);
-                        using (Lang.Scope(Lang.PlayerLang(sender.PlayerId))) Reply(sender, reply == null ? LangStateText(sender, isHost) : reply);
+                        using (Lang.Scope(Lang.PlayerLang(sender.PlayerId)))
+                        {
+                            string langReply = reply == null ? LangStateText(sender, isHost) : reply;
+                            // v0.5.2: unregistered lobby — the translation is one-way there (their lines → the lobby language, public)
+                            if (!isHost && Registration.CompatMode && Chat.TranslationActive && Lang.PlayerLang(sender.PlayerId) != Lang.Default)
+                                langReply += " " + CompatTranslateNote();
+                            Reply(sender, langReply);
+                        }
                         return true;
                     case "time": case "timer": case "時間":
                         ReplyThrottled(sender, isHost, TimeText(isHost));
+                        return true;
+                    case "about": case "info": case "説明": case "关于":
+                        // v0.5.2 (2026-09-14 "modの説明も欲しい"): what the mod does here, in plain words
+                        ReplyThrottled(sender, isHost, AboutText(), 2);
                         return true;
                     case "guess": case "g": case "推理":
                         // An alive Assassin is never throttled (the guess itself is limited per meeting); everyone else
@@ -260,7 +271,7 @@ namespace PocketRoles.Chat
                     case "welcome": HandleWelcome(sender, arg1, RestOfLine(body, tokens[0])); return true;
                     case "test": Reply(sender, ToggleTest(arg1)); return true;
                     case "assign": Reply(sender, Assign(tokens)); return true;
-                    case "next": case "wish": case "次": case "自分": Reply(sender, MeCommand(JoinArgs(tokens, 1))); return true;
+                    case "next": case "wish": case "次": case "自分": Reply(sender, MeCommand(tokens)); return true;
                     case "end": Reply(sender, EndGame()); return true;
                     case "rehost": Reply(sender, ToggleRehost(arg1)); return true;
                     case "public": Reply(sender, PublicCommand(arg1)); return true;
@@ -337,6 +348,7 @@ namespace PocketRoles.Chat
                 case "l": case "last":
                 case "lang": case "language": case "言語":
                 case "time": case "timer": case "時間":
+                case "about": case "info": case "説明": case "关于":
                 case "guess": case "g": case "推理":
                     return true;
                 default:
@@ -511,10 +523,12 @@ namespace PocketRoles.Chat
             return sb.ToString();
         }
 
-        private static string JoinArgs(string[] tokens, int from)
+        private static string JoinArgs(string[] tokens, int from) => JoinArgs(tokens, from, tokens.Length);
+
+        private static string JoinArgs(string[] tokens, int from, int to)
         {
             var sb = new StringBuilder();
-            for (int i = from; i < tokens.Length; i++)
+            for (int i = from; i < to && i < tokens.Length; i++)
             {
                 if (sb.Length > 0) sb.Append(' ');
                 sb.Append(tokens[i]);
@@ -603,9 +617,9 @@ namespace PocketRoles.Chat
                 // Unregistered (compat) lobby, player view: no roles here and every reply is public — two short lines
                 // in plain words (2026-09-13: "コマンド", "ja|zh|en" and the like read as jargon to a public lobby).
                 sb.Append(Lang.T("help.compat.1",
-                    "チャットで打てるもの: /cmd time（部屋の残り時間） /cmd s（この部屋の設定） /cmd l（前の試合の結果）",
-                    "Type: /cmd time (time left), /cmd s (settings), /cmd l (last game)",
-                    "可以输入: /cmd time（房间剩余时间） /cmd s（本房间设置） /cmd l（上局结果）"));
+                    "チャットで打てるもの: /cmd time（部屋の残り時間） /cmd s（この部屋の設定） /cmd l（前の試合の結果） /cmd about（MODの説明）",
+                    "Type: /cmd time (time left), /cmd s (settings), /cmd l (last game), /cmd about (what the mod does)",
+                    "可以输入: /cmd time（房间剩余时间） /cmd s（本房间设置） /cmd l（上局结果） /cmd about（MOD说明）"));
                 sb.Append('\n');
                 sb.Append(Lang.T("help.compat.2",
                     "この部屋は役職なしのふつうのAmong Usです。返事はみんなに見えます",
@@ -614,7 +628,8 @@ namespace PocketRoles.Chat
                 if (Chat.TranslationActive)
                 {
                     sb.Append('\n');
-                    sb.Append(Lang.T("help.translate", "外国語のチャットは自動翻訳されます。", "Foreign-language chat is auto-translated.", "外语聊天会自动翻译。"));
+                    // v0.5.2: one-way there (no client-addressed chat): their lines reach the room translated, the room's lines stay as written
+                    sb.Append(Lang.TF("help.translate.compat", "外国語で書くと{0}に訳されて全員に見えます（{0}→外国語の翻訳はありません）。", "Foreign-language chat is translated into {0} for everyone ({0} is not translated back).", Lang.DisplayName(Lang.Default)));
                 }
                 return sb.ToString();
             }
@@ -701,9 +716,9 @@ namespace PocketRoles.Chat
                 "诊断: /diag 将开局与画面状态输出到聊天和日志（例如黑屏时）。按两次 F7 = 废村"));
             sb.Append('\n');
             sb.Append(Lang.T("help.host.me",
-                "自分の役: /next impostor | crew | auto | <本体の役職名> で次の 1 試合の自分の役を指定（テストモード不要、登録オフでも可。設定タブ「ホスト」の「次の自分」ボタンでも）",
-                "My role: /next impostor | crew | auto | <vanilla role> fixes your own role for the next game (no test mode, unregistered lobby OK; also the ホスト page button)",
-                "自己的职业: /next impostor | crew | auto | <原版职业名> 指定下一局自己的职业（无需测试模式，未注册房间也可；设置页“主持”的按钮亦可）"));
+                "次の試合の役: /next impostor | crew | auto | <本体の役職名> で自分、/next <名前|#番号> impostor | crew | auto で他の人（テストモード不要、登録オフでも可。設定タブ「ホスト」のボタンでも）",
+                "Next game: /next impostor | crew | auto | <vanilla role> for yourself, /next <name|#id> impostor | crew | auto for another player (no test mode, unregistered lobby OK; ホスト page buttons too)",
+                "下一局的职业: /next impostor | crew | auto | <原版职业名> 指定自己，/next <名字|#编号> impostor | crew | auto 指定别人（无需测试模式，未注册房间也可；设置页“主持”的按钮亦可）"));
             sb.Append('\n');
             sb.Append(Lang.T("help.host.9",
                 "観戦: 死亡後は全員の役職一覧が自分の画面だけに出ます（会議ごとに再表示）。/who で再表示、/opt ghostlist off で停止",
@@ -736,6 +751,21 @@ namespace PocketRoles.Chat
         // ------------------------------------------------------------------ /lang
 
         /// <summary>Current language of the sender (and the lobby default for the host).</summary>
+        /// <summary>v0.5.2: the unregistered lobby's translation is one-way (a foreign player's lines → the lobby language, public; nothing back).</summary>
+        internal static string CompatTranslateNote()
+        {
+            return Lang.TF("translate.compat.oneway", "あなたの発言は{0}に訳されて全員に流れます。{0}のチャットはあなた向けには訳されません。", "Your messages are translated into {0} for everyone; {0} chat is not translated for you.", Lang.DisplayName(Lang.Default));
+        }
+
+        /// <summary>/cmd about (v0.5.2): what the mod does in this lobby, in plain words (the host's approved text for the unregistered lobby).</summary>
+        private static string AboutText()
+        {
+            if (Registration.CompatMode)
+                return Lang.T("about.compat.1", "この部屋(役職なし)でMODがしていること: 入室時の挨拶と案内, 外国語チャットの自動翻訳, 試合後の結果一覧(途中で抜けた人も含む), 部屋の時間切れ防止", "What the mod does in this room (no roles): welcome and guide lines, auto-translation of foreign-language chat, the post-game result list (leavers included), keeping the room from timing out", "本房间(无职业)里MOD做的事: 入房问候和指引, 外语聊天自动翻译, 赛后结果一览(包括中途退出的人), 防止房间超时")
+                       + "\n" + Lang.T("about.compat.2", "ゲームの中身は普通のAmong Usで, 役職や特殊ルールはありません", "The game itself is normal Among Us: no roles, no special rules", "游戏本身就是普通的Among Us, 没有职业和特殊规则");
+            return Lang.T("about.roles", "PocketRoles: ホストだけが入れる役職MOD。参加者は何も入れずに遊べます。役職の一覧は /cmd r、自分の役職は /cmd n", "PocketRoles: a host-only role mod; players install nothing. /cmd r lists the roles, /cmd n shows yours", "PocketRoles: 只需主持安装的职业MOD，玩家无需安装。/cmd r 查看职业列表，/cmd n 查看自己的职业");
+        }
+
         private static string LangStateText(PlayerControl sender, bool isHost)
         {
             string mine = Lang.DisplayName(Lang.PlayerLang(sender.PlayerId));
@@ -1165,14 +1195,60 @@ namespace PocketRoles.Chat
             return s;
         }
 
-        /// <summary>/me [impostor | crew | auto | vanilla role]: the host's own role for the next game (v0.5.1, HostWish).</summary>
-        private static string MeCommand(string arg)
+        /// <summary>
+        /// /next [impostor | crew | auto | vanilla role]: the host's own role for the next game (v0.5.1, HostWish).
+        /// /next &lt;name|#id&gt; impostor | crew | auto (or role first): another player's side (v0.5.2, Designate);
+        /// /next reset clears everything; /next &lt;name&gt; shows that player's designation.
+        /// </summary>
+        private static string MeCommand(string[] tokens)
         {
-            if (string.IsNullOrWhiteSpace(arg)) return HostWish.Describe();
-            if (!HostWish.TryParse(arg, out var kind, out var vanilla))
-                return Lang.T("me.usage", "使い方: /next impostor | crew | auto | <本体の役職名>（例: /next shapeshifter）。/next だけで現在の指定", "Usage: /next impostor | crew | auto | <vanilla role> (e.g. /next shapeshifter); /next alone shows the current wish");
-            HostWish.Set(kind, vanilla, out var msg);
-            return msg ?? "";
+            if (tokens.Length < 2) return HostWish.Describe() + "\n" + Designate.Describe();
+            string whole = JoinArgs(tokens, 1);
+            string first = tokens[1].ToLowerInvariant();
+            if (tokens.Length == 2 && (first == "reset" || first == "全解除" || first == "全部解除"))
+            {
+                HostWish.Set(HostWish.Kind.None, AmongUs.GameOptions.RoleTypes.Crewmate, out _);
+                Designate.Reset();
+                return Lang.T("next.reset", "次の試合の指定を全部解除しました（自分の分も）。", "Every next-game designation cleared (yours too).");
+            }
+            // the whole argument is a role word: the host's own wish, exactly as in v0.5.1 ("/next shape shifter" included)
+            if (HostWish.TryParse(whole, out var kind, out var vanilla))
+            {
+                HostWish.Set(kind, vanilla, out var msg);
+                return msg ?? "";
+            }
+            string usage = Lang.T("me.usage",
+                "使い方: /next impostor | crew | auto | <本体の役職名>（自分） /next <名前|#番号> impostor | crew | auto（他の人） /next reset（全部解除）。/next だけで現在の指定",
+                "Usage: /next impostor | crew | auto | <vanilla role> (yourself), /next <name|#id> impostor | crew | auto (another player), /next reset (clear all); /next alone shows the state");
+            if (tokens.Length >= 3)
+            {
+                string name;
+                if (HostWish.TryParse(tokens[tokens.Length - 1], out kind, out vanilla)) name = JoinArgs(tokens, 1, tokens.Length - 1);   // name first (like /assign)
+                else if (HostWish.TryParse(tokens[1], out kind, out vanilla)) name = JoinArgs(tokens, 2);                                // role first
+                else return usage;
+                string ln = name.ToLowerInvariant();
+                if (ln == "me" || ln == "自分" || ln == "私" || ln == "俺" || ln == "host" || ln == "ホスト")
+                {
+                    HostWish.Set(kind, vanilla, out var mine);
+                    return mine ?? "";
+                }
+                var pc = Permissions.FindPlayer(name);
+                if (pc == null) return Lang.TF("next.noplayer", "「{0}」という参加者が見つかりません（名前の一部か、#番号で指定できます）。", "No player matches \"{0}\" (part of the name or #id works).", name);
+                if (pc.AmOwner)
+                {
+                    HostWish.Set(kind, vanilla, out var mine);
+                    return mine ?? "";
+                }
+                if (kind == HostWish.Kind.Vanilla)
+                    return Lang.T("next.onlyside", "他の人に指定できるのは impostor か crew だけです（本体の役職名は自分だけ: /next shapeshifter）。", "Other players can only be designated impostor or crew (a vanilla role name is for yourself only: /next shapeshifter).");
+                if (kind == HostWish.Kind.None) return Designate.Remove(pc.PlayerId);
+                Designate.Set(pc, kind == HostWish.Kind.Impostor ? Designate.Side.Impostor : Designate.Side.Crewmate, out var set);
+                return set ?? "";
+            }
+            // "/next <name>": that player's designation
+            var one = Permissions.FindPlayer(whole);
+            if (one != null && !one.AmOwner) return Designate.DescribeOne(one.PlayerId);
+            return usage;
         }
 
         private static string AssignmentsText()

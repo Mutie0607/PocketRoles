@@ -546,7 +546,9 @@ namespace PocketRoles.Chat
                         "Guide lines will be in {0} (the player wrote in {0}).",
                         Lang.DisplayName(detected));
                 }
-                Chat.To(job.PlayerId, Chat.Title, room + "\n" + notice);
+                string oneway;
+                using (Lang.Scope(detected)) oneway = Commands.CompatTranslateNote();   // v0.5.2: their lines are translated for the room, the room's are not for them
+                Chat.To(job.PlayerId, Chat.Title, room + "\n" + notice + " " + oneway);
                 return;
             }
             using (Lang.Scope(detected)) Chat.To(job.PlayerId, Chat.Title, notice);
@@ -580,7 +582,14 @@ namespace PocketRoles.Chat
         /// </summary>
         private const string ChineseOnly =
             "你您她它咱们們这麼么吗嗎呢吧啊哦嗯哈呀哇喔啦嘛唉嘿噢嗨哎很哪怎找卧杀钥赢输队击帮别处让说谁个时见发气场红员报电话对开关头边儿现实为从书读语词马鸟鱼门问间东车长经样该应觉识认给还"
-            + "谢请过两议紧骗错戏确坏爱欢线结检张讨论蓝绿黑";
+            + "谢请过两议紧骗错戏确坏爱欢线结检张讨论蓝绿黑"
+            // 2026-09-15 (a public lobby's 最终导航室 was not translated): more PRC simplified forms without a Japanese
+            // counterpart at the same code point — 终/終, 导/導, 术/術, 图/図, 层/層, 领/領, 岛/島, 极/極, 动/動, 达/達,
+            // 观/観, 视/視, 单/単, 卫/衛, 战/戦, 阳/陽, 阴/陰, 铁/鉄, 铜/銅, 锁/鎖, 闭/閉, 闪/閃, 阵/陣, 陆/陸, 险/険,
+            // 验/験, 顶/頂, 顺/順, 须/須, 项/項, 预/預, 颜/顔, 飞/飛, 鸡/鶏, 龙/竜, 齐/斉, 齿/歯, 龄/齢, 轮/輪, 转/転,
+            // 轻/軽, 软/軟, 较/較, 载/載, 运/運, 连/連, 进/進, 远/遠, 违/違, 适/適, 选/選, 递/逓, 逻/邏, 遗/遺, 变/変,
+            // 疗/療, 讯/訊, 仓/倉, 怀/懐, 谎/謊, 监/監, 摄/撮, 频/頻, 网/網, 举/挙, 备/備, 樱/桜 (无, 机, 楼, 迅, 玫 left out: JIS)
+            + "终导术图层领岛极动达观视单卫战阳阴铁铜锁闭闪阵陆险验顶顺须项预颜飞鸡龙齐齿龄轮转轻软较载运连进远违适选递逻遗变疗讯仓怀谎监摄频网举备樱";
 
         internal static Script Classify(string s)
         {

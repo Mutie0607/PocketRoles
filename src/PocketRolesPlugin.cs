@@ -272,8 +272,8 @@ namespace PocketRoles
                     tag += " <color=#ff4040>(version mismatch)</color>";
                 else if (Rpc.SafeMode)
                     tag += " <color=#ffff40>(unregistered)</color>";
-                if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost && Game.HostWish.IsSet)
-                    tag += " <color=#ff80ff>" + Game.HostWish.Tag() + "</color>";   // v0.5.1: next-game role wish
+                if (AmongUsClient.Instance != null && AmongUsClient.Instance.AmHost && (Game.HostWish.IsSet || Game.Designate.IsSet))
+                    tag += " <color=#ff80ff>" + (Game.HostWish.Tag() + " " + Game.Designate.Tag()).Trim() + "</color>";   // v0.5.1: next-game role wish; v0.5.2: designated players
                 string region = Region();
                 if (!string.IsNullOrEmpty(region))
                     tag += " <color=#c0c0c0>· " + region + "</color>";

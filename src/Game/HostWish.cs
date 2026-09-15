@@ -292,24 +292,39 @@ namespace PocketRoles.Game
                     // (both are that player's / my first SetRole; role counts unchanged; the OnEnd fallback covers a game without crew specials)
                     var me = Find(_me);
                     if (me == null || me.roleAssigned) return false;
+                    // v0.5.2 (Designate): a designated impostor takes my held impostor role first; a crew designee never gets it
+                    var taker = Designate.Taker(p) ?? pc;
+                    if (ReferenceEquals(taker, pc) && Designate.IsCrewDesignee(p)) return false;
                     _partner = p;
                     _satisfied = true;
                     RoleTypes held = _pendingRole; bool heldOverride = _pendingOverride; _hasPending = false;
                     Send(me, role, canOverride);
-                    Send(pc, held, heldOverride);
-                    RoleAssignment.RestoredRedirected(_me, p);
-                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me; my held {held} -> #{p}");
+                    Send(taker, held, heldOverride);
+                    RoleAssignment.RestoredRedirected(_me, taker.PlayerId);
+                    if (!ReferenceEquals(taker, pc)) Designate.MarkTaken(taker.PlayerId, p);
+                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me; my held {held} -> #{taker.PlayerId}{(ReferenceEquals(taker, pc) ? "" : " (designated impostor)")}");
                     return true;
                 }
                 if (!_satisfied && Wish != Kind.Crewmate && Satisfies(role))
                 {
                     var me = Find(_me);
                     if (me == null || me.roleAssigned) return false;
+                    // v0.5.2 (Designate): a held impostor role (vanilla crew-role wish) goes to a designated impostor first, never to a crew designee
+                    PlayerControl pendingTo = pc;
+                    if (_hasPending && RoleAssignment.IsImpostorRole(_pendingRole))
+                    {
+                        pendingTo = Designate.Taker(p) ?? pc;
+                        if (ReferenceEquals(pendingTo, pc) && Designate.IsCrewDesignee(p)) return false;
+                    }
                     _partner = p;
                     _satisfied = true;
                     bool gavePending = _hasPending;
                     Send(me, role, canOverride);
-                    if (_hasPending) { Send(pc, _pendingRole, _pendingOverride); _hasPending = false; }
+                    if (_hasPending)
+                    {
+                        Send(pendingTo, _pendingRole, _pendingOverride); _hasPending = false;
+                        if (!ReferenceEquals(pendingTo, pc)) Designate.MarkTaken(pendingTo.PlayerId, p);
+                    }
                     PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me{(gavePending ? "; my held role -> partner" : "")}");
                     return true;
                 }
@@ -337,13 +352,15 @@ namespace PocketRoles.Game
                     if (Wish == Kind.Crewmate)
                     {
                         // vanilla is done: every player still without a role is a plain crewmate — one of them takes my impostor role
-                        taker = PickPartner();
+                        // (v0.5.2: a designated impostor first)
+                        taker = Designate.Taker(255) ?? PickPartner();
                         if (taker != null)
                         {
                             _partner = taker.PlayerId;
                             _satisfied = true;
                             RoleAssignment.RestoredRedirected(_me, _partner);
                             Send(taker, _pendingRole, _pendingOverride);
+                            Designate.MarkTaken(_partner, _me);
                             PocketRolesPlugin.Logger.LogInfo($"HostWish: my held {_pendingRole} -> #{_partner} {Core.Game.NameOf(_partner)} (I stay crew)");
                         }
                         else PocketRolesPlugin.Logger.LogWarning("HostWish: nobody can take my impostor role");
@@ -385,14 +402,14 @@ namespace PocketRoles.Game
             }
         }
 
-        private static void Send(PlayerControl to, RoleTypes role, bool canOverride)
+        internal static void Send(PlayerControl to, RoleTypes role, bool canOverride)
         {
             Redirecting = true;
             try { to.RpcSetRole(role, canOverride); }
             finally { Redirecting = false; }
         }
 
-        private static PlayerControl Find(byte id)
+        internal static PlayerControl Find(byte id)
         {
             if (id == 255) return null;
             foreach (var pc in Core.Game.AllPlayers())
@@ -409,6 +426,7 @@ namespace PocketRoles.Game
                 if (pc == null || pc.Data == null || pc.Data.Disconnected) continue;
                 if (pc.PlayerId == _me || pc.roleAssigned) continue;
                 if (Core.Game.GameMasterActive && Core.Game.IsHost(pc.PlayerId)) continue;
+                if (Designate.IsCrewDesignee(pc.PlayerId)) continue;   // v0.5.2
                 list.Add(pc);
             }
             if (list.Count == 0) return null;

@@ -88,6 +88,9 @@ namespace PocketRoles.Game
         /// <summary>True between the RoleManager.SelectRoles prefix and postfix: every RpcSetRole in that window is vanilla's own.</summary>
         internal static bool VanillaSelecting;
         private static int _selectImpostorsSeen, _selectTarget;
+        /// <summary>v0.5.2 (Designate): the impostor count this selection should reach, and how many impostor roles vanilla has sent so far.</summary>
+        internal static int SelectTarget => _selectTarget;
+        internal static int SelectImpostorsSeen => _selectImpostorsSeen;
         private static readonly List<byte> _selectRestored = new List<byte>();
 
         /// <summary>HostWish moved a converted Impostor from one player to another: the notice names the player who really holds it.</summary>
@@ -112,8 +115,9 @@ namespace PocketRoles.Game
                 int connected = 0;
                 foreach (var pc in Core.Game.AllPlayers())
                     if (pc != null && pc.Data != null && !pc.Data.Disconnected) connected++;
-                _selectTarget = connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
+                _selectTarget = ImpostorSlots(connected);
                 HostWish.OnBegin();
+                Designate.OnBegin();   // v0.5.2: after HostWish (reads the host's wish)
                 Kills.ResetHostShield();   // v0.5.2
                 GuardianLimit.Reset();
             }
@@ -159,6 +163,7 @@ namespace PocketRoles.Game
             if (!VanillaSelecting) return;
             VanillaSelecting = false;
             HostWish.OnEnd();   // releases a held role, tells the host, consumes the wish
+            Designate.OnEnd();  // v0.5.2: after HostWish (its crew-wish handoff asks Designate.Taker)
             if (_selectRestored.Count == 0) return;
             try
             {
@@ -197,6 +202,7 @@ namespace PocketRoles.Game
                 int connected = 0, impostors = 0;
                 var candidates = new List<PlayerControl>();
                 var specials = new List<PlayerControl>();   // vanilla crew specials ([Roles] VanillaRoles = on): last resort only
+                var reluctant = new List<PlayerControl>();  // v0.5.2: players the host designated as crew (Designate): after everybody else
                 foreach (var pc in players)
                 {
                     if (pc == null || pc.Data == null || pc.Data.Disconnected) continue;
@@ -216,6 +222,7 @@ namespace PocketRoles.Game
                         if (Core.Game.RoleOf(id) != CustomRole.None) continue;
                     }
                     if (Core.Game.GameMasterActive && Core.Game.IsHost(id)) continue;
+                    if (Designate.FillAvoid.Contains(id)) { reluctant.Add(pc); continue; }
                     // [Roles] VanillaRoles = on: a vanilla Scientist / Engineer / … keeps its role while a plain crewmate is available
                     if (!compat && v != RoleTypes.Crewmate) { specials.Add(pc); continue; }
                     candidates.Add(pc);
@@ -224,7 +231,7 @@ namespace PocketRoles.Game
                 if (target < 1) target = 1;   // the old safety net: never an impostor-less table
                 int missing = target - impostors;
                 if (missing <= 0) return;
-                if (candidates.Count == 0 && specials.Count == 0)
+                if (candidates.Count == 0 && specials.Count == 0 && reluctant.Count == 0)
                 {
                     PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: the role table has {impostors} of {target} impostor(s) ({connected} players) and nobody can be promoted");
                     return;
@@ -232,12 +239,24 @@ namespace PocketRoles.Game
                 var rnd = new System.Random();
                 int promoted = 0;
                 var names = new StringBuilder();
-                while (missing > 0 && (candidates.Count > 0 || specials.Count > 0))
+                while (missing > 0 && (candidates.Count > 0 || specials.Count > 0 || reluctant.Count > 0))
                 {
-                    var pool = candidates.Count > 0 ? candidates : specials;
-                    int i = rnd.Next(pool.Count);
-                    var pick = pool[i];
-                    pool.RemoveAt(i);
+                    // v0.5.2: a designated impostor (Designate) vanilla never picked is promoted first
+                    List<PlayerControl> pool = null;
+                    PlayerControl pick = null;
+                    foreach (byte want in Designate.FillPrefer)
+                    {
+                        pool = candidates; pick = candidates.Find(x => x.PlayerId == want);
+                        if (pick == null) { pool = specials; pick = specials.Find(x => x.PlayerId == want); }
+                        if (pick != null) break;
+                    }
+                    bool designated = pick != null;
+                    if (pick == null)
+                    {
+                        pool = candidates.Count > 0 ? candidates : specials.Count > 0 ? specials : reluctant;
+                        pick = pool[rnd.Next(pool.Count)];
+                    }
+                    pool.Remove(pick);
                     if (compat)
                     {
                         // AssigningRoles is off: the plain vanilla broadcast (+ the host's CoSetRole); roleAssigned becomes true,
@@ -255,7 +274,7 @@ namespace PocketRoles.Game
                     missing--;
                     if (names.Length > 0) names.Append(", ");
                     names.Append(Core.Game.NameOf(pick.PlayerId));
-                    PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: the role table had {impostors} of {target} impostor(s) ({connected} players) — promoted #{pick.PlayerId} {Core.Game.NameOf(pick.PlayerId)} to Impostor ({(compat ? "vanilla broadcast" : "host table")}{(ReferenceEquals(pool, specials) ? ", was a vanilla crew special" : "")})");
+                    PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: the role table had {impostors} of {target} impostor(s) ({connected} players) — promoted #{pick.PlayerId} {Core.Game.NameOf(pick.PlayerId)} to Impostor ({(compat ? "vanilla broadcast" : "host table")}{(ReferenceEquals(pool, specials) ? ", was a vanilla crew special" : "")}{(designated ? ", designated" : "")}{(ReferenceEquals(pool, reluctant) ? ", designated crew (last resort)" : "")})");
                 }
                 if (missing > 0)
                     PocketRolesPlugin.Logger.LogWarning($"RoleAssignment: still {missing} impostor(s) short after promoting {promoted} (no candidates left)");
@@ -274,7 +293,7 @@ namespace PocketRoles.Game
         /// The impostor count this game should have: the vanilla clamp of the lobby setting (GetAdjustedNumImpostors:
         /// below 7 players 1, below 9 players 2; test mode: the TestMode patch value). -1 when unavailable.
         /// </summary>
-        private static int ExpectedImpostors(int playerCount)
+        internal static int ExpectedImpostors(int playerCount)
         {
             try
             {
@@ -288,6 +307,9 @@ namespace PocketRoles.Game
                 return -1;
             }
         }
+
+        /// <summary>The impostor slots a selection with <paramref name="connected"/> players has (0 below 3 players, else at least 1): what BeginVanillaSelection targets and Designate counts against.</summary>
+        internal static int ImpostorSlots(int connected) => connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
 
         /// <summary>Called from the RoleManager.SelectRoles postfix once every vanilla role has been recorded.</summary>
         public static void DispatchInitialRoles()
@@ -843,6 +865,8 @@ namespace PocketRoles.Game
                 if (!HostWish.Redirecting && RoleAssignment.TakeImpostorDefault(__instance, roleType)) roleType = RoleTypes.Impostor;
                 // v0.5.1: "next game I am …" — swap recipients inside vanilla's own SelectRoles (HostWish)
                 if (RoleAssignment.VanillaSelecting && HostWish.Intercept(__instance, roleType, canOverrideRole)) return false;
+                // v0.5.2: "next game, <player> is …" — the designated players (Designate), after the host's own wish
+                if (RoleAssignment.VanillaSelecting && Designate.Intercept(__instance, roleType, canOverrideRole)) return false;
 
                 if (Core.Game.AssigningRoles)
                 {

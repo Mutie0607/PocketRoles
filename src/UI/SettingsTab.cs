@@ -999,6 +999,14 @@ namespace PocketRoles.UI
             Toast(m);
         }
 
+        /// <summary>v0.5.2: 次のインポ — なし → the connected players in id order → なし (Designate; several players / crew via /next in chat).</summary>
+        private static void HostDesignateCycle()
+        {
+            string m = Game.Designate.CycleFirst();
+            PocketRolesPlugin.Logger.LogInfo("SettingsTab: host button designate -> " + Game.Designate.Tag());
+            Toast(m);
+        }
+
         private static string TestLabel()
         {
             return Lang.T("ui.host.test", "テストモード", "Test mode", "测试模式") + ": "
@@ -1030,6 +1038,7 @@ namespace PocketRoles.UI
                 new HostAction { Label = TestLabel, Enabled = () => true, Run = HostToggleTest },
                 new HostAction { Label = () => Lang.T("ui.host.show", "設定を表示", "Show settings", "显示设置"), Enabled = () => true, Run = HostShow },
                 new HostAction { Label = () => Game.HostWish.ButtonLabel(), Enabled = () => Core.Game.IsHostActive && !Core.Game.GameMasterActive && !Options.GameMaster, Run = HostWishCycle },
+                new HostAction { Label = () => Game.Designate.ButtonLabel(), Enabled = () => Core.Game.IsHostActive, Run = HostDesignateCycle },   // v0.5.2
             };
             const int perRow = 3;
             int mask = MaskLayer;

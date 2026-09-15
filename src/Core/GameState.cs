@@ -292,6 +292,7 @@ namespace PocketRoles.Core
                 // the "next game" the host asked for; leaving the lobby (disconnect, a different lobby) drops it.
                 if (!gameEnd && !lobbyStart && !sameLobby) ForcedRoles.Clear();
                 if (!gameEnd && !lobbyStart && !sameLobby) PocketRoles.Game.HostWish.Clear();   // v0.5.1: the next-game wish belongs to this lobby
+                if (!gameEnd && !lobbyStart && !sameLobby) PocketRoles.Game.Designate.Clear(); // v0.5.2: same for the designated players
                 if (disconnected)
                 {
                     _lastGameId = int.MinValue;
