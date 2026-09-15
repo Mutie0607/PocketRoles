@@ -66,7 +66,6 @@ namespace PocketRoles.Core
         private static ConfigEntry<int> _maxHostPing;
         private static ConfigEntry<int> _afkKickMinutes;
         // [Compat] unregistered-compatible mode (RegisterAsModdedLobby=false)
-        private static ConfigEntry<bool> _compatAllowRisky;
 
         private static ConfigEntry<string> _creditAuthor;
         private static ConfigEntry<string> _creditRepoUrl;
@@ -268,9 +267,6 @@ namespace PocketRoles.Core
             _hostShieldKey = cfg.Bind("Host", "ShieldKey", "", "Phrase that enables [Host] ShieldKills (only its hash is in the mod)");
             _hostShieldKey.SettingChanged += (_, __) => _hostShieldUnlocked = null;   // /opt, /reload, /restore, file edits
             _vanGaUses = cfg.Bind("Vanilla", "GuardianAngelUses", 0, new ConfigDescription("Registered lobby only: how many times each Guardian Angel may protect per game (0 = vanilla, unlimited). Unregistered lobby: raise the cooldown instead (/vset gacd 600)", new AcceptableValueRange<int>(0, 9)));
-            _compatAllowRisky = cfg.Bind("Compat", "AllowRiskyRoles", false,
-                "Unregistered-compatible mode (RegisterAsModdedLobby=false, the lobby shows in the vanilla public list): also assign roles whose kills come from a non-Impostor (Sheriff, Jackal). " +
-                "Without mod-lobby registration (host authority) the official server may reject those kills. Off = Sheriff and Jackal are skipped in compat mode (/opt compat.risky on|off)");
 
             _creditAuthor = cfg.Bind("Credits", "Author", "もみじちゃ", "Name shown in the lobby credits line (empty = none)");
             _creditRepoUrl = cfg.Bind("Credits", "RepoUrl", "https://github.com/wakayamachannel/PocketRoles", "Repository / homepage URL shown in the credits line (empty = none)");
@@ -487,8 +483,6 @@ namespace PocketRoles.Core
                 return sb.ToString();
             }
         }
-        /// <summary>[Compat] AllowRiskyRoles: assign Sheriff / Jackal even in the unregistered compat mode (default off).</summary>
-        public static bool AllowRiskyRoles { get => _compatAllowRisky != null && _compatAllowRisky.Value; set { if (_compatAllowRisky != null) _compatAllowRisky.Value = value; } }
 
         public static string CreditAuthor { get => _creditAuthor == null ? "" : (_creditAuthor.Value ?? ""); set { if (_creditAuthor != null) _creditAuthor.Value = value ?? ""; } }
         public static string CreditRepoUrl { get => _creditRepoUrl == null ? "" : (_creditRepoUrl.Value ?? ""); set { if (_creditRepoUrl != null) _creditRepoUrl.Value = value ?? ""; } }

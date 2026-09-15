@@ -402,7 +402,7 @@ namespace PocketRoles.Game
         {
             try
             {
-                if (!Registration.CompatMode || Options.AllowRiskyRoles) return;
+                if (!Registration.CompatMode) return;
                 var skipped = new List<string>();
                 foreach (var r in Roles.All)
                 {

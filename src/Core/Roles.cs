@@ -321,7 +321,6 @@ namespace PocketRoles.Core
         {
             if (r == CustomRole.None) return false;
             if (!Info(r).CompatRisky) return false;
-            if (Options.AllowRiskyRoles) return false;
             try { return Net.Registration.CompatMode; }
             catch (Exception) { return false; }
         }

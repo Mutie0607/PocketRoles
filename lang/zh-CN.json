@@ -97,7 +97,7 @@
   "cmd.on": "开",
   "cmd.opt.fail": "设置失败：",
   "cmd.opt.register": "（下次创建房间时生效。关闭违反 Innersloth 的模组政策）",
-  "cmd.opt.usage2": "/opt <键> <值>  键: <职业>.count|chance 及各职业的设置（/cmd r <职业> 可查看）\nroles.reveal|ghostlist|vanilla, madmate.known, lang, welcome, roleinfo, register, kick\nlobby.autorehost|autopublic|autopublicdelay|rehostmax|maxping|afkkick|autoregion|dleks\nlobby.autostart|autostartplayers|autostartcountdown|timermode|timerwarnat|extenddelay\nchat.welcometext|welcomesettings|welcomeall|compatwelcome|compatwelcomeinterval|rulesmode|rulestext\nchat.playercommands|allcommands, perm.adminsettings|adminlobby|modkick|vipmarker, compat.risky\ntranslate.*, vanilla.ranges|clampunreg|killmin|killmax|votemin|votemax|taskmax, gm, hotkeys.*\ncos.enabled|music|musicfile|musicvolume|lobbypaint|dropship|menubg|cursor, credits.*, guide.overlay|code|autoreg",
+  "cmd.opt.usage2": "/opt <键> <值>  键: <职业>.count|chance 及各职业的设置（/cmd r <职业> 可查看）\nroles.reveal|ghostlist|vanilla, madmate.known, lang, welcome, roleinfo, register, kick\nlobby.autorehost|autopublic|autopublicdelay|rehostmax|maxping|afkkick|autoregion|dleks\nlobby.autostart|autostartplayers|autostartcountdown|timermode|timerwarnat|extenddelay\nchat.welcometext|welcomesettings|welcomeall|compatwelcome|compatwelcomeinterval|rulesmode|rulestext\nchat.playercommands|allcommands, perm.adminsettings|adminlobby|modkick|vipmarker\ntranslate.*, vanilla.ranges|clampunreg|killmin|killmax|votemin|votemax|taskmax, gm, hotkeys.*\ncos.enabled|music|musicfile|musicvolume|lobbypaint|dropship|menubg|cursor, credits.*, guide.overlay|code|autoreg",
   "cmd.perm.add.usage": "用法: /{0} add <名字|编号|好友代码>",
   "cmd.perm.admin.state": "管理员可更改设置：{0}（/opt perm.adminsettings on|off）",
   "cmd.perm.adminoff": "（管理员更改设置已关闭）",
