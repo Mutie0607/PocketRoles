@@ -1059,8 +1059,6 @@ namespace PocketRoles.Core
                 .Tip("自動公開までに待つ秒数。", "Seconds to wait before making the lobby public.", "自动公开前等待的秒数。"));
             _descriptors.Add(Int("lobby.rehostmax", lJa, lEn, "再ホスト最大回数", "Re-host max attempts", _rehostMaxAttempts, 1, 10, 1)
                 .Tip("自動再ホストを連続で試す最大回数。", "Maximum consecutive automatic re-host attempts.", "自动重建房间的最大连续尝试次数。"));
-            _descriptors.Add(Bool("compat.risky", lJa, lEn, "互換モード: シェリフ/ジャッカル許可", "Compat: allow Sheriff/Jackal", _compatAllowRisky)
-                .Tip("登録オフ（互換モード）の部屋でもシェリフとジャッカルを配役します。ホスト権限がないためサーバーにキルを拒否されることがあります。", "Also assigns Sheriff and Jackal in an unregistered (compat mode) lobby. Without host authority the server may reject their kills.", "在未注册（兼容模式）房间中也分配警长和豺狼。没有房主权限时服务器可能拒绝其击杀。"));
             _descriptors.Add(Int("lobby.maxping", lJa, lEn, "高PINGなら部屋を作り直す(ms)", "Re-host when ping above (ms)", _maxHostPing, 0, 300, 10)
                 .Tip("部屋を作った直後5秒間PINGがこの値(ms)を超え、まだ自分しかいなければ自動で部屋を作り直します（最大3回、0 = しない）。", "Right after creating the lobby, if the ping stays above this (ms) for 5 s while you are alone, the lobby is re-created automatically (up to 3 times; 0 = off).", "创建房间后 5 秒内延迟一直高于此值(ms)且房间里只有自己时，自动重新创建房间（最多 3 次，0 = 关闭）。"));
             _descriptors.Add(Int("lobby.afkkick", lJa, lEn, "AFKキック(分, 0=なし)", "AFK kick (min, 0 = off)", _afkKickMinutes, 0, 30, 1)
@@ -1303,7 +1301,6 @@ namespace PocketRoles.Core
                 case "lobby.autopublicdelay": case "autopublicdelay": return SetInt(_autoPublicDelay, value, 0, 60, "lobby.autopublicdelay", out message);
                 case "lobby.rehostmax": case "lobby.rehostmaxattempts": case "rehostmax": return SetInt(_rehostMaxAttempts, value, 1, 10, "lobby.rehostmax", out message);
                 case "lobby.maxping": case "lobby.maxhostping": case "maxping": case "maxhostping": return SetInt(_maxHostPing, value, 0, 300, "lobby.maxping", out message);
-                case "compat.risky": case "compat.allowrisky": case "compat.allowriskyroles": case "risky": return SetBool(_compatAllowRisky, value, "compat.risky", out message);
                 case "chat.welcometext": case "welcometext": return SetString(_welcomeText, value, "chat.welcometext", out message);
                 case "chat.compatwelcome": case "compatwelcome": case "chat.compatwelcometext": return SetString(_compatWelcomeText, value, "chat.compatwelcome", out message);
                 case "chat.welcomesettings": case "welcomesettings": return SetBool(_welcomeIncludeSettings, value, "chat.welcomesettings", out message);

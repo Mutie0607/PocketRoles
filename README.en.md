@@ -802,7 +802,6 @@ A way to run the lobby together with friends, managed through four text files in
 | `roles.ghostlist` (`ghostlist`) | on / off | `[Roles] HostGhostRoleList` (role list on the dead host's own screen; default on; v0.4.6) |
 | `roles.reveal` (`reveal`) | on / off | `[Roles] RevealRoleOnDeath` (announce a killed / ejected player's role to everyone; the vanilla role name in a lobby without roles; default off; v0.4.4) |
 | `roles.vanilla` (`vanillaroles`) | on / off | `[Roles] VanillaRoles` (also hand out the vanilla special roles as set in the vanilla role settings; default off) |
-| `compat.risky` (`risky`) | on / off | `[Compat] AllowRiskyRoles` (also assign Sheriff and Jackal in an unregistered lobby; the server may reject their kills; default off) |
 | `lobby.autostartcountdown` | 1–30 | `[Lobby] AutoStartCountdown` |
 | `lobby.timermode` | extend / haison / notify | `[Lobby] TimerMode` |
 | `lobby.timerwarnat` | 30–300 | `[Lobby] TimerWarnAt` |

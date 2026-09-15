@@ -806,7 +806,6 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `roles.ghostlist`（`ghostlist`） | on / off | `[Roles] HostGhostRoleList`（死亡后的职业一览，仅房主屏幕。默认 on。v0.4.6） |
 | `roles.reveal`（`reveal`） | on / off | `[Roles] RevealRoleOnDeath`（向所有人公布被击杀/放逐玩家的职业。无职业房间显示原版职业名。默认 off。v0.4.4） |
 | `roles.vanilla`（`vanillaroles`） | on / off | `[Roles] VanillaRoles`（同时按原版设置分配原版特殊职业。默认 off） |
-| `compat.risky`（`risky`） | on / off | `[Compat] AllowRiskyRoles`（未注册房间也分配警长和豺狼。服务器可能拒绝其击杀。默认 off） |
 | `lobby.autostartcountdown` | 1〜30 | `[Lobby] AutoStartCountdown` |
 | `lobby.timermode` | extend / haison / notify | `[Lobby] TimerMode` |
 | `lobby.timerwarnat` | 30〜300 | `[Lobby] TimerWarnAt` |

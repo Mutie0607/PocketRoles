@@ -805,7 +805,6 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `roles.ghostlist`（`ghostlist`） | on / off | `[Roles] HostGhostRoleList`（死亡後の役職一覧をホストの画面だけに出す。既定 on。v0.4.6） |
 | `roles.reveal`（`reveal`） | on / off | `[Roles] RevealRoleOnDeath`（キル・追放された人の役職を全員に知らせる。役職なしの部屋では本体の役職名。既定 off。v0.4.4） |
 | `roles.vanilla`（`vanillaroles`） | on / off | `[Roles] VanillaRoles`（本体の特殊役職も本体の設定どおりに配る。既定 off） |
-| `compat.risky`（`risky`） | on / off | `[Compat] AllowRiskyRoles`（登録オフの部屋でもシェリフ・ジャッカルを配る。サーバーにキルを拒否されることあり。既定 off） |
 | `lobby.autostartcountdown` | 1〜30 | `[Lobby] AutoStartCountdown` |
 | `lobby.timermode` | extend / haison / notify | `[Lobby] TimerMode` |
 | `lobby.timerwarnat` | 30〜300 | `[Lobby] TimerWarnAt` |
