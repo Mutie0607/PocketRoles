@@ -31,6 +31,8 @@ namespace PocketRoles.Game
         // per-selection state
         private static bool _active, _satisfied, _hasPending, _pendingOverride;
         private static byte _me = 255, _partner = 255;
+        /// <summary>v0.5.2: who really received my held role, for the host-local notice only (_partner keeps its interception meaning).</summary>
+        private static byte _shownPartner = 255;
         private static RoleTypes _pendingRole;
         private static bool _rateSaved;
         private static int _savedCount, _savedChance;
@@ -191,7 +193,7 @@ namespace PocketRoles.Game
         /// <summary>RoleAssignment.BeginVanillaSelection (not for haison games): arm the swap and bump a wished vanilla role's rate.</summary>
         internal static void OnBegin()
         {
-            _active = false; _satisfied = false; _hasPending = false; _rateSaved = false; _partner = 255; _me = 255;
+            _active = false; _satisfied = false; _hasPending = false; _rateSaved = false; _partner = 255; _shownPartner = 255; _me = 255;
             try
             {
                 if (Wish == Kind.None) return;
@@ -292,40 +294,65 @@ namespace PocketRoles.Game
                     // (both are that player's / my first SetRole; role counts unchanged; the OnEnd fallback covers a game without crew specials)
                     var me = Find(_me);
                     if (me == null || me.roleAssigned) return false;
-                    // v0.5.2 (Designate): a designated impostor takes my held impostor role first; a crew designee never gets it
+                    // v0.5.2 (Designate): a player Designate already served holds its first SetRole — its crew role is Designate's to route
+                    // (a second SetRole is ignored by the clients and my held impostor role would be lost); a designated impostor takes my
+                    // held impostor role first; a crew designee never gets it
+                    if (pc.roleAssigned) return false;
                     var taker = Designate.Taker(p) ?? pc;
-                    if (ReferenceEquals(taker, pc) && Designate.IsCrewDesignee(p)) return false;
+                    bool takerIsSender = taker.PlayerId == pc.PlayerId;   // (Il2Cpp wrappers are not reference-equal: compare ids)
+                    if (takerIsSender && Designate.IsCrewDesignee(p)) return false;
                     _partner = p;
+                    _shownPartner = taker.PlayerId;
                     _satisfied = true;
                     RoleTypes held = _pendingRole; bool heldOverride = _pendingOverride; _hasPending = false;
                     Send(me, role, canOverride);
                     Send(taker, held, heldOverride);
                     RoleAssignment.RestoredRedirected(_me, taker.PlayerId);
-                    if (!ReferenceEquals(taker, pc)) Designate.MarkTaken(taker.PlayerId, p);
-                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me; my held {held} -> #{taker.PlayerId}{(ReferenceEquals(taker, pc) ? "" : " (designated impostor)")}");
+                    Designate.MarkTaken(taker.PlayerId, takerIsSender ? (byte)255 : p);
+                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me; my held {held} -> #{taker.PlayerId}{(takerIsSender ? "" : " (designated impostor)")}");
                     return true;
                 }
                 if (!_satisfied && Wish != Kind.Crewmate && Satisfies(role))
                 {
                     var me = Find(_me);
                     if (me == null || me.roleAssigned) return false;
-                    // v0.5.2 (Designate): a held impostor role (vanilla crew-role wish) goes to a designated impostor first, never to a crew designee
+                    // v0.5.2 (Designate): where my held role goes — a held impostor role to a designated impostor first, never to a crew
+                    // designee or to a player Designate already served (its first SetRole is out): Designate.Hold finds a free non-designee
+                    // in the crew pass or at OnEnd. A held crew role only to a player without a role yet (else it is dropped, count untouched).
                     PlayerControl pendingTo = pc;
-                    if (_hasPending && RoleAssignment.IsImpostorRole(_pendingRole))
+                    bool holdForDesignate = false;
+                    if (_hasPending)
                     {
-                        pendingTo = Designate.Taker(p) ?? pc;
-                        if (ReferenceEquals(pendingTo, pc) && Designate.IsCrewDesignee(p)) return false;
+                        if (RoleAssignment.IsImpostorRole(_pendingRole))
+                        {
+                            pendingTo = Designate.Taker(p);
+                            if (pendingTo == null)
+                            {
+                                if (pc.roleAssigned || Designate.IsCrewDesignee(p)) holdForDesignate = true;
+                                else pendingTo = pc;
+                            }
+                        }
+                        else if (pc.roleAssigned) pendingTo = Designate.PartnerOf(p);
                     }
                     _partner = p;
+                    _shownPartner = holdForDesignate ? (byte)255 : (pendingTo != null ? pendingTo.PlayerId : p);
                     _satisfied = true;
                     bool gavePending = _hasPending;
                     Send(me, role, canOverride);
+                    string heldNote = "";
                     if (_hasPending)
                     {
-                        Send(pendingTo, _pendingRole, _pendingOverride); _hasPending = false;
-                        if (!ReferenceEquals(pendingTo, pc)) Designate.MarkTaken(pendingTo.PlayerId, p);
+                        if (holdForDesignate) { Designate.Hold(_pendingRole, _pendingOverride, p); heldNote = "; my held impostor role -> Designate"; }
+                        else if (pendingTo != null)
+                        {
+                            Send(pendingTo, _pendingRole, _pendingOverride);
+                            Designate.MarkTaken(pendingTo.PlayerId, pendingTo.PlayerId == p ? (byte)255 : p);
+                            heldNote = $"; my held {_pendingRole} -> #{pendingTo.PlayerId}";
+                        }
+                        else heldNote = $"; my held {_pendingRole} dropped (#{p} already has a role, nobody free to take it)";
+                        _hasPending = false;
                     }
-                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me{(gavePending ? "; my held role -> partner" : "")}");
+                    PocketRolesPlugin.Logger.LogInfo($"HostWish: {role} meant for #{p} {Core.Game.NameOf(p)} -> me{heldNote}");
                     return true;
                 }
             }
@@ -357,6 +384,7 @@ namespace PocketRoles.Game
                         if (taker != null)
                         {
                             _partner = taker.PlayerId;
+                            _shownPartner = _partner;
                             _satisfied = true;
                             RoleAssignment.RestoredRedirected(_me, _partner);
                             Send(taker, _pendingRole, _pendingOverride);
@@ -382,7 +410,7 @@ namespace PocketRoles.Game
                 string role = RoleText();
                 if (ok)
                 {
-                    string swap = _partner != 255 ? Lang.TF("me.result.swap", "（{0} と入れ替え）", " (swapped with {0})", Core.Game.NameOf(_partner)) : "";
+                    string swap = _shownPartner != 255 ? Lang.TF("me.result.swap", "（{0} と入れ替え）", " (swapped with {0})", Core.Game.NameOf(_shownPartner)) : "";
                     Chat.Chat.Local(Chat.Chat.Title, Lang.TF("me.result.ok", "今回の自分: {0}{1}", "This game, me: {0}{1}", role, swap));
                 }
                 else

@@ -546,9 +546,11 @@ namespace PocketRoles.Chat
                         "Guide lines will be in {0} (the player wrote in {0}).",
                         Lang.DisplayName(detected));
                 }
-                string oneway;
-                using (Lang.Scope(detected)) oneway = Commands.CompatTranslateNote();   // v0.5.2: their lines are translated for the room, the room's are not for them
-                Chat.To(job.PlayerId, Chat.Title, room + "\n" + notice + " " + oneway);
+                string oneway = "";
+                // v0.5.2: their lines are translated for the room (BroadcastToAll), the room's are not for them
+                if (Options.TranslateBroadcastToAll && detected != Options.TranslateTargetLang)
+                    using (Lang.Scope(detected)) oneway = " " + Commands.CompatTranslateNote();
+                Chat.To(job.PlayerId, Chat.Title, room + "\n" + notice + oneway);
                 return;
             }
             using (Lang.Scope(detected)) Chat.To(job.PlayerId, Chat.Title, notice);

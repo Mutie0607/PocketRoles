@@ -154,7 +154,8 @@ namespace PocketRoles.Game
             foreach (var e in List) if (e.Side == Side.Impostor) { who = Shown(e); break; }
             string label = Lang.T("ui.host.nextimp", "次のインポ", "Next imp", "下局内鬼") + ": "
                            + (who ?? Lang.T("next.none", "なし", "none", "无"));
-            if (List.Count > 1) label += " (+" + (List.Count - 1) + ")";
+            int others = List.Count - (who != null ? 1 : 0);
+            if (others > 0) label += " (+" + others + ")";
             return label;
         }
 
@@ -229,6 +230,8 @@ namespace PocketRoles.Game
             foreach (var pc in Core.Game.AllPlayers())
             {
                 if (pc == null || pc.Data == null || pc.Data.Disconnected || pc.AmOwner) continue;
+                var ce = Of(pc.PlayerId);
+                if (ce != null && ce.Side == Side.Crewmate) continue;   // chat-made crew designations are kept
                 players.Add(pc);
             }
             players.Sort((a, b) => a.PlayerId.CompareTo(b.PlayerId));
@@ -368,7 +371,7 @@ namespace PocketRoles.Game
         private static void Redirect(PlayerControl to, RoleTypes role, bool co, byte from, string why)
         {
             HostWish.Send(to, role, co);
-            RoleAssignment.RestoredRedirected(from, to.PlayerId);
+            if (RoleAssignment.IsImpostorRole(role)) RoleAssignment.RestoredRedirected(from, to.PlayerId);   // the 'promoted …' notice follows impostor roles only
             PocketRolesPlugin.Logger.LogInfo($"Designate: {role} meant for #{from} {Core.Game.NameOf(from)} -> #{to.PlayerId} {Core.Game.NameOf(to.PlayerId)} ({why})");
         }
 
@@ -397,11 +400,16 @@ namespace PocketRoles.Game
                     {
                         // already served by a swap (its first SetRole): this impostor role must go to somebody else
                         var d2 = Taker(255, p);
-                        if (d2 != null) { Redirect(d2, role, co, p, "second impostor role of a served designee"); MarkTaken(d2.PlayerId, 255); return true; }
+                        // the chain moves on: the player p took its role from is d2's partner now (d2's later crew role goes there)
+                        if (d2 != null) { Redirect(d2, role, co, p, "second impostor role of a served designee"); MarkTaken(d2.PlayerId, e.Partner); e.Partner = 255; return true; }
                         var x = HostWish.Find(e.Partner);
-                        if (Free(x)) { Redirect(x, role, co, p, "back to the player it was taken from"); e.Partner = 255; return true; }
-                        _held.Add(new Held { Role = role, Co = co, From = p });
-                        PocketRolesPlugin.Logger.LogInfo($"Designate: holding {role} (second impostor role of served designee #{p})");
+                        if (Free(x) && !IsCrewDesignee(x.PlayerId)) { Redirect(x, role, co, p, "back to the player it was taken from"); e.Partner = 255; return true; }
+                        // the partner is a crew designee (or has a role already): hold it in the free partner's name — the crew-pass swap
+                        // gives that partner a free player's crew special and the free player this role; OnEnd releases it otherwise
+                        byte src = Free(x) ? x.PlayerId : p;
+                        if (src != p) e.Partner = 255;
+                        _held.Add(new Held { Role = role, Co = co, From = src });
+                        PocketRolesPlugin.Logger.LogInfo($"Designate: holding {role} (second impostor role of served designee #{p}, owner #{src})");
                         return true;
                     }
                     if (e.Satisfied)
@@ -467,6 +475,41 @@ namespace PocketRoles.Game
             return false;
         }
 
+        /// <summary>HostWish (vanilla crew-role wish): my held impostor role when nobody designated can take it right now — a free non-designee gets it in the crew pass or at OnEnd.</summary>
+        internal static void Hold(RoleTypes role, bool co, byte from)
+        {
+            if (!_active)
+            {
+                var f = HostWish.Find(from);
+                if (Free(f)) HostWish.Send(f, role, co);
+                else PocketRolesPlugin.Logger.LogWarning($"Designate.Hold: not armed and #{from} already has a role — {role} dropped");
+                return;
+            }
+            _held.Add(new Held { Role = role, Co = co, From = from });
+            PocketRolesPlugin.Logger.LogInfo($"Designate: holding {role} for HostWish (taken from #{from} {Core.Game.NameOf(from)})");
+        }
+
+        /// <summary>The still-free player a served designee took its role from (HostWish hands a held crew role there), else null.</summary>
+        internal static PlayerControl PartnerOf(byte id)
+        {
+            var e = Of(id);
+            if (e == null || e.Partner == 255) return null;
+            var x = HostWish.Find(e.Partner);
+            return Free(x) ? x : null;
+        }
+
+        /// <summary>Anybody without a role yet (designees included; not the Game Master, not the host with an own wish).</summary>
+        private static PlayerControl AnyFree()
+        {
+            foreach (var pc in Core.Game.AllPlayers())
+            {
+                if (!Free(pc)) continue;
+                if (_hostHasWish && Core.Game.IsHost(pc.PlayerId)) continue;
+                return pc;
+            }
+            return null;
+        }
+
         /// <summary>A random connected player without a role that is not designated, not the host with an own wish and not the Game Master.</summary>
         private static PlayerControl PickAnybody()
         {
@@ -490,21 +533,25 @@ namespace PocketRoles.Game
             {
                 foreach (var h in _held)
                 {
+                    // vanilla is done, so anybody still without a role is safe to address (no later SetRole can follow)
                     var taker = Taker(255, h.From) ?? PickAnybody();
                     var from = HostWish.Find(h.From);
-                    if (taker != null)
+                    if (taker == null && Free(from)) taker = from;   // the crew designee keeps vanilla's choice (count preserved, designation unfulfilled)
+                    if (taker == null) taker = AnyFree();            // last resort: the impostor role must not vanish
+                    if (taker == null)
                     {
-                        Redirect(taker, h.Role, h.Co, h.From, "released at the end of the selection");
+                        PocketRolesPlugin.Logger.LogWarning($"Designate: nobody can take the {h.Role} taken from #{h.From}; FillImpostors tops the team up");
+                        continue;
+                    }
+                    bool back = taker.PlayerId == h.From;
+                    Redirect(taker, h.Role, h.Co, h.From, back ? "nobody else could take it: back to its owner" : "released at the end of the selection");
+                    var ce = Of(h.From);
+                    if (!back)
+                    {
                         MarkTaken(taker.PlayerId, h.From);
-                        var ce = Of(h.From);
                         if (ce != null) { ce.Satisfied = true; ce.Partner = taker.PlayerId; }
                     }
-                    else if (from != null)
-                    {
-                        // nobody can take it: the crew designee keeps vanilla's choice (count preserved, designation unfulfilled)
-                        HostWish.Send(from, h.Role, h.Co);
-                        PocketRolesPlugin.Logger.LogWarning($"Designate: nobody can take the {h.Role} of crew designee #{h.From}; it keeps it");
-                    }
+                    else if (ce != null) { ce.Satisfied = false; ce.Partner = 255; }
                 }
                 _held.Clear();
                 FillPrefer.Clear();

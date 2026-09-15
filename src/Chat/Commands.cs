@@ -164,7 +164,7 @@ namespace PocketRoles.Chat
                         {
                             string langReply = reply == null ? LangStateText(sender, isHost) : reply;
                             // v0.5.2: unregistered lobby — the translation is one-way there (their lines → the lobby language, public)
-                            if (!isHost && Registration.CompatMode && Chat.TranslationActive && Lang.PlayerLang(sender.PlayerId) != Lang.Default)
+                            if (!isHost && Registration.CompatMode && Chat.TranslationActive && Options.TranslateBroadcastToAll && Lang.PlayerLang(sender.PlayerId) != Options.TranslateTargetLang)
                                 langReply += " " + CompatTranslateNote();
                             Reply(sender, langReply);
                         }
@@ -174,7 +174,7 @@ namespace PocketRoles.Chat
                         return true;
                     case "about": case "info": case "説明": case "关于":
                         // v0.5.2 (2026-09-14 "modの説明も欲しい"): what the mod does here, in plain words
-                        ReplyThrottled(sender, isHost, AboutText(), 2);
+                        ReplyThrottled(sender, isHost, AboutText(), 4);   // EN in an unregistered lobby needs 4 public chunks (JA/ZH 2)
                         return true;
                     case "guess": case "g": case "推理":
                         // An alive Assassin is never throttled (the guess itself is limited per meeting); everyone else
@@ -271,7 +271,10 @@ namespace PocketRoles.Chat
                     case "welcome": HandleWelcome(sender, arg1, RestOfLine(body, tokens[0])); return true;
                     case "test": Reply(sender, ToggleTest(arg1)); return true;
                     case "assign": Reply(sender, Assign(tokens)); return true;
-                    case "next": case "wish": case "次": case "自分": Reply(sender, MeCommand(tokens)); return true;
+                    case "next": case "wish": case "次": case "自分":
+                        // the bare state line lists every designee (host-local): its own cap
+                        Reply(sender, MeCommand(tokens), tokens.Length < 2 ? 8 : MaxReplyMessages);
+                        return true;
                     case "end": Reply(sender, EndGame()); return true;
                     case "rehost": Reply(sender, ToggleRehost(arg1)); return true;
                     case "public": Reply(sender, PublicCommand(arg1)); return true;
@@ -625,11 +628,11 @@ namespace PocketRoles.Chat
                     "この部屋は役職なしのふつうのAmong Usです。返事はみんなに見えます",
                     "This is normal Among Us (no roles). Replies are visible to everyone",
                     "本房间是没有职业的普通 Among Us。回复所有人可见"));
-                if (Chat.TranslationActive)
+                if (Chat.TranslationActive && Options.TranslateBroadcastToAll)
                 {
                     sb.Append('\n');
                     // v0.5.2: one-way there (no client-addressed chat): their lines reach the room translated, the room's lines stay as written
-                    sb.Append(Lang.TF("help.translate.compat", "外国語で書くと{0}に訳されて全員に見えます（{0}→外国語の翻訳はありません）。", "Foreign-language chat is translated into {0} for everyone ({0} is not translated back).", Lang.DisplayName(Lang.Default)));
+                    sb.Append(Lang.TF("help.translate.compat", "外国語で書くと{0}に訳されて全員に見えます（{1}→外国語の翻訳はありません）。", "Foreign-language chat is translated into {0} for everyone ({1} is not translated back).", Lang.DisplayName(Options.TranslateTargetLang), Lang.DisplayName(Lang.Default)));
                 }
                 return sb.ToString();
             }
@@ -754,7 +757,7 @@ namespace PocketRoles.Chat
         /// <summary>v0.5.2: the unregistered lobby's translation is one-way (a foreign player's lines → the lobby language, public; nothing back).</summary>
         internal static string CompatTranslateNote()
         {
-            return Lang.TF("translate.compat.oneway", "あなたの発言は{0}に訳されて全員に流れます。{0}のチャットはあなた向けには訳されません。", "Your messages are translated into {0} for everyone; {0} chat is not translated for you.", Lang.DisplayName(Lang.Default));
+            return Lang.TF("translate.compat.oneway", "あなたの発言は{0}に訳されて全員に流れます。{1}のチャットはあなた向けには訳されません。", "Your messages are translated into {0} for everyone; {1} chat is not translated for you.", Lang.DisplayName(Options.TranslateTargetLang), Lang.DisplayName(Lang.Default));
         }
 
         /// <summary>/cmd about (v0.5.2): what the mod does in this lobby, in plain words (the host's approved text for the unregistered lobby).</summary>

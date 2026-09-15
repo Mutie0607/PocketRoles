@@ -243,20 +243,22 @@ namespace PocketRoles.Game
                 {
                     // v0.5.2: a designated impostor (Designate) vanilla never picked is promoted first
                     List<PlayerControl> pool = null;
-                    PlayerControl pick = null;
+                    int i = -1;
                     foreach (byte want in Designate.FillPrefer)
                     {
-                        pool = candidates; pick = candidates.Find(x => x.PlayerId == want);
-                        if (pick == null) { pool = specials; pick = specials.Find(x => x.PlayerId == want); }
-                        if (pick != null) break;
+                        pool = candidates; i = candidates.FindIndex(x => x.PlayerId == want);
+                        if (i < 0) { pool = specials; i = specials.FindIndex(x => x.PlayerId == want); }
+                        if (i >= 0) break;
                     }
-                    bool designated = pick != null;
-                    if (pick == null)
+                    bool designated = i >= 0;
+                    if (i < 0)
                     {
+                        // no designation: the v0.5.1 pick (plain crewmates, then vanilla crew specials), then the designated crew
                         pool = candidates.Count > 0 ? candidates : specials.Count > 0 ? specials : reluctant;
-                        pick = pool[rnd.Next(pool.Count)];
+                        i = rnd.Next(pool.Count);
                     }
-                    pool.Remove(pick);
+                    var pick = pool[i];
+                    pool.RemoveAt(i);
                     if (compat)
                     {
                         // AssigningRoles is off: the plain vanilla broadcast (+ the host's CoSetRole); roleAssigned becomes true,
@@ -309,7 +311,7 @@ namespace PocketRoles.Game
         }
 
         /// <summary>The impostor slots a selection with <paramref name="connected"/> players has (0 below 3 players, else at least 1): what BeginVanillaSelection targets and Designate counts against.</summary>
-        internal static int ImpostorSlots(int connected) => connected < 3 ? 0 : Math.Max(1, ExpectedImpostors(connected));
+        internal static int ImpostorSlots(int connected) => connected < 3 && !Core.Game.TestMode ? 0 : Math.Max(1, ExpectedImpostors(connected));   // test mode: a forced 2-player start still has its 1 impostor (TestMode patch)
 
         /// <summary>Called from the RoleManager.SelectRoles postfix once every vanilla role has been recorded.</summary>
         public static void DispatchInitialRoles()
