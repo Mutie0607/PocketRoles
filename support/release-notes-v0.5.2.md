@@ -37,4 +37,7 @@
 
 ### ハッシュ（SHA256SUMS.txt）
 
-（`build-release.ps1` の出力を貼る）
+```
+aff282541e86ee8cb8c7b93962a39afb74ce0e680f37b793b9f2075ece9d3a11  PocketRoles-0.5.2.zip
+92dbf9bde0503ea9d418a3407bfd874e6511e7a39e7966f27da7d0ecc3d33c1d  PocketRoles-Setup-0.5.2.zip
+```
