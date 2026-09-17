@@ -33,6 +33,8 @@ namespace PocketRoles.Game
         private static byte _me = 255, _partner = 255;
         /// <summary>v0.5.2: who really received my held role, for the host-local notice only (_partner keeps its interception meaning).</summary>
         private static byte _shownPartner = 255;
+        /// <summary>v0.5.2: my crew special was dropped so that FillImpostors promotes me (vanilla issued too few impostor roles).</summary>
+        private static bool _fillPending;
         private static RoleTypes _pendingRole;
         private static bool _rateSaved;
         private static int _savedCount, _savedChance;
@@ -193,7 +195,7 @@ namespace PocketRoles.Game
         /// <summary>RoleAssignment.BeginVanillaSelection (not for haison games): arm the swap and bump a wished vanilla role's rate.</summary>
         internal static void OnBegin()
         {
-            _active = false; _satisfied = false; _hasPending = false; _rateSaved = false; _partner = 255; _shownPartner = 255; _me = 255;
+            _active = false; _satisfied = false; _hasPending = false; _rateSaved = false; _partner = 255; _shownPartner = 255; _me = 255; _fillPending = false;
             try
             {
                 if (Wish == Kind.None) return;
@@ -393,7 +395,20 @@ namespace PocketRoles.Game
                         }
                         else PocketRolesPlugin.Logger.LogWarning("HostWish: nobody can take my impostor role");
                     }
-                    if (taker == null && me != null && !me.roleAssigned) Send(me, _pendingRole, _pendingOverride);
+                    if (taker == null && me != null && !me.roleAssigned)
+                    {
+                        if (Wish == Kind.Impostor && !RoleAssignment.IsImpostorRole(_pendingRole)
+                            && RoleAssignment.SelectImpostorsSeen < RoleAssignment.SelectTarget)
+                        {
+                            // v0.5.2: vanilla issued fewer impostor roles than the target (3 players: none) and handed me a crew special
+                            // instead — stay roleless so FillImpostors (only players without a SetRole in an unregistered lobby) promotes
+                            // me first; the crew special is dropped
+                            _fillPending = true;
+                            if (!Designate.FillPrefer.Contains(_me)) Designate.FillPrefer.Insert(0, _me);
+                            PocketRolesPlugin.Logger.LogInfo($"HostWish: my held {_pendingRole} dropped — vanilla owes {RoleAssignment.SelectTarget - RoleAssignment.SelectImpostorsSeen} impostor role(s), the top-up promotes me");
+                        }
+                        else Send(me, _pendingRole, _pendingOverride);
+                    }
                     _hasPending = false;
                 }
                 if (_rateSaved)
@@ -408,7 +423,11 @@ namespace PocketRoles.Game
                     ok = me != null && (me.Data.Role == null || !RoleAssignment.IsImpostorRole(me.Data.Role.Role));
                 }
                 string role = RoleText();
-                if (ok)
+                if (_fillPending)
+                {
+                    Chat.Chat.Local(Chat.Chat.Title, Lang.TF("me.result.fill", "本体は自分を選ばなかったので、補充で {0} になります。", "Vanilla did not pick me; the top-up makes me {0}.", role));
+                }
+                else if (ok)
                 {
                     string swap = _shownPartner != 255 ? Lang.TF("me.result.swap", "（{0} と入れ替え）", " (swapped with {0})", Core.Game.NameOf(_shownPartner)) : "";
                     Chat.Chat.Local(Chat.Chat.Title, Lang.TF("me.result.ok", "今回の自分: {0}{1}", "This game, me: {0}{1}", role, swap));

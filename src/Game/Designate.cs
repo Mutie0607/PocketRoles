@@ -420,8 +420,14 @@ namespace PocketRoles.Game
                         else PocketRolesPlugin.Logger.LogInfo($"Designate: later {role} for served designee #{p} dropped (partner already has a role)");
                         return true;
                     }
-                    // a crew role for a designee vanilla never picked: the impostor pass is over, nothing left to take
-                    // (FillImpostors may still promote a roleless designee; a crew special makes that impossible in an unregistered lobby)
+                    // a crew role for a designee vanilla never picked: the impostor pass is over, nothing left to take. When vanilla
+                    // still owes impostor roles (3 players: it issues none), the designee stays roleless so that FillImpostors — which
+                    // in an unregistered lobby can only promote players without a SetRole — promotes it first; the crew special is dropped.
+                    if (RoleAssignment.SelectImpostorsSeen < RoleAssignment.SelectTarget && Free(pc))
+                    {
+                        PocketRolesPlugin.Logger.LogInfo($"Designate: {role} for #{p} {Core.Game.NameOf(p)} withheld (vanilla owes {RoleAssignment.SelectTarget - RoleAssignment.SelectImpostorsSeen} impostor role(s): the top-up promotes the designee)");
+                        return true;
+                    }
                     return false;
                 }
                 if (e != null)
