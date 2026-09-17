@@ -436,7 +436,7 @@ namespace PocketRoles.Game
                 {
                     Chat.Chat.Local(Chat.Chat.Title, Lang.TF("me.result.no", "今回は本体が {0} を出さなかったので、おまかせになりました。", "Vanilla did not hand out {0} this time; you got a random role.", role));
                 }
-                PocketRolesPlugin.Logger.LogInfo($"HostWish: {(ok ? "fulfilled" : "NOT fulfilled")} ({Wish}{(Wish == Kind.Vanilla ? " " + VanillaRole : "")}, partner #{_partner})");
+                PocketRolesPlugin.Logger.LogInfo($"HostWish: {(ok ? "fulfilled" : _fillPending ? "left to FillImpostors" : "NOT fulfilled")} ({Wish}{(Wish == Kind.Vanilla ? " " + VanillaRole : "")}, partner #{_partner})");
             }
             catch (Exception e)
             {
