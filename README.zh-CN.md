@@ -31,9 +31,9 @@
 ## 3 分钟安装（Windows + Steam 版）
 
 1. 从 **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** 下载两个 zip：`PocketRoles-Setup-0.5.2.zip`（启动器）和 `PocketRoles-0.5.2.zip`（模组本体）。
-2. **把两个 zip 解压到同一个文件夹**（例如 `文档\PocketRoles`，放在不会删除的地方。有网络时只用 Setup zip 也可以 — 启动器会自动下载本体）。
+2. **把两个 zip 解压到同一个文件夹**（例如 `文档|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`，放在不会删除的地方。有网络时只用 Setup zip 也可以 — 启动器会自动下载本体）。
 3. **双击“PocketRoles Launcher.cmd”**。出现蓝色的“Windows 已保护你的电脑”时，点“更多信息”→“仍要运行”（这是因为没有使用代码签名证书，不是病毒）。
-4. 点击 **“安装”**。启动器会把 Steam 版 Among Us 复制到桌面的“Among Us PocketRoles”，并自动安装 BepInEx 和 PocketRoles（需要几分钟。Steam 版本身不会被修改）。如果桌面由 OneDrive 备份，则改为复制到 `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles`（避免把 1 GB 同步到云端；启动器参数 `-GameDir` 可以选择任意文件夹）。
+4. 点击 **“安装”**。启动器会把 Steam 版 Among Us 复制到桌面的“Among Us PocketRoles”，并自动安装 BepInEx 和 PocketRoles（需要几分钟。Steam 版本身不会被修改）。如果桌面由 OneDrive 备份，则改为复制到 `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`（避免把 1 GB 同步到云端；启动器参数 `-GameDir` 可以选择任意文件夹）。
 5. **先启动 Steam，再点“启动”**。首次启动到标题画面需要 1〜2 分钟（中途出现黑色窗口也请不要关闭）。标题画面右侧窗口显示 PocketRoles 面板即安装完成。之后 **在线 → 创建房间** 就能启用职业。
 
 详细步骤和手动安装见 [第 5 章](#5-安装步骤steam)，启动器的用法见 [第 6 章](#6-启动器与更新)，玩法见 [第 7 章](#7-游玩方法)。
@@ -82,7 +82,7 @@
 | 没有原版职业（科学家、工程师、法官等） | 默认只分配 PocketRoles 的职业，不发放原版特殊职业。想同时使用时，在设置标签“职业”里打开“同时分配原版特殊职业”，或输入 `/opt roles.vanilla on`（按原版职业设置出现） |
 | 在哪里改设置？ | 房间电脑里的“PocketRoles”按钮。也可以用聊天的 `/set` `/opt` 或齿轮菜单（[第 8 章](#8-设置标签页房间设置界面)） |
 | 想切换语言 | 玩家：`/cmd lang zh` 等。房间默认语言：设置标签页的“语言”。启动器：右上角的“语言”（[第 13 章](#13-语言日本語--中文--english)） |
-| 聊天翻译与 DeepL 密钥 | 默认开启（可在设置标签页的“聊天翻译”关闭）。用 DeepL 的话，把密钥写在 `BepInEx\PocketRoles\deepl-key.txt` 的第一行（[第 13 章](#13-语言日本語--中文--english)） |
+| 聊天翻译与 DeepL 密钥 | 默认开启（可在设置标签页的“聊天翻译”关闭）。用 DeepL 的话，把密钥写在 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` 的第一行（[第 13 章](#13-语言日本語--中文--english)） |
 | 游戏更新后模组不能用了 | 启动器的“检查更新”。在适配版发布之前模组会自动停用（[第 24 章](#24-游戏版本检查)） |
 | 如何报告问题 | 启动器的“生成报告 zip”→ 作为附件发到 `pocketroles.report@gmail.com`（[第 28 章](#28-如何报告问题)） |
 | 会违反规定吗？会被封号吗？ | 按 Innersloth 的政策，创建房间时会自动进行 MOD 房间注册（官方规则・职业必需）。保持注册的情况下，仅使用模组不会被封号（[第 3 章](#3-innersloth-模组政策与公开房间须知必读)） |
@@ -95,7 +95,7 @@
 - 新增 26 个职业：警长、市长、告密者、点灯人、增速者、诱饵、内鬼狂粉、狂粉市长、疯狂特技演员、鹰眼狂粉、崇拜者、吸血鬼、黑手党、女巫、刺客、邪恶鹰眼、邪恶猫又、连环杀手、武士、小丑、投机者、恐怖分子、豺狼、豺狼之友、恋人、纵火犯
 - 职业通过每位玩家自己的 **名字标签** 和 **聊天** 私下告知本人
 - 设置在 **房间设置界面的“PocketRoles”标签页**（职业 / 房间 / 聊天 / 外观 / 房主 分页，带“?”帮助；原版的 3 个按钮折叠为“▶ 原版设置（游戏・预设・职业）”）和 **齿轮菜单的“PocketRoles 设置”面板** 中完成（也可以用聊天命令 `/set` `/opt` 或配置文件）
-- 显示语言：**日本語 / 简体中文 / English**。每位玩家可用 `/lang` 单独切换（也会根据发言语言自动识别），文本可在 `lang\*.json` 中编辑
+- 显示语言：**日本語 / 简体中文 / English**。每位玩家可用 `/lang` 单独切换（也会根据发言语言自动识别），文本可在 `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` 中编辑
 - **聊天自动翻译**（默认开启，**并用模式**）：把外语聊天翻译成房主的语言发给所有人，把房主的话按各自的语言单独发给外语玩家（使用 Google，或 DeepL 的 API 密钥）
 - **招人辅助**：复制房间代码并显示引导步骤（`/announce`，复制的代码可直接贴到 Discord 等）、房间代码大字显示（`/code on`，默认关闭）、从便利房引导到职业房（`/move`）
 - 房主工具：房间剩余时间显示、自动开始、废村（刷新房间）、开始取消按钮、强制结束会议、快捷键（F7 / F8 / F9）、房主分页的操作按钮、游戏主持（观战）模式、镜像 Skeld（Dleks）、延迟过高时询问是否重建
@@ -166,12 +166,12 @@
 
 - **引导房辅助**（[第 25 章](#25-便利房关闭注册与引导房)）：房间左上角大字显示房间代码（`职业房 ABCDEF`。默认关闭，`/code on` 开启，`/code` 切换，设置标签页“大字显示房间代码”）。`/announce`（`/guide`）把代码复制到剪贴板（可直接贴到 Discord 等），并显示用副手机做引导房的 4 个步骤。`/move [代码]` 在便利房里用三种语言向所有人发送职业房的引导（`/opt guide.autoreg on` 时 30 秒后重建为注册房间）。齿轮菜单里也有引导房提示。
 - **便利房（关闭注册）的整理**：实机测试发现，未注册的房间中只要向单个玩家发送一条消息，房主就会被服务器断开（"DC because Hacking"）。因此未注册的房间 **不分配职业，按原版进行**（只有房主工具和面向所有人的提示）。要玩职业请用注册开启（默认）的房间。
-- **翻译并用为默认**（`BroadcastToAll = true` + `TranslateForPlayers = true`）：外语聊天翻译成房主的语言发给所有人；房主的话按各自的语言单独发给选择了其他语言的玩家；同一个人不会收到两份。翻译本身（`Enabled`）也默认开启（聊天文本会发送到 Google；如果在 `BepInEx\PocketRoles\deepl-key.txt` 放了密钥则发送到 DeepL）。可在设置标签页的“聊天翻译”或用 `/opt translate off` 关闭。
+- **翻译并用为默认**（`BroadcastToAll = true` + `TranslateForPlayers = true`）：外语聊天翻译成房主的语言发给所有人；房主的话按各自的语言单独发给选择了其他语言的玩家；同一个人不会收到两份。翻译本身（`Enabled`）也默认开启（聊天文本会发送到 Google；如果在 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` 放了密钥则发送到 DeepL）。可在设置标签页的“聊天翻译”或用 `/opt translate off` 关闭。
 - **延迟过高时先询问**：创建房间后延迟过高时，房主屏幕会弹出“延迟较高（N ms）。要重新创建房间吗？”（是 / 否，也可用 `/rehost yes|no`）。默认关闭（`MaxHostPing = 0`），因为短时间内反复重建会累加 ban points（[3.4](#34-关于封禁与踢出)）。
 - **设置标签页**：分页按钮改为“职业 / 房间 / 聊天 / 外观 / 房主”的短标签横向一排。原版的 3 个按钮初始折叠为“▶ 原版设置（游戏・预设・职业）”，点击展开为“▼ 原版设置”。“房主”分页上方有操作按钮行（立即开始 / 取消 / 废村 / 结束会议 / 测试模式 / 显示设置 / 下局的我）。
 - **修正职业分配**：修复了 2 人以上开局时没有开场动画、画面全黑的问题（原样放行游戏本体的职业广播，随后一次性覆盖所有客户端的显示）。警长、豺狼的开场动画仍显示为“内鬼”（从 v0.4.1 起职业通知会多一行“※游戏本体显示你是“内鬼”（开场、击杀键），但你的真正职业是○○。”）。
 - **测试模式**：`/test on` 后开始按钮立即变为“开始”，游戏本体的“4 人可以游玩，但…”弹窗也会自动确认。
-- **语言文件**：更新新增的键会在启动时追加到 `lang\*.json`（自己编辑过的文字保持不变）。
+- **语言文件**：更新新增的键会在启动时追加到 `lang|distance|rpc|taskburst|report|teleport|killphase>*.json`（自己编辑过的文字保持不变）。
 - **日志**：平时保持安静。`/diag on` 开启开局流程的详细追踪，`/diag` 输出状态快照。
 
 ### v0.4c（v0.4.0 的修正：实机测试中发现的问题）
@@ -189,10 +189,10 @@
 |---|---|---|
 | 启动器（朋友用安装器） | 解压 `PocketRoles-Setup-<ver>.zip`，双击“PocketRoles Launcher.cmd”→ 点“安装”，即可自动完成复制 Steam 版、安装 BepInEx 和 PocketRoles。“检查更新”从 GitHub 更新到新版本，“启动”带模组启动，“生成报告 zip”用于报告问题。日本語 / 中文 / English | [5](#5-安装步骤steam), [6](#6-启动器与更新) |
 | 标题画面面板 | 在主菜单右侧的窗口中显示 PocketRoles 的图标、版本、作者、GitHub 行和说明（右下角的署名行作为面板无法创建时的备用） | [9](#9-齿轮菜单的pocketroles-设置面板) |
-| 聊天翻译 | 把外语聊天翻译后显示在房主屏幕上。也可以发送给所有人，或单独发给选择了外语的玩家。使用 Google（无需密钥）或 DeepL（把密钥写入 `BepInEx\PocketRoles\deepl-key.txt`） | [13](#13-语言日本語--中文--english) |
+| 聊天翻译 | 把外语聊天翻译后显示在房主屏幕上。也可以发送给所有人，或单独发给选择了外语的玩家。使用 Google（无需密钥）或 DeepL（把密钥写入 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`） | [13](#13-语言日本語--中文--english) |
 | 语言自动识别 / 三语提示 | 未使用 `/lang` 的玩家用中文或英文发言时，自动切换其显示语言并提示。简短的欢迎语（2 行）默认按 该玩家的语言 → 其余两种语言 的顺序用三种语言送达（`WelcomeAllLanguages`。关闭时为一种语言 + 一行“English: /cmd lang en ｜ 中文: … ｜ 日本語: …”） | [13](#13-语言日本語--中文--english), [14](#14-加入时的欢迎语与规则行) |
 | 设置标签页整理 | PocketRoles 按钮移到左列最上方，原版的 3 个按钮合并为一个“原版设置”按钮。标签页内有“职业 / 房间 / 聊天 / 外观 / 房主工具”分页按钮。职业标题和设置项旁的“?”按钮会在左侧说明栏显示帮助 | [8](#8-设置标签页房间设置界面) |
-| 权限（协作管理） | `BepInEx\PocketRoles\Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt`（每行一人，好友代码或 Puid）。`/admin` `/mod` `/vip` 的 add / remove / list、`/kick`、`/ban`。管理员可用设置命令，版主可踢人 / 封禁，VIP 名字带 ★ 并有专属问候 | [11](#11-命令一览) |
+| 权限（协作管理） | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt`（每行一人，好友代码或 Puid）。`/admin` `/mod` `/vip` 的 add / remove / list、`/kick`、`/ban`。管理员可用设置命令，版主可踢人 / 封禁，VIP 名字带 ★ 并有专属问候 | [11](#11-命令一览) |
 | 原版设置范围扩展 | 击杀冷却 0〜120 秒（箭头默认步长 2.5 秒；0.5 秒单位的值可用 `/vset` 或调低 `[Vanilla] KillCooldownStep`）、投票 0〜600 秒、讨论 0〜600 秒、紧急会议冷却 0〜120 秒、任务数 0〜30 等，通过设置界面的箭头和 `/vset` 设置。移动速度和视野也可用 `/vset` 扩展。原版玩家会收到同样的数值 | [8](#8-设置标签页房间设置界面), [11](#11-命令一览) |
 | `/h` 显示权限 | 帮助末尾显示“你的权限：普通 / VIP / 版主 / 管理员 / 房主” | [11](#11-命令一览) |
 | 问题报告完善 | 启动器的报告 zip（日志、配置、环境信息。不包含 DeepL 密钥）、报告邮箱、GitHub Issue 模板、支持邮箱 | [28](#28-如何报告问题) |
@@ -201,7 +201,7 @@
 
 | 功能 | 说明 | 章节 |
 |---|---|---|
-| 更名 | HostRoles → **PocketRoles**。插件 ID `jp.pocketroles.mod`，配置文件 `jp.pocketroles.mod.cfg`（旧的 `jp.hostroles.mod.cfg` 在首次启动时自动复制），文件夹 `BepInEx\PocketRoles\`，启动器“PocketRoles Launcher” | [5](#5-安装步骤steam) |
+| 更名 | HostRoles → **PocketRoles**。插件 ID `jp.pocketroles.mod`，配置文件 `jp.pocketroles.mod.cfg`（旧的 `jp.hostroles.mod.cfg` 在首次启动时自动复制），文件夹 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>`，启动器“PocketRoles Launcher” | [5](#5-安装步骤steam) |
 | 房间剩余时间 | 屏幕左上角显示 `房间剩余 mm:ss`，从一开始就显示原版计时器，任何人都可用 `/time` 查询，剩余 120 秒 / 60 秒时提示 | [16](#16-房间剩余时间自动开始与废村) |
 | 自动开始 | 凑齐设定人数后倒计时自动开始，人数减少则中止。`/autostart <人数>`、`/start`（立即开始） | [16](#16-房间剩余时间自动开始与废村) |
 | 超时对策（延长 / 废村） | 剩余时间不多时，自动接受服务器的延长，或执行 **废村**（开始一局并立即结束，保持同一房间、同一代码并重置计时）。`/haison` 手动执行 | [16](#16-房间剩余时间自动开始与废村) |
@@ -220,8 +220,8 @@
 
 | 功能 | 说明 | 章节 |
 |---|---|---|
-| 替换帽子、面罩、名牌 | 放入 `BepInEx\PocketRoles\hats\<ProductId>.png` 等文件后，房主屏幕上该外观会被替换（无论谁戴着）。`/cos ids` 查看 ID | [22](#22-外观自定义仅房主屏幕) |
-| 大厅 BGM | 在大厅播放 `music\*.wav` / `*.ogg`（`custom` / `vanilla` / `mute`，可调音量） | [22](#22-外观自定义仅房主屏幕) |
+| 替换帽子、面罩、名牌 | 放入 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png` 等文件后，房主屏幕上该外观会被替换（无论谁戴着）。`/cos ids` 查看 ID | [22](#22-外观自定义仅房主屏幕) |
+| 大厅 BGM | 在大厅播放 `music|distance|rpc|taskburst|report|teleport|killphase>*.wav` / `*.ogg`（`custom` / `vanilla` / `mute`，可调音量） | [22](#22-外观自定义仅房主屏幕) |
 | 装饰 | 大厅墙画、飞船装饰、主菜单背景、鼠标光标 | [22](#22-外观自定义仅房主屏幕) |
 
 这些 **不会发送任何数据**。玩家看到的仍是原版外观。
@@ -231,7 +231,7 @@
 | 功能 | 说明 | 章节 |
 |---|---|---|
 | 设置标签页 | 房间里的笔记本电脑（设置界面）新增“PocketRoles”标签页 | [8](#8-设置标签页房间设置界面) |
-| 三种语言 | 日本語 / 简体中文 / English。房间默认语言和每位玩家的 `/lang`。文本可在 `BepInEx\PocketRoles\lang\*.json` 中编辑 | [13](#13-语言日本語--中文--english) |
+| 三种语言 | 日本語 / 简体中文 / English。房间默认语言和每位玩家的 `/lang`。文本可在 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json` 中编辑 | [13](#13-语言日本語--中文--english) |
 | 欢迎语编辑 | 用 `/welcome` 自由设置（支持 `{roles}` 等占位符） | [14](#14-加入时的欢迎语与规则行) |
 | 自动重建房间 / 自动公开 | 断线后自动重新创建房间；几秒后自动设为公开；`/public now` | [15](#15-自动重建房间与自动公开) |
 | 测试模式 | `/test on` 后 1 个人也能开始，胜负判定暂停。`/assign` 指定职业，`/end` 结束 | [23](#23-测试模式用一台手机验证) |
@@ -323,10 +323,10 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 ### 5.1 推荐：用启动器安装（PocketRoles-Setup zip）
 
 1. 从 GitHub Releases（<https://github.com/wakayamachannel/PocketRoles/releases>）下载 **`PocketRoles-Setup-<版本>.zip`**。
-2. 解压到一个不会删除的文件夹（例如 `文档\PocketRoles`）。**把 `PocketRoles-<版本>.zip`（模组本体）也放进同一个文件夹（解压与否都可以）**，没有网络也能安装。桌面快捷方式会指向这个文件夹，之后请不要移动或删除。
+2. 解压到一个不会删除的文件夹（例如 `文档|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`）。**把 `PocketRoles-<版本>.zip`（模组本体）也放进同一个文件夹（解压与否都可以）**，没有网络也能安装。桌面快捷方式会指向这个文件夹，之后请不要移动或删除。
 3. **双击“PocketRoles Launcher.cmd”**。首次运行如果出现“Windows 已保护你的电脑”（SmartScreen），请点 **“更多信息”→“仍要运行”**。这是因为没有使用签名证书，不是病毒。
 4. 点击启动器的 **“安装”**。它会自动完成以下步骤（需要几分钟，进度显示在下方）：
-   1. 查找 Steam 版 Among Us（找不到时会让你选择文件夹），复制到 `桌面\Among Us PocketRoles`（1 GB 左右）。如果桌面由 OneDrive 备份，则改为复制到 `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles`（参数 `-GameDir` 可以选择任意文件夹）
+   1. 查找 Steam 版 Among Us（找不到时会让你选择文件夹），复制到 `桌面|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`（1 GB 左右）。如果桌面由 OneDrive 备份，则改为复制到 `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`（参数 `-GameDir` 可以选择任意文件夹）
    2. 从 builds.bepinex.dev 下载 BepInEx 6.0.0-be.735（win-x86）并解压
    3. 从 GitHub 的最新发布获取 `PocketRoles-<ver>.zip` 并放置（把 `PocketRoles-<ver>.zip` 放在启动器同一文件夹中即可离线安装）。如果有旧的 `HostRoles.dll` 会删除
    4. 在桌面创建“PocketRoles Launcher”快捷方式
@@ -337,24 +337,24 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 
 ### 5.2 手动安装
 
-1. 把 `C:\Program Files (x86)\Steam\steamapps\common\Among Us` 整个复制到另一个文件夹（例如 `桌面\Among Us PocketRoles`）。
-2. 把上面的 BepInEx zip 解压到复制的文件夹中（`Among Us.exe` 同级目录下应有 `winhttp.dll`、`doorstop_config.ini` 和 `BepInEx\` 文件夹）。
-3. **在 Steam 已启动的状态下**，把复制出来的 `Among Us.exe` **运行一次**。首次运行时 BepInEx 会生成 `BepInEx\interop`，出现标题画面需要 **1〜3 分钟**。出现标题画面后可以关闭。
-4. 把 GitHub Releases 的 `PocketRoles-<ver>.zip` 解压到复制的文件夹中（包含 `BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README、LICENSE 和 NOTICE）。**如果还留有旧版的 `HostRoles.dll`，请删除**（同样的补丁会被应用两次）。
-5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.2`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx\LogOutput.log` 中的 `PocketRoles v0.5.2 loaded` 来确认。
+1. 把 `C:|distance|rpc|taskburst|report|teleport|killphase>Program Files (x86)|distance|rpc|taskburst|report|teleport|killphase>Steam|distance|rpc|taskburst|report|teleport|killphase>steamapps|distance|rpc|taskburst|report|teleport|killphase>common|distance|rpc|taskburst|report|teleport|killphase>Among Us` 整个复制到另一个文件夹（例如 `桌面|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`）。
+2. 把上面的 BepInEx zip 解压到复制的文件夹中（`Among Us.exe` 同级目录下应有 `winhttp.dll`、`doorstop_config.ini` 和 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>` 文件夹）。
+3. **在 Steam 已启动的状态下**，把复制出来的 `Among Us.exe` **运行一次**。首次运行时 BepInEx 会生成 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop`，出现标题画面需要 **1〜3 分钟**。出现标题画面后可以关闭。
+4. 把 GitHub Releases 的 `PocketRoles-<ver>.zip` 解压到复制的文件夹中（包含 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`、README、LICENSE 和 NOTICE）。**如果还留有旧版的 `HostRoles.dll`，请删除**（同样的补丁会被应用两次）。
+5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.2`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` 中的 `PocketRoles v0.5.2 loaded` 来确认。
 
-首次启动时会生成 `BepInEx\config\jp.pocketroles.mod.cfg`（配置）、`BepInEx\PocketRoles\lang\`（语言文件）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` 和 `README.txt`（外观自定义用）。权限文件 `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` 会在第一次创建房间时生成在 `BepInEx\PocketRoles\` 中。使用 DeepL 时的 `deepl-key.txt` 需要自己创建（[第 13 章](#13-语言日本語--中文--english)）。如果同一文件夹中有旧 HostRoles 的配置 `jp.hostroles.mod.cfg` 而新配置文件尚不存在，内容会自动复制过来（设置原样继承）。
+首次启动时会生成 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（配置）、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>`（语言文件）、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>{hats,visors,nameplates,music,images}|distance|rpc|taskburst|report|teleport|killphase>` 和 `README.txt`（外观自定义用）。权限文件 `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` 会在第一次创建房间时生成在 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` 中。使用 DeepL 时的 `deepl-key.txt` 需要自己创建（[第 13 章](#13-语言日本語--中文--english)）。如果同一文件夹中有旧 HostRoles 的配置 `jp.hostroles.mod.cfg` 而新配置文件尚不存在，内容会自动复制过来（设置原样继承）。
 
 ### 开发者电脑上的目录结构（参考）
 
-- 模组用副本：`桌面\Among Us PocketRoles`
-- 源代码：`桌面\PocketRoles`（在源代码目录里启动启动器即为开发模式）
-- 启动器：桌面上的 **“PocketRoles Launcher”快捷方式**（实体是 `PocketRoles\PocketRoles Launcher.cmd`）
-- 运行 `build.cmd` 后，构建出的 `PocketRoles.dll` 会自动复制到 `..\Among Us PocketRoles\BepInEx\plugins`。
-- 配置文件：`Among Us PocketRoles\BepInEx\config\jp.pocketroles.mod.cfg`（首次启动时生成）
-- 语言文件：`Among Us PocketRoles\BepInEx\PocketRoles\lang\ja.json` / `zh-CN.json` / `en.json`
-- 外观自定义文件夹：`Among Us PocketRoles\BepInEx\PocketRoles\`（`hats` `visors` `nameplates` `music` `images`）
-- 日志：`Among Us PocketRoles\BepInEx\LogOutput.log`
+- 模组用副本：`桌面|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`
+- 源代码：`桌面|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`（在源代码目录里启动启动器即为开发模式）
+- 启动器：桌面上的 **“PocketRoles Launcher”快捷方式**（实体是 `PocketRoles|distance|rpc|taskburst|report|teleport|killphase>PocketRoles Launcher.cmd`）
+- 运行 `build.cmd` 后，构建出的 `PocketRoles.dll` 会自动复制到 `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins`。
+- 配置文件：`Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（首次启动时生成）
+- 语言文件：`Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>ja.json` / `zh-CN.json` / `en.json`
+- 外观自定义文件夹：`Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>`（`hats` `visors` `nameplates` `music` `images`）
+- 日志：`Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log`
 
 ---
 
@@ -369,7 +369,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | **朋友模式（安装器）** | 启动器旁边 **没有** `PocketRoles.csproj` 时（解压 `PocketRoles-Setup-<ver>.zip` 的情况） | 安装 / 检查更新 / 启动 / 生成报告 zip / 打开设置文件 / 打开日志 / 说明书 (README) / 打开 mod 文件夹 |
 | **开发模式** | 在源代码目录中启动时（旁边有 `PocketRoles.csproj`） | 带 mod 启动 / 检查 / 更新游戏（复制 → interop → 重新编译）/ 仅重新编译 / 检查 GitHub 更新 / 启动原版 (Steam) / 打开设置文件 / 打开日志 / 说明书 (README) / 打开 mod 文件夹 / 生成报告 zip |
 
-共同点：右上角的 **“语言”** 可切换 日本語 / 中文 (简体) / English（首次根据 Windows 显示语言自动判断，选择保存在 `launcher-state.json`）。上方是状态，中间是按钮，下方是进度日志。处理期间按钮会被禁用。模组副本的位置是 `桌面\Among Us PocketRoles`（开发模式下优先使用源代码旁边的 `..\Among Us PocketRoles`），可以用环境变量 `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` 或参数 `-GameDir` / `-SteamDir` 更改。
+共同点：右上角的 **“语言”** 可切换 日本語 / 中文 (简体) / English（首次根据 Windows 显示语言自动判断，选择保存在 `launcher-state.json`）。上方是状态，中间是按钮，下方是进度日志。处理期间按钮会被禁用。模组副本的位置是 `桌面|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`（开发模式下优先使用源代码旁边的 `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`），可以用环境变量 `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` 或参数 `-GameDir` / `-SteamDir` 更改。
 
 状态显示：
 
@@ -378,8 +378,8 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | Steam 版 Among Us / mod 副本 | 从两个游戏文件夹中读取的版本。不一致时 **Steam 版已更新**（橙 / 红字） |
 | BepInEx | 已安装的版本（be.735 为 OK，否则需要更新）。开发模式下显示“BepInEx / interop”是否存在 |
 | PocketRoles.dll | 已安装的版本和时间（开发模式下还有构建时对应的游戏版本，不一致时 **需要重新编译**） |
-| interop (首次启动时生成) | 首次启动生成的 `BepInEx\interop` 是否存在 |
-| .NET SDK (重新编译用) | 仅开发模式。`%USERPROFILE%\.dotnet\dotnet.exe` 是否存在 |
+| interop (首次启动时生成) | 首次启动生成的 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` 是否存在 |
+| .NET SDK (重新编译用) | 仅开发模式。`%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe` 是否存在 |
 | Steam 客户端 | 是否正在运行（游玩和生成 interop 都需要 Steam） |
 
 绿字显示“准备就绪”（开发模式为“已是最新”）时即可直接游玩。
@@ -389,15 +389,15 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | 按钮 | 动作 |
 |---|---|
 | **安装** | 执行 [5.1](#51-推荐用启动器安装pocketroles-setup-zip) 的步骤。即使有步骤失败，修正原因后再点一次即可从失败处继续（已完成的步骤跳过）。游戏运行中无法执行 |
-| **检查更新** | 比较 GitHub 最新发布和已安装的 `PocketRoles.dll` 版本，有新版本时询问“现在更新吗？”→ 下载并放置（不会覆盖 `BepInEx\config\`，设置会保留。外观文件也保留）。接着如果 Steam 版已更新，会询问“要更新 mod 副本吗？”（见下面的“Among Us 更新之后”） |
+| **检查更新** | 比较 GitHub 最新发布和已安装的 `PocketRoles.dll` 版本，有新版本时询问“现在更新吗？”→ 下载并放置（不会覆盖 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>`，设置会保留。外观文件也保留）。接着如果 Steam 版已更新，会询问“要更新 mod 副本吗？”（见下面的“Among Us 更新之后”） |
 | **启动** | 启动模组副本中的 `Among Us.exe`。未安装 / Among Us 运行中 / Steam 未启动时只给出提示。Steam 版已更新时会先建议更新副本（不更新无法进入在线模式） |
 | **生成报告 zip** | 在桌面生成 `PocketRoles-report-YYYYMMDD-HHMM.zip`，并弹出显示收件地址和打开邮件按钮的对话框（[第 28 章](#28-如何报告问题)） |
-| **打开设置文件** | 用记事本打开 `BepInEx\config\jp.pocketroles.mod.cfg` |
-| **打开日志** | 用记事本打开 `BepInEx\LogOutput.log` |
+| **打开设置文件** | 用记事本打开 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` |
+| **打开日志** | 用记事本打开 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` |
 | **说明书 (README)** | 打开所选语言的 README（解压到模组副本中的那份） |
 | **打开 mod 文件夹** | 在资源管理器中打开模组副本文件夹 |
 
-**Among Us 更新之后（朋友模式）**：Steam 版更新后，“启动”或“检查更新”会询问“要更新 mod 副本吗？”。选“是”会重新复制 Steam 版的游戏文件，并删除旧的 `BepInEx\interop` 和 `BepInEx\cache`（不会覆盖 `BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt`，因此配置、plugins、语言文件、外观文件都会保留）。下次启动时会重新生成 interop（1〜2 分钟）。如果 PocketRoles 尚未适配新的游戏版本，启动后 [版本检查](#24-游戏版本检查) 会让模组保持停用，等适配版本发布后用“检查更新”更新即可。
+**Among Us 更新之后（朋友模式）**：Steam 版更新后，“启动”或“检查更新”会询问“要更新 mod 副本吗？”。选“是”会重新复制 Steam 版的游戏文件，并删除旧的 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` 和 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache`（不会覆盖 `BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt`，因此配置、plugins、语言文件、外观文件都会保留）。下次启动时会重新生成 interop（1〜2 分钟）。如果 PocketRoles 尚未适配新的游戏版本，启动后 [版本检查](#24-游戏版本检查) 会让模组保持停用，等适配版本发布后用“检查更新”更新即可。
 
 自动启动：在快捷方式的目标末尾加上 ` -AutoLaunch`，打开启动器后会自动执行“启动”（两种模式均可）。测试、自动化用途还有无界面执行 `-Action Install|Check|Report|Status`、`-Language ja|zh-CN|en`、`-Friend`（强制朋友模式）。
 
@@ -407,7 +407,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 |---|---|
 | **带 mod 启动** | 启动模组副本中的 `Among Us.exe`。Steam 未运行时会警告。检测到更新时会询问“是否先更新？”（不更新就无法进入在线模式），需要重新构建时会询问“现在构建吗？” |
 | **检查 / 更新游戏** | 比较版本，有差异时自动执行下面的“更新流程”。没有差异时，只在需要时重新构建 |
-| **仅重新编译** | 执行 `dotnet build -c Release`，把 `PocketRoles.dll` 放入 `BepInEx\plugins`（1〜2 分钟） |
+| **仅重新编译** | 执行 `dotnet build -c Release`，把 `PocketRoles.dll` 放入 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins`（1〜2 分钟） |
 | **检查 GitHub 更新** | 检查 GitHub 的最新发布，有新版本时下载并放置（本地构建的 DLL 会被覆盖） |
 | **启动原版 (Steam)** | 启动 Steam 版（无模组）。加入别人的房间时用这个 |
 | **打开设置文件** / **打开日志** / **说明书 (README)** / **打开 mod 文件夹** / **生成报告 zip** | 与朋友模式相同 |
@@ -415,7 +415,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 **更新流程（Among Us 更新之后，开发模式）**：启动器的“检查 / 更新游戏”（或命令行版 `update-game.cmd`）会执行以下步骤。请 **关闭游戏、保持 Steam 运行** 后执行。
 
 1. 把 Steam 版的游戏文件复制到模组副本（不会覆盖 `BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt`，因此配置、plugins、语言文件、外观自定义文件都会保留）
-2. 删除旧的 `BepInEx\interop` 和 `BepInEx\cache`
+2. 删除旧的 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` 和 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache`
 3. 启动游戏重新生成 interop（1〜3 分钟。启动器在日志出现 `Chainloader startup complete` 后自动关闭游戏；使用 `update-game.cmd` 时请在出现标题画面后手动关闭）
 4. 重新构建 `PocketRoles`（相当于 `build.cmd`）
 
@@ -461,7 +461,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 
 - 面板上方有 **一排横向的分页按钮**：**职业 / 房间 / 聊天 / 外观 / 房主**（短标签；房主 = 房主工具）。所选的分页在关闭菜单后仍会记住。
 - 职业标题旁和有说明的设置项右端有小小的 **“?”按钮**。鼠标悬停时左侧说明栏会显示说明，点击后固定（再次点击恢复默认说明）。职业的“?”显示职业说明、阵营以及“击杀 / 跳管 / 破坏 / 任务”的 ○×，设置项的“?”显示该设置的含义。
-- 标题、项目名和说明按房间默认语言显示（可通过 `lang\*.json` 中的 `opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` 修改）。
+- 标题、项目名和说明按房间默认语言显示（可通过 `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` 中的 `opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` 修改）。
 
 ### 各分页的内容
 
@@ -645,18 +645,18 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `reload` | 重新读取配置文件（仅在房间中） |
 | `mod on` / `mod off` | 启用 / 停用模组（仅在房间中。游戏进行中不能切换） |
 | `lang default ja|zh|en` | 更改房间默认语言（与 `/opt lang` 相同） |
-| `lang reload` | 重新读取语言文件 `lang\*.json` |
+| `lang reload` | 重新读取语言文件 `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` |
 | `welcome` | 显示欢迎语的状态和用法 |
-| `welcome <文字>` | 设置欢迎语（最多 320 个字符。`\n` 换行，可插入 `{rules}` `{roles}` `{settings}` `{help}` `{version}`） |
+| `welcome <文字>` | 设置欢迎语（最多 320 个字符。`|distance|rpc|taskburst|report|teleport|killphase>n` 换行，可插入 `{rules}` `{roles}` `{settings}` `{help}` `{version}`） |
 | `welcome show` | 在房主画面上预览欢迎语 |
 | `welcome reset` | 恢复默认欢迎语 |
 | `welcome settings on|off` | 是否在欢迎语中附加当前设置（默认 off。玩家可用 `/cmd s` 查看） |
 | `rules` / `rules show` | 显示欢迎语规则行的状态 |
-| `rules <文字>` | 设置规则行（最多 200 个字符，`\n` 换行。`RulesMode` 变为 `custom`） |
+| `rules <文字>` | 设置规则行（最多 200 个字符，`|distance|rpc|taskburst|report|teleport|killphase>n` 换行。`RulesMode` 变为 `custom`） |
 | `rules none` | 规则行恢复为默认（“无规则”） |
 | `test` / `test on|off` | 显示 / 切换测试模式（仅在房间中） |
-| `next [impostor \| crew \| auto \| <原版职业名>]` | 指定下一局自己的职业（v0.5.1）。无需测试模式，未注册房间也可；设置页“房主”的“下局的我”按钮亦可。例：`/next impostor`、`/next shapeshifter`；只输入 `/next` 显示当前指定（包括对别人的指定） |
-| `next <名字\|#编号> impostor \| crew \| auto`、`next reset` | 指定下一局**别人**的阵营（v0.5.2）。名字的一部分或 `#编号`（`/next 太郎 impostor`，`/next impostor #3` 的顺序也可）。最多到内鬼人数（自己的 `/next impostor` 占一个名额），指定过多时先指定的人优先。被指定的人离开即取消，开局后用完，离开房间后清除。`/next 太郎 auto` 取消一人，`/next reset` 全部取消（包括自己），`/next 太郎` 显示该玩家的指定。设置页“房主”的“下局内鬼”按钮可依次指定一人。未注册房间也可用。结果只显示给房主：“本局: 太郎 = 内鬼（与 花子 交换）” |
+| `next [impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto |distance|rpc|taskburst|report|teleport|killphase>| <原版职业名>]` | 指定下一局自己的职业（v0.5.1）。无需测试模式，未注册房间也可；设置页“房主”的“下局的我”按钮亦可。例：`/next impostor`、`/next shapeshifter`；只输入 `/next` 显示当前指定（包括对别人的指定） |
+| `next <名字|distance|rpc|taskburst|report|teleport|killphase>|#编号> impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto`、`next reset` | 指定下一局**别人**的阵营（v0.5.2）。名字的一部分或 `#编号`（`/next 太郎 impostor`，`/next impostor #3` 的顺序也可）。最多到内鬼人数（自己的 `/next impostor` 占一个名额），指定过多时先指定的人优先。被指定的人离开即取消，开局后用完，离开房间后清除。`/next 太郎 auto` 取消一人，`/next reset` 全部取消（包括自己），`/next 太郎` 显示该玩家的指定。设置页“房主”的“下局内鬼”按钮可依次指定一人。未注册房间也可用。结果只显示给房主：“本局: 太郎 = 内鬼（与 花子 交换）” |
 | `assign <名字|ID> <职业>` | 下一局强制给该玩家指定职业。例：`/assign Taro sheriff`、`/assign 2 jackal`。`/assign <名字> none` 单独清除 |
 | `assign show` / `assign clear` | 职业指定列表 / 全部清除 |
 | `end` | 强制结束游戏（按船员获胜处理。用于结束测试模式的对局） |
@@ -687,7 +687,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `admin remove <名字|代码>` / `admin reload` | 删除 / 重新读取文件 |
 | `mod add|remove|list <…>`, `moderator …` | 版主（`Moderator.txt`）的添加、删除、列表。`/mod on|off` 仍是模组开关 |
 | `vip add|remove|list <…>` / `vip <名字>` | VIP（`VIP.txt`）的添加、删除、列表。只写 `/vip <名字>` 即为添加 |
-| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
+| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on|distance|rpc|taskburst|report|teleport|killphase>|off`、`/ac kick on|distance|rpc|taskburst|report|teleport|killphase>|off`、`/ac test <kill|distance|rpc|taskburst|report|teleport|killphase>|vent|distance|rpc|taskburst|report|teleport|killphase>|ability|distance|rpc|taskburst|report|teleport|killphase>|task|distance|rpc|taskburst|report|teleport|killphase>|chat|distance|rpc|taskburst|report|teleport|killphase>|sabotage|distance|rpc|taskburst|report|teleport|killphase>|killcd|distance|rpc|taskburst|report|teleport|killphase>|protect|distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase> <#编号|distance|rpc|taskburst|report|teleport|killphase>|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
 | `kick <名字|编号>` | 踢出该玩家（仅在房间中。房主以及权限不低于自己的人不能踢） |
 | `ban <名字|编号>` | 踢出并写入 `Banlist.txt`（下次加入时也会自动踢出）。同时发送服务器端的临时封禁 |
 | `ban list` / `ban remove <名字|代码>` / `unban <…>` / `ban reload` | 封禁列表 / 解除 / 重新读取 |
@@ -696,7 +696,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 
 ### 权限（协作管理）：管理员 / 版主 / VIP / 封禁（v0.4b）
 
-用于和朋友一起管理房间。通过 `BepInEx\PocketRoles\` 中的 4 个文本文件管理（第一次创建房间时会带说明头生成）。
+用于和朋友一起管理房间。通过 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` 中的 4 个文本文件管理（第一次创建房间时会带说明头生成）。
 
 | 文件 | 权限 | 可以做的事 |
 |---|---|---|
@@ -830,13 +830,13 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `credits.url` | URL | `[Credits] RepoUrl` |
 | `credits.show` | on / off | `[Credits] ShowInMenu` |
 
-超出范围的值会被限制到范围内。on / off 也可以写成 `1`/`0`、`true`/`false`、`yes`/`no`、`开`/`关`。DeepL 的 API 密钥不能用 `/opt` 设置（文件 `BepInEx\PocketRoles\deepl-key.txt`，[第 13 章](#13-语言日本語--中文--english)）。
+超出范围的值会被限制到范围内。on / off 也可以写成 `1`/`0`、`true`/`false`、`yes`/`no`、`开`/`关`。DeepL 的 API 密钥不能用 `/opt` 设置（文件 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`，[第 13 章](#13-语言日本語--中文--english)）。
 
 ---
 
 ## 12. 配置文件
 
-`BepInEx\config\jp.pocketroles.mod.cfg`（首次启动时自动生成。设置标签页、齿轮面板和 `/set` `/opt` 修改的值会立即保存到这里。可以在关闭游戏的状态下用文本编辑器编辑，或者编辑后在房间中执行 `/reload`）。实际文件中各分区按字母顺序排列。
+`BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（首次启动时自动生成。设置标签页、齿轮面板和 `/set` `/opt` 修改的值会立即保存到这里。可以在关闭游戏的状态下用文本编辑器编辑，或者编辑后在房间中执行 `/reload`）。实际文件中各分区按字母顺序排列。
 
 ```ini
 [General]
@@ -849,22 +849,22 @@ GameMaster = false              # 游戏主持：房主不持有职业，开场�
 [Chat]
 WelcomeMessage = true           # 向加入的玩家发送模组房间说明
 RoleInfoAtMeeting = true        # 会议开始时重新发送职业说明
-WelcomeText =                   # 欢迎语（空 = 默认）。\n 换行，可插入 {rules} {roles} {settings} {help} {version}
+WelcomeText =                   # 欢迎语（空 = 默认）。|distance|rpc|taskburst|report|teleport|killphase>n 换行，可插入 {rules} {roles} {settings} {help} {version}
 WelcomeIncludeSettings = false  # 在欢迎语中附加当前职业设置（默认关闭。随时可用 /cmd s 查看）
 PlayerCommands = true           # 允许玩家使用聊天命令（false = 忽略并只提示一次）
 AllCommands = true              # 允许所有聊天命令（false = 房主也只能用 /mod）
 RulesMode = none                # 欢迎语规则行：none（默认的“无规则”）| custom（RulesText）
-RulesText =                     # custom 时的规则文字（\n 换行，/rules <文字>）
+RulesText =                     # custom 时的规则文字（|distance|rpc|taskburst|report|teleport|killphase>n 换行，/rules <文字>）
 WelcomeAllLanguages = true      # 把简短欢迎语（2 行）按 该玩家的语言 → 其余两种语言 的顺序发送（false = 只发该玩家的语言 + 一行三语 /lang 提示）
 
 [Discord]                       # 把房间自动发布到 Discord（v0.4.5）。不需要 Bot
 WebhookUrl =                    # 频道设置「整合 → Webhook → 复制 URL」得到的 URL。留空 = 不发布。请勿泄露（只能在配置文件里修改）
 Announce = true                 # 创建房间时发布「🔑 房间码 ABCDEF — 3/15人 招人中（有职业）」，进出房间・开始・结束时编辑同一条消息（每 5 秒最多 1 次）
-Text =                          # 自定义文案（留空 = 内置）。{code} {count} {max} {state} {kind}，\n 换行，可用 **粗体** 和 @here
+Text =                          # 自定义文案（留空 = 内置）。{code} {count} {max} {state} {kind}，|distance|rpc|taskburst|report|teleport|killphase>n 换行，可用 **粗体** 和 @here
 
 [Translate]                     # 聊天翻译（v0.4b）。文本会发送到 Google / DeepL。DeepL 密钥不写在这个文件里
 Enabled = true                  # 翻译外语聊天（默认开启。文本会发送到 Google / DeepL。在设置标签页“聊天翻译”或用 /opt translate off 关闭）
-Provider = auto                 # auto（BepInEx\PocketRoles\deepl-key.txt 有密钥则 DeepL，否则 Google）| google | deepl
+Provider = auto                 # auto（BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt 有密钥则 DeepL，否则 Google）| google | deepl
 TargetLang =                    # 房主阅读的语言 ja | zh | en（空 = [General] Language）
 ShowOnHost = true               # 在房主屏幕显示翻译（不发送）
 BroadcastToAll = true           # 把外语聊天翻译成房主的语言发送给所有人（会收到单独翻译的玩家除外）
@@ -873,7 +873,7 @@ AutoDetectLang = true           # 未设置 /lang 的玩家用中文或英文发
 MinChars = 3                    # 少于此字数不翻译（1〜50）
 MaxPerMinute = 20               # 每分钟翻译次数上限（1〜120。超出的不翻译）
 
-[Permissions]                   # 权限（v0.4b）。名单在 BepInEx\PocketRoles\Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
+[Permissions]                   # 权限（v0.4b）。名单在 BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
 AdminsCanChangeSettings = true  # Admin.txt 中的玩家可使用房主命令（/set /opt /show /start /cancel /autostart /welcome /rules /kick /ban /vset …）
 ModeratorsCanKick = true        # Moderator.txt 中的玩家可使用 /kick 和 /ban
 VipMarker = true                # 给 VIP.txt 中的玩家名字加★，加入时单独问候
@@ -932,10 +932,10 @@ Enabled = true                  # 外观自定义总开关
 LobbyMusic = custom             # custom（music 文件夹中的文件，没有则原版）| vanilla | mute
 LobbyMusicFile =                # music 文件夹中的文件名（WAV / OGG。空 = 找到的第一个文件）
 LobbyMusicVolume = 0.07         # 自定义曲目的音量（0〜1。原版主题约为 0.07）
-LobbyPaint = true               # 把 images\lobbypaint.png 显示在大厅墙上
-Dropship = true                 # 把 images\dropship.png 显示为飞船装饰
-MenuBackground = true           # 用 images\menu.png 作为主菜单背景
-Cursor = true                   # 用 images\cursor.png 作为鼠标光标
+LobbyPaint = true               # 把 images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png 显示在大厅墙上
+Dropship = true                 # 把 images|distance|rpc|taskburst|report|teleport|killphase>dropship.png 显示为飞船装饰
+MenuBackground = true           # 用 images|distance|rpc|taskburst|report|teleport|killphase>menu.png 作为主菜单背景
+Cursor = true                   # 用 images|distance|rpc|taskburst|report|teleport|killphase>cursor.png 作为鼠标光标
 
 [Roles]                         # 每个职业的 Count（人数 0〜15）和 Chance（出现概率 0〜100）
 Sheriff.Count = 1
@@ -1073,7 +1073,7 @@ KnownToJackal = false           # 豺狼能分辨出豺狼之友（蓝色名字�
 SheriffCanKill = true           # 警长射杀豺狼之友不会死
 ```
 
-测试模式和 `/assign` 的内容、镜像 Skeld 的选择状态不会保存到配置文件（每个房间结束后清除）。DeepL 的 API 密钥（`BepInEx\PocketRoles\deepl-key.txt`）和权限名单（`Admin.txt` 等）是配置文件之外的独立文件。
+测试模式和 `/assign` 的内容、镜像 Skeld 的选择状态不会保存到配置文件（每个房间结束后清除）。DeepL 的 API 密钥（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`）和权限名单（`Admin.txt` 等）是配置文件之外的独立文件。
 
 ---
 
@@ -1098,7 +1098,7 @@ PocketRoles 发给玩家的文字（欢迎语、职业名和说明、命令回�
 
 ### 文本文件（可编辑）
 
-文本从 `BepInEx\PocketRoles\lang\` 下的 `ja.json` / `zh-CN.json` / `en.json` 读取（首次启动时会写出模组内置的默认内容）。
+文本从 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` 下的 `ja.json` / `zh-CN.json` / `en.json` 读取（首次启动时会写出模组内置的默认内容）。
 
 ```json
 {
@@ -1140,7 +1140,7 @@ PocketRoles 发给玩家的文字（欢迎语、职业名和说明、命令回�
 **使用 DeepL（设置密钥）**
 
 1. 注册 DeepL API 账户（免费的 DeepL API Free 也可以），获取 API 密钥（形如 `xxxxxxxx-xxxx-…:fx`。Free 的密钥以 `:fx` 结尾）。
-2. 用记事本创建 **`BepInEx\PocketRoles\deepl-key.txt`**，**只把密钥写在第一行** 并保存（UTF-8。空行和以 `#` 开头的行会被忽略）。
+2. 用记事本创建 **`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`**，**只把密钥写在第一行** 并保存（UTF-8。空行和以 `#` 开头的行会被忽略）。
 3. `Provider` 保持 `auto` 即可（有密钥时自动使用 DeepL）。游戏运行中创建的文件也会在 1 分钟内被读取。
 
 密钥 **绝对不要写进配置文件（`jp.pocketroles.mod.cfg`）**（`/opt` 也没有密钥项）。密钥只从这个文件读取、只发送给 DeepL，不写入日志，也不包含在启动器的报告 zip 中（万一混入日志等文件，生成报告 zip 时会替换为 `<api-key-masked>`）。DeepL 失败时（密钥无效、超出额度等）改用 Google，并在日志中警告一次。
@@ -1188,26 +1188,26 @@ PocketRoles 发给玩家的文字（欢迎语、职业名和说明、命令回�
 | 命令 | 内容 |
 |---|---|
 | `/rules` / `/rules show` | 当前的规则行和用法 |
-| `/rules <文字>` | 设置规则（最多 200 个字符。`\n` 换行）。保存到 `[Chat] RulesMode = custom`、`RulesText` |
+| `/rules <文字>` | 设置规则（最多 200 个字符。`|distance|rpc|taskburst|report|teleport|killphase>n` 换行）。保存到 `[Chat] RulesMode = custom`、`RulesText` |
 | `/rules none` | 恢复为默认（“本房间没有特别规则…”）（`RulesMode = none`） |
 
-例：`/rules 新手欢迎！\n禁止辱骂和爆料。` → 插入欢迎语的第 3 行（`/welcome show` 可预览）。默认的规则文字会按语言翻译，自己写的文字保持原样。
+例：`/rules 新手欢迎！|distance|rpc|taskburst|report|teleport|killphase>n禁止辱骂和爆料。` → 插入欢迎语的第 3 行（`/welcome show` 可预览）。默认的规则文字会按语言翻译，自己写的文字保持原样。
 
 ### 使用自己的文字（`/welcome`）
 
 用 `/welcome <文字>` 替换正文（第 2 行以后；最多 320 个字符）。第一行“职业MOD房间。什么都不用装。…”是模组房间的说明（模组政策要求的通知），**一定会附加，无法去掉**。
 
-- `\n`（反斜杠和 n 两个字符）表示换行。
+- `|distance|rpc|taskburst|report|teleport|killphase>n`（反斜杠和 n 两个字符）表示换行。
 - 占位符：`{rules}` = 规则行，`{roles}` = 启用的职业列表，`{settings}` = 当前设置（与 `/show` 相同），`{help}` = 帮助和更改语言的一行提示，`{version}` = 模组版本。
 - 即使不写 `{settings}`，只要“欢迎语包含设置”为开（默认关闭），设置也会附加在末尾。即使不写 `{rules}`，只要用 `/rules` 设置了规则，规则行也会附加在末尾（默认的“无规则”文字只会出现在写了 `{rules}` 的位置）。
 
 示例：
 
 ```
-/welcome 欢迎！新手也欢迎。\n今天的职业：{roles}\n{rules}\n{help}
+/welcome 欢迎！新手也欢迎。|distance|rpc|taskburst|report|teleport|killphase>n今天的职业：{roles}|distance|rpc|taskburst|report|teleport|killphase>n{rules}|distance|rpc|taskburst|report|teleport|killphase>n{help}
 ```
 
-`/welcome show` 在房主画面上预览，`/welcome reset` 恢复默认。只输入 `/welcome` 会显示当前状态和用法。配置文件中的 `[Chat] WelcomeText` 保存同样的文字（带 `\n`）。
+`/welcome show` 在房主画面上预览，`/welcome reset` 恢复默认。只输入 `/welcome` 会显示当前状态和用法。配置文件中的 `[Chat] WelcomeText` 保存同样的文字（带 `|distance|rpc|taskburst|report|teleport|killphase>n`）。
 
 欢迎语按接收者的语言组装（默认文字和占位符部分会翻译，自己写的正文保持原样）。
 
@@ -1390,20 +1390,20 @@ Among Us 的所有客户端都内置了左右镜像的 Skeld“Dleks（dlekS ehT
 
 ## 22. 外观自定义（仅房主屏幕）
 
-这是 v0.3 的功能。在 `BepInEx\PocketRoles\` 中放入图片或音乐后，**只有房主（你）的屏幕** 外观会改变。**不会向玩家发送任何数据，玩家一方仍是原版**（即使替换了帽子，其他人看到的仍是那个人原本戴的帽子）。模组在同一文件夹中写出的 `README.txt`（日文）也有相同说明。
+这是 v0.3 的功能。在 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` 中放入图片或音乐后，**只有房主（你）的屏幕** 外观会改变。**不会向玩家发送任何数据，玩家一方仍是原版**（即使替换了帽子，其他人看到的仍是那个人原本戴的帽子）。模组在同一文件夹中写出的 `README.txt`（日文）也有相同说明。
 
 ### 文件夹结构（首次启动时自动创建）
 
 ```
-<游戏>\BepInEx\PocketRoles\
-  hats\<ProductId>.png            帽子的主图。可选：<ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
-  visors\<ProductId>.png          面罩。可选：_left.png / _climb.png / _floor.png
-  nameplates\<ProductId>.png      会议画面的名牌
-  music\*.wav | *.ogg             大厅 BGM（找到的第一个文件，或 LobbyMusicFile 指定的文件）
-  images\lobbypaint.png           大厅墙画（可选）
-  images\dropship.png             飞船装饰（可选）
-  images\menu.png                 主菜单背景（可选）
-  images\cursor.png               鼠标光标（可选，建议 64×64 以下）
+<游戏>|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>
+  hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png            帽子的主图。可选：<ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
+  visors|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png          面罩。可选：_left.png / _climb.png / _floor.png
+  nameplates|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png      会议画面的名牌
+  music|distance|rpc|taskburst|report|teleport|killphase>*.wav | *.ogg             大厅 BGM（找到的第一个文件，或 LobbyMusicFile 指定的文件）
+  images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png           大厅墙画（可选）
+  images|distance|rpc|taskburst|report|teleport|killphase>dropship.png             飞船装饰（可选）
+  images|distance|rpc|taskburst|report|teleport|killphase>menu.png                 主菜单背景（可选）
+  images|distance|rpc|taskburst|report|teleport|killphase>cursor.png               鼠标光标（可选，建议 64×64 以下）
   README.txt                      模组写出的说明（编辑后下次会被覆盖）
 ```
 
@@ -1415,7 +1415,7 @@ Among Us 的所有客户端都内置了左右镜像的 Skeld“Dleks（dlekS ehT
 Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 ```
 
-例：`hat_pk05_Cheese` → `hats\hat_pk05_Cheese.png`，`visor_Cat` → `visors\visor_Cat.png`，`nameplate_Bavarian` → `nameplates\nameplate_Bavarian.png`。
+例：`hat_pk05_Cheese` → `hats|distance|rpc|taskburst|report|teleport|killphase>hat_pk05_Cheese.png`，`visor_Cat` → `visors|distance|rpc|taskburst|report|teleport|killphase>visor_Cat.png`，`nameplate_Bavarian` → `nameplates|distance|rpc|taskburst|report|teleport|killphase>nameplate_Bavarian.png`。
 
 - 替换会应用于房主屏幕上 **无论谁戴着** 的该 ID 的帽子、面罩、名牌（包括大厅、游戏中、会议画面、商店预览）。
 - 皮肤和宠物因为是动画，不在替换范围内（只能查看 ID）。
@@ -1425,7 +1425,7 @@ Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 - 按 **与原图相同的像素尺寸** 绘制，位置和大小会完全一致。尺寸不同时帽子、面罩会按默认基准点（与 SNR / TOR 相同）显示。
 - 会随玩家颜色变化的帽子（adaptive），图片中的 **纯红 (255,0,0) 替换为身体颜色，绿 (0,255,0) 替换为阴影，蓝 (0,0,255) 替换为面罩颜色**（这是从其他模组的惯例推断的规则，请先试一个）。不变色的帽子请用正常颜色绘制。
 - 推荐透明 PNG。
-- `images\lobbypaint.png` 按 290 px/unit、`dropship.png` 按 60 px/unit、`menu.png` 按 150 px/unit（1920×1080 左右）显示。光标的热点是左上角。
+- `images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png` 按 290 px/unit、`dropship.png` 按 60 px/unit、`menu.png` 按 150 px/unit（1920×1080 左右）显示。光标的热点是左上角。
 
 ### 大厅 BGM
 
@@ -1486,7 +1486,7 @@ Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 2. **设置标签页**：房间里的笔记本电脑中“PocketRoles”在最上方，点“原版设置”会展开 3 个原版按钮。职业 / 房间 / 聊天 / 外观 / 房主工具 的分页切换，鼠标悬停在“?”上时左侧说明栏显示说明。
 3. **欢迎语**：手机收到的欢迎语为 2 行 × 3 种语言（该玩家的语言 → 其余两种语言），最后只附带一次“自动翻译已开启…”行，并且没有设置的罗列（用 `/cmd s` 显示）。
 4. **翻译**：手机 **用英文** 发送 `Hello, can I be sheriff?` 之类的消息 → PC 屏幕上出现 `[译] <名字>: …` 的中文翻译。手机收到“Display language switched to English. Type /cmd lang zh to switch back.”，此后发给手机的模组消息变为英文（语言自动识别）。然后 PC 用中文发言 → 手机收到 `[Tr] <房主名>: …` 的英文翻译（为外语玩家翻译）。用 `/cmd lang zh` 可以切换回来。
-5. **VIP**：PC 输入 `/vip add <手机的名字>` → `BepInEx\PocketRoles\VIP.txt` 多出一行。手机退出再进入后，欢迎语中带“★ 欢迎 VIP …”，开始游戏后手机的名字开头带 ★（所有人的画面）。
+5. **VIP**：PC 输入 `/vip add <手机的名字>` → `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>VIP.txt` 多出一行。手机退出再进入后，欢迎语中带“★ 欢迎 VIP …”，开始游戏后手机的名字开头带 ★（所有人的画面）。
 6. **管理员**：PC 输入 `/admin add <手机的名字>` → 手机的 `/cmd h` 末尾显示“你的权限：管理员”，`/cmd set sheriff 2` 和 `/cmd show` 可以执行（PC 的聊天中也会显示设置更改）。`/cmd test on` 会得到“仅限房主。”。用 `/admin remove <名字>` 恢复。
 7. **版主 / 踢出**：`/mod add <手机的名字>` → 手机输入 `/cmd kick <PC 的名字>` 会得到“房主不能被踢出。”。PC 输入 `/kick <手机的名字>` 后手机退出（`/ban` 则重新加入时会立即被踢，`/ban remove <名字>` 解除）。
 8. **原版设置范围扩展**：在 PC 的设置界面“游戏设置”中把击杀冷却的箭头调到 10 秒以下（例如 5 秒）→ 手机的房间设置列表也显示“5 秒”。`/vset vote 0`、`/vset short 12` 同样会反映。开始游戏后击杀冷却确实变短。测试完后改回正常值。
@@ -1731,7 +1731,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 - 房主死亡期间发送模组消息时，通信上房主会短暂被视为“存活”（关闭注册的房间不执行此处理，因此死亡房主的消息只有死者能看到）。
 - 放逐后的几秒内，为了防止黑屏，部分玩家的显示（职业、生死）可能暂时与实际不同。
 - 拥有特殊职业的玩家和游戏主持模式下的房主死后不会成为守护天使（成为普通幽灵）。
-- 设置标签页、齿轮面板的标题和项目名按房间默认语言显示（可通过 `lang\*.json` 中的 `opt.section.*` / `opt.name.*` / `ui.gear.*` 更改）。
+- 设置标签页、齿轮面板的标题和项目名按房间默认语言显示（可通过 `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` 中的 `opt.section.*` / `opt.name.*` / `ui.gear.*` 更改）。
 - 房间剩余时间是 **估算值**（收到服务器通知之前从 597 秒倒数）。可能有几秒到十几秒的误差。
 - 外观自定义只影响房主的屏幕。皮肤、宠物无法替换。
 - 名字标签的符号 ♥（恋人）†（女巫）♨（纵火犯）Ⓦ（崇拜者）可能因客户端字体而显示为 □（可通过源代码中的常量 `Lovers.Heart` / `Witch.Mark` / `Arsonist.Mark` / `Worshipper.ImpostorViewMark` 更改）。
@@ -1798,7 +1798,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 
 zip 的内容：`LogOutput.log`（模组日志）、`jp.pocketroles.mod.cfg`（配置）、`launcher-state.json`、`launcher.log`、`system.txt`（Windows 版本、游戏 / 模组 / BepInEx 的版本、plugins 列表、Steam 状态）。包含用户名的路径会替换为 `%USERPROFILE%`，形如 API 密钥的字符串会替换为 `<api-key-masked>`。**绝对不会包含 `deepl-key.txt`（DeepL 的 API 密钥）**。日志中会留有玩家名，需要隐去时请编辑 zip 中的日志后再发送。
 
-日志每次启动游戏都会被覆盖，所以请在出问题 **之后立即** 生成 zip。无法使用启动器时，请自己把 `BepInEx\LogOutput.log` 和 `BepInEx\config\jp.pocketroles.mod.cfg` 打包成 zip 附上。
+日志每次启动游戏都会被覆盖，所以请在出问题 **之后立即** 生成 zip。无法使用启动器时，请自己把 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` 和 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` 打包成 zip 附上。
 
 提出建议时，请写明想要什么功能或职业、为什么 / 在什么场景使用，以及可供参考的其他模组名称（如果有）。
 
@@ -1806,38 +1806,38 @@ zip 的内容：`LogOutput.log`（模组日志）、`jp.pocketroles.mod.cfg`（�
 
 ## 29. 构建方法
 
-需要：**.NET 8 SDK**。`build.cmd`（和启动器）在存在 `%USERPROFILE%\.dotnet\dotnet.exe`（用户级安装）时使用它，否则使用 PATH 中的 `dotnet`。
+需要：**.NET 8 SDK**。`build.cmd`（和启动器）在存在 `%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe`（用户级安装）时使用它，否则使用 PATH 中的 `dotnet`。
 
 ```
 build.cmd
 ```
 
-（内容是 `dotnet build -c Release`。启动器的“仅重新构建”也相同。）输出为 `bin\PocketRoles.dll`，如果 `..\Among Us PocketRoles\BepInEx\plugins` 存在则自动复制过去。
+（内容是 `dotnet build -c Release`。启动器的“仅重新构建”也相同。）输出为 `bin|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`，如果 `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` 存在则自动复制过去。
 
-- 引用的 DLL 位于 `..\Among Us PocketRoles\BepInEx\core` 和 `BepInEx\interop`（interop 在第 5 章的首次启动时生成。请先运行一次游戏）。
-- 引用其他文件夹中的游戏：`build.cmd -p:GameDir="C:\path\to\Among Us"`
+- 引用的 DLL 位于 `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>core` 和 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop`（interop 在第 5 章的首次启动时生成。请先运行一次游戏）。
+- 引用其他文件夹中的游戏：`build.cmd -p:GameDir="C:|distance|rpc|taskburst|report|teleport|killphase>path|distance|rpc|taskburst|report|teleport|killphase>to|distance|rpc|taskburst|report|teleport|killphase>Among Us"`
 - 目标：net6.0，C# latest，Nullable off，ImplicitUsings off。不使用 NuGet 的游戏库或 Reactor。
-- `lang\*.json` 和 `assets\PocketRoles-256.png`（标题画面的图标）作为嵌入资源包含在 DLL 中，语言文件在首次启动时写出到 `BepInEx\PocketRoles\lang\`。想修改文本时不必重新构建 DLL，编辑写出的文件即可。
-- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx\LogOutput.log` 中有 `PocketRoles v0.5.2 loaded` 且没有 Harmony 补丁错误。
+- `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` 和 `assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-256.png`（标题画面的图标）作为嵌入资源包含在 DLL 中，语言文件在首次启动时写出到 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>`。想修改文本时不必重新构建 DLL，编辑写出的文件即可。
+- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` 中有 `PocketRoles v0.5.2 loaded` 且没有 Harmony 补丁错误。
 
-生成发布 zip：`powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` 跳过构建）。会生成 `dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、3 种 README、LICENSE、NOTICE）、`dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）和 `SHA256SUMS.txt`。版本取自 `PocketRoles.csproj` 的 `<Version>`。把这两个 zip 附加到 GitHub Releases 后，启动器的“检查更新”“安装”就能获取最新版本（会查找名为 `PocketRoles-<ver>.zip` 的资源）。
+生成发布 zip：`powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` 跳过构建）。会生成 `dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-<ver>.zip`（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`、3 种 README、LICENSE、NOTICE）、`dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.ico`、`はじめに.txt`）和 `SHA256SUMS.txt`。版本取自 `PocketRoles.csproj` 的 `<Version>`。把这两个 zip 附加到 GitHub Releases 后，启动器的“检查更新”“安装”就能获取最新版本（会查找名为 `PocketRoles-<ver>.zip` 的资源）。
 
-源代码结构（`src\`）：
+源代码结构（`src|distance|rpc|taskburst|report|teleport|killphase>`）：
 
 | 文件夹 | 内容 |
 |---|---|
 | `PocketRolesPlugin.cs` | 插件本体、版本检查、左上角显示、每帧处理 |
-| `Core\` | 职业定义（Roles）、语言（Lang）、设置及设置标签页的项目列表（Options）、对局状态（GameState）、延迟执行（Scheduler）、快捷键（Hotkeys）、权限（Permissions：Admin / Moderator / VIP / Banlist.txt、踢出与封禁） |
-| `Net\` | 按客户端发送与安全模式（Rpc）、单独游戏设置（OptionsDesync）、+25 注册（Registration）、简易反作弊（AntiCheat） |
-| `Game\` | 职业分配（RoleAssignment）、诊断（Diagnostics：`/diag`）、名字标签（NameTags）、击杀 / 跳管 / 破坏（Kills）、会议（Meetings）、强制结束会议（MeetingTools）、黑屏对策（AntiBlackout）、胜负（WinConditions）、测试模式（TestMode）、游戏主持（GameMaster）、原版设置范围扩展（VanillaRanges：设置界面的行与 `/vset`） |
-| `Chat\` | 聊天发送、欢迎语与规则行（Chat）、命令（Commands）、聊天翻译（Translator：Google / DeepL、语言自动识别） |
-| `Lobby\` | 自动重建房间 / 自动公开 / `/move` 的重建（Rehost）、延迟过高的询问对话框（RehostPrompt）、房间计时（LobbyTimer）、自动开始 / 废村 / 取消按钮（AutoStart）、废村后返回房间（HaisonReturn）、自动选择区域（AutoRegion）、镜像 Skeld（DleksMap） |
-| `UI\` | 设置标签页（SettingsTab：分页按钮、“?”帮助、原版设置按钮、房主分页的按钮行）、齿轮菜单面板（ClientOptions）、标题画面面板（MenuPanel）与备用署名行（Credits）、房间代码大字显示（CodeOverlay）、大厅横幅控制（LobbyBanner） |
-| `Cosmetics\` | 外观自定义（Cosmetics：文件夹与 `/cos`，SpriteLoader，CosmeticOverrides：帽子 / 面罩 / 名牌，LobbyMusic，LobbyDecor：墙画 / 飞船 / 菜单背景 / 光标） |
-| `lang\`（根目录） | 语言文件的默认内容（`ja.json` / `zh-CN.json` / `en.json`） |
-| `assets\`（根目录） | 图标（`PocketRoles-256.png` / `-512.png` / `.ico`） |
+| `Core|distance|rpc|taskburst|report|teleport|killphase>` | 职业定义（Roles）、语言（Lang）、设置及设置标签页的项目列表（Options）、对局状态（GameState）、延迟执行（Scheduler）、快捷键（Hotkeys）、权限（Permissions：Admin / Moderator / VIP / Banlist.txt、踢出与封禁） |
+| `Net|distance|rpc|taskburst|report|teleport|killphase>` | 按客户端发送与安全模式（Rpc）、单独游戏设置（OptionsDesync）、+25 注册（Registration）、简易反作弊（AntiCheat） |
+| `Game|distance|rpc|taskburst|report|teleport|killphase>` | 职业分配（RoleAssignment）、诊断（Diagnostics：`/diag`）、名字标签（NameTags）、击杀 / 跳管 / 破坏（Kills）、会议（Meetings）、强制结束会议（MeetingTools）、黑屏对策（AntiBlackout）、胜负（WinConditions）、测试模式（TestMode）、游戏主持（GameMaster）、原版设置范围扩展（VanillaRanges：设置界面的行与 `/vset`） |
+| `Chat|distance|rpc|taskburst|report|teleport|killphase>` | 聊天发送、欢迎语与规则行（Chat）、命令（Commands）、聊天翻译（Translator：Google / DeepL、语言自动识别） |
+| `Lobby|distance|rpc|taskburst|report|teleport|killphase>` | 自动重建房间 / 自动公开 / `/move` 的重建（Rehost）、延迟过高的询问对话框（RehostPrompt）、房间计时（LobbyTimer）、自动开始 / 废村 / 取消按钮（AutoStart）、废村后返回房间（HaisonReturn）、自动选择区域（AutoRegion）、镜像 Skeld（DleksMap） |
+| `UI|distance|rpc|taskburst|report|teleport|killphase>` | 设置标签页（SettingsTab：分页按钮、“?”帮助、原版设置按钮、房主分页的按钮行）、齿轮菜单面板（ClientOptions）、标题画面面板（MenuPanel）与备用署名行（Credits）、房间代码大字显示（CodeOverlay）、大厅横幅控制（LobbyBanner） |
+| `Cosmetics|distance|rpc|taskburst|report|teleport|killphase>` | 外观自定义（Cosmetics：文件夹与 `/cos`，SpriteLoader，CosmeticOverrides：帽子 / 面罩 / 名牌，LobbyMusic，LobbyDecor：墙画 / 飞船 / 菜单背景 / 光标） |
+| `lang|distance|rpc|taskburst|report|teleport|killphase>`（根目录） | 语言文件的默认内容（`ja.json` / `zh-CN.json` / `en.json`） |
+| `assets|distance|rpc|taskburst|report|teleport|killphase>`（根目录） | 图标（`PocketRoles-256.png` / `-512.png` / `.ico`） |
 
-根目录其他文件：`PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd`（启动器，[第 6 章](#6-启动器与更新)）、`update-game.cmd`（更新的命令行版）、`build-release.ps1`（发布 zip）、`.github\ISSUE_TEMPLATE\`（三语 Issue 模板）。`stubs\` 是用于单独构建单个模块的契约桩，不包含在正常构建中。`tools\ReportFetcher`（收取报告邮件的附件）、`fetch-reports.cmd`、`analyze-reports.ps1`（汇总报告 zip 和 Issue）、`reply-mail.cmd` 是作者用的辅助工具，不包含在插件构建中。
+根目录其他文件：`PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd`（启动器，[第 6 章](#6-启动器与更新)）、`update-game.cmd`（更新的命令行版）、`build-release.ps1`（发布 zip）、`.github|distance|rpc|taskburst|report|teleport|killphase>ISSUE_TEMPLATE|distance|rpc|taskburst|report|teleport|killphase>`（三语 Issue 模板）。`stubs|distance|rpc|taskburst|report|teleport|killphase>` 是用于单独构建单个模块的契约桩，不包含在正常构建中。`tools|distance|rpc|taskburst|report|teleport|killphase>ReportFetcher`（收取报告邮件的附件）、`fetch-reports.cmd`、`analyze-reports.ps1`（汇总报告 zip 和 Issue）、`reply-mail.cmd` 是作者用的辅助工具，不包含在插件构建中。
 
 ---
 

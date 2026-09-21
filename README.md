@@ -29,9 +29,9 @@
 ## 3 分で導入（Windows + Steam 版）
 
 1. **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** から 2 つの zip をダウンロードします: `PocketRoles-Setup-0.5.2.zip`（ランチャー）と `PocketRoles-0.5.2.zip`（MOD 本体）。
-2. **2 つとも同じフォルダに展開** します（例: `ドキュメント\PocketRoles`。消さない場所に。ネットにつながっていれば Setup zip だけでも動きます — ランチャーが本体を取りに行きます）。
+2. **2 つとも同じフォルダに展開** します（例: `ドキュメント|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`。消さない場所に。ネットにつながっていれば Setup zip だけでも動きます — ランチャーが本体を取りに行きます）。
 3. **「PocketRoles Launcher.cmd」をダブルクリック**。青い「Windows によって PC が保護されました」が出たら「詳細情報」→「実行」（署名証明書を付けていないための表示で、ウイルスではありません）。
-4. **「インストール」** を押します。Steam 版の Among Us をデスクトップの「Among Us PocketRoles」にコピーして、BepInEx と PocketRoles を自動で入れます（数分。Steam 版そのものは書き換えません）。デスクトップが OneDrive でバックアップされている PC では、代わりに `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` にコピーします（クラウドに 1 GB を同期しないため。ランチャーの引数 `-GameDir` で好きなフォルダも選べます）。
+4. **「インストール」** を押します。Steam 版の Among Us をデスクトップの「Among Us PocketRoles」にコピーして、BepInEx と PocketRoles を自動で入れます（数分。Steam 版そのものは書き換えません）。デスクトップが OneDrive でバックアップされている PC では、代わりに `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` にコピーします（クラウドに 1 GB を同期しないため。ランチャーの引数 `-GameDir` で好きなフォルダも選べます）。
 5. **Steam を起動してから「起動」**。初回はタイトル画面まで 1〜2 分かかります（途中で黒い窓が出ても閉じないでください）。タイトル画面の右の窓に PocketRoles のパネルが出たら完了です。あとは **オンライン → 部屋を作る** だけで役職が有効になります。
 
 詳しい手順と手動導入は [第 5 章](#5-導入手順steam)、ランチャーの使い方は [第 6 章](#6-ランチャーと更新)、遊び方は [第 7 章](#7-遊び方) にあります。
@@ -81,7 +81,7 @@
 | 本体の役職（サイエンティスト・エンジニア・ジャッジなど）が出ない | 既定では PocketRoles の役職だけを配り、本体の特殊役職は出しません。併用したいときは設定タブ「役職」の「本体の特殊役職も配る」をオンにするか `/opt roles.vanilla on`（本体のロール設定どおりに出ます） |
 | 設定はどこで変える？ | ロビーのパソコンの「PocketRoles」ボタン。チャットの `/set` `/opt` や歯車メニューでも（[第 8 章](#8-設定タブロビーの設定画面)） |
 | 言語を変えたい | 参加者は `/cmd lang zh` など。部屋の既定言語は設定タブの「言語」。ランチャーは右上の「言語」（[第 13 章](#13-言語日本語--中文--english)） |
-| チャット翻訳と DeepL キー | 既定でオン（設定タブ「チャット翻訳」でオフにできます）。DeepL を使うなら `BepInEx\PocketRoles\deepl-key.txt` にキーを 1 行（[第 13 章](#13-言語日本語--中文--english)） |
+| チャット翻訳と DeepL キー | 既定でオン（設定タブ「チャット翻訳」でオフにできます）。DeepL を使うなら `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` にキーを 1 行（[第 13 章](#13-言語日本語--中文--english)） |
 | ゲームが更新されて動かない | ランチャーの「更新を確認」。対応版が出るまでは MOD は自動で無効になります（[第 24 章](#24-ゲームのバージョンチェック)） |
 | 不具合の報告方法 | ランチャーの「報告 zip を作る」→ `pocketroles.report@gmail.com` に添付（[第 28 章](#28-不具合の報告方法)） |
 | 規約違反にならない？ BAN されない？ | Innersloth のポリシーどおり、部屋を作る時に MOD 部屋登録（公式ルール・役職に必須）を自動で行います。登録したままなら利用だけで BAN はされません（[第 3 章](#3-innersloth-の-mod-ポリシーと公開部屋についての注意必読)） |
@@ -94,7 +94,7 @@
 - 追加役職 26 種: シェリフ、メイヤー、スニッチ、ライター、スピードブースター、ベイト、マッドメイト、マッドメイヤー、マッドスタントマン、マッドホーク、崇拝者、ヴァンパイア、マフィア、魔女、アサシン、イビルホーク、イビル猫又、シリアルキラー、侍、ジェスター、オポチュニスト、テロリスト、ジャッカル、ジャッカルフレンズ、ラバーズ、放火魔
 - 役職は各プレイヤーの **名前タグ** と **チャット** で本人にだけ通知されます
 - 設定は **ロビーの設定画面の「PocketRoles」タブ**（役職 / ロビー / 会話 / 見た目 / ホスト のページと「?」ヘルプ付き。バニラの 3 ボタンは「▶ バニラ設定（ゲーム設定・プリセット・ロール）」にまとめて折りたたみ）と **歯車メニューの「PocketRoles 設定」パネル** で行います（チャットコマンド `/set` `/opt` と設定ファイルでも可）
-- 表示言語: **日本語 / 简体中文 / English**。参加者ごとに `/lang` で切り替え可能（書いた言語から自動判定もします）、文言は `lang\*.json` で編集可能
+- 表示言語: **日本語 / 简体中文 / English**。参加者ごとに `/lang` で切り替え可能（書いた言語から自動判定もします）、文言は `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` で編集可能
 - **チャットの自動翻訳**（既定でオン、**併用モード**）: 外国語のチャットをホストの言語に訳して全員へ、ホストの言葉を外国語の参加者へその人の言語で個別に（Google、または DeepL の API キー）
 - **人集めの支援**: 部屋コードのコピーと案内手順の表示（`/announce`。コピーしたコードは Discord などにそのまま貼れます）、部屋コードの大表示（`/code on`。既定オフ）、便利ホスト部屋から役職部屋への移動案内（`/move`）
 - ホスト支援ツール: ロビーの残り時間表示、自動開始、廃村（ロビー更新）、開始のキャンセルボタン、会議の強制終了、ホットキー（F7 / F8 / F9）、ホストページの操作ボタン、ゲームマスター（観戦）モード、逆スケルド（Dleks）、高 PING 時の作り直し確認
@@ -165,12 +165,12 @@
 
 - **案内部屋の支援**（[第 25 章](#25-便利ホスト登録オフと案内部屋)）: ロビーの左上に部屋コードを大きく表示（`役職部屋 ABCDEF`。既定オフ、`/code on` でオン、`/code` で切替、設定タブ「部屋コードを大きく表示」）。`/announce`（`/guide`）でコードをクリップボードにコピーして（Discord などにそのまま貼れます）、サブスマホで案内部屋を作る 4 つの手順を表示。`/move [コード]` で便利ホスト部屋から役職部屋への移動案内を 3 言語で全員に送信（`/opt guide.autoreg on` なら 30 秒後に登録部屋として作り直し）。歯車メニューにも案内部屋のヒント。
 - **便利ホスト（登録オフ）の整理**: 実機検証で、登録オフの部屋では参加者 1 人宛てのメッセージを送るだけでホストがサーバーに切断される（"DC because Hacking"）ことが分かりました。そのため登録オフの部屋では **役職を配らず、バニラのまま進行** します（ホスト支援ツールと全体向けの案内だけ）。役職ありは登録オン（既定）の部屋で。
-- **翻訳の併用が既定**（`BroadcastToAll = true` + `TranslateForPlayers = true`）: 外国語のチャットはホストの言語に訳して全員へ、ホストの言葉は外国語を選んだ人へその人の言語で個別に。同じ人に 2 通届かないように整理しました。翻訳自体（`Enabled`）も既定オンです（チャットの文章は Google、または `BepInEx\PocketRoles\deepl-key.txt` にキーを置いた場合は DeepL に送られます）。設定タブ「チャット翻訳」か `/opt translate off` でオフにできます。
+- **翻訳の併用が既定**（`BroadcastToAll = true` + `TranslateForPlayers = true`）: 外国語のチャットはホストの言語に訳して全員へ、ホストの言葉は外国語を選んだ人へその人の言語で個別に。同じ人に 2 通届かないように整理しました。翻訳自体（`Enabled`）も既定オンです（チャットの文章は Google、または `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` にキーを置いた場合は DeepL に送られます）。設定タブ「チャット翻訳」か `/opt translate off` でオフにできます。
 - **高 PING の作り直しは確認式**: 部屋を作った直後の PING が高い時、ホストの画面に「PING が ○ ms と高いです。部屋を作り直しますか？」のダイアログ（はい / いいえ、`/rehost yes|no` でも可）。既定はオフ（`MaxHostPing = 0`）。短時間に何度も作り直すと ban points が付くためです（[3.4](#34-ban-とキックについて)）。
 - **設定タブ**: ページボタンは「役職 / ロビー / 会話 / 見た目 / ホスト」の短い表記で横一列。バニラの 3 ボタンは最初は折りたたまれ、「▶ バニラ設定（ゲーム設定・プリセット・ロール）」を押すと展開（「▼ バニラ設定」）。「ホスト」ページの上にボタン列（今すぐ開始 / キャンセル / 廃村 / 会議終了 / テストモード / 設定を表示 / 次の自分）。
 - **役職の配り方を修正**: 2 人以上で開始した時にイントロが出ず真っ暗になる問題を修正（本体の役職送信をそのまま通し、直後に全員分の見え方をまとめて上書き）。シェリフ・ジャッカルのイントロが「インポスター」になるのは従来どおりです（v0.4.1 から役職通知に「※本体の表示（イントロ・キルボタン）は「インポスター」ですが、あなたの本当の役職は○○です。」の 1 行が付きます）。
 - **テストモード**: `/test on` で開始ボタンが即「開始」になり、本体の「4 人でプレイ可能ですが…」ポップアップも自動で OK。
-- **言語ファイル**: アップデートで増えたキーを起動時に `lang\*.json` へ追記します（自分で編集した文章はそのまま）。
+- **言語ファイル**: アップデートで増えたキーを起動時に `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` へ追記します（自分で編集した文章はそのまま）。
 - **ログ**: 通常は静かに。詳細トレースは常に裏で記録され、異常時（開始が固まる・会議要求が通らない）に自動でログへ書き出されます。`/diag` で状態のスナップショット、`/diag dump` で記録の書き出し。
 
 ### v0.4c（v0.4.0 の修正: 実機検証で見つかった問題への対応）
@@ -188,10 +188,10 @@
 |---|---|---|
 | ランチャー（友達用インストーラー） | `PocketRoles-Setup-<ver>.zip` を展開して「PocketRoles Launcher.cmd」→「インストール」を押すだけで、Steam 版のコピー・BepInEx・PocketRoles の導入が終わります。「更新を確認」で GitHub の新版に更新、「起動」で MOD 付き起動、「報告 zip を作る」で不具合報告。日本語 / 中文 / English | [5](#5-導入手順steam), [6](#6-ランチャーと更新) |
 | タイトル画面のパネル | メインメニューの右側の窓に PocketRoles のアイコン・バージョン・作者・GitHub の行・説明を表示（右下のクレジット行はパネルが作れない時の予備） | [9](#9-歯車メニューのpocketroles-設定パネル) |
-| チャット翻訳 | 外国語のチャットをホストの画面に翻訳表示。全員への送信、外国語を選んだ参加者への個別送信も可。Google（キー不要）または DeepL（`BepInEx\PocketRoles\deepl-key.txt` にキーを書く） | [13](#13-言語日本語--中文--english) |
+| チャット翻訳 | 外国語のチャットをホストの画面に翻訳表示。全員への送信、外国語を選んだ参加者への個別送信も可。Google（キー不要）または DeepL（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` にキーを書く） | [13](#13-言語日本語--中文--english) |
 | 言語の自動判定 / 3 言語の案内 | `/lang` を使っていない参加者が中国語・英語で書くと表示言語を自動で切り替えて案内。挨拶（短い 2 行）は既定でその人の言語 → 残り 2 言語の順に 3 言語で届く（`WelcomeAllLanguages`。オフなら 1 言語 + 「English: /cmd lang en ｜ 中文: … ｜ 日本語: …」の 1 行） | [13](#13-言語日本語--中文--english), [14](#14-参加時の挨拶文とルール行) |
 | 設定タブの整理 | PocketRoles ボタンが左列の一番上に。バニラの 3 ボタンは「バニラ設定」ボタンにまとめて表示。タブの中は「役職 / ロビー / チャット / 見た目 / ホスト支援」のページボタン。役職見出しと項目の「?」ボタンで左の説明欄にヘルプを表示 | [8](#8-設定タブロビーの設定画面) |
-| 権限（共同編集） | `BepInEx\PocketRoles\Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt`（1 行に 1 人、フレンドコードか Puid）。`/admin` `/mod` `/vip` の add / remove / list、`/kick`、`/ban`。アドミンは設定コマンド、モデレーターはキック / BAN、VIP は名前に ★ と個別の挨拶 | [11](#11-コマンド一覧) |
+| 権限（共同編集） | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt`（1 行に 1 人、フレンドコードか Puid）。`/admin` `/mod` `/vip` の add / remove / list、`/kick`、`/ban`。アドミンは設定コマンド、モデレーターはキック / BAN、VIP は名前に ★ と個別の挨拶 | [11](#11-コマンド一覧) |
 | バニラ設定の範囲拡張 | キルクールダウン 0〜120 秒（矢印は既定 2.5 秒刻み。0.5 秒単位の値は `/vset` か `[Vanilla] KillCooldownStep` を下げて）、投票 0〜600 秒、会議 0〜600 秒、緊急会議 CD 0〜120 秒、タスク数 0〜30 などを設定画面の矢印と `/vset` で。移動速度・視界も `/vset` で拡張。バニラの参加者にも同じ値が届きます | [8](#8-設定タブロビーの設定画面), [11](#11-コマンド一覧) |
 | `/h` に権限表示 | ヘルプの最後に「あなたの権限: 一般 / VIP / モデレーター / アドミン / ホスト」 | [11](#11-コマンド一覧) |
 | 不具合報告の整備 | ランチャーの報告 zip（ログ・設定・環境情報。DeepL キーは含めません）、報告用メール、GitHub Issue テンプレート、サポート宛先 | [28](#28-不具合の報告方法) |
@@ -200,7 +200,7 @@
 
 | 機能 | 説明 | 章 |
 |---|---|---|
-| 名前の変更 | HostRoles → **PocketRoles**。プラグイン ID `jp.pocketroles.mod`、設定ファイル `jp.pocketroles.mod.cfg`（旧 `jp.hostroles.mod.cfg` は初回起動時に自動でコピー）、フォルダ `BepInEx\PocketRoles\`、ランチャー「PocketRoles Launcher」 | [5](#5-導入手順steam) |
+| 名前の変更 | HostRoles → **PocketRoles**。プラグイン ID `jp.pocketroles.mod`、設定ファイル `jp.pocketroles.mod.cfg`（旧 `jp.hostroles.mod.cfg` は初回起動時に自動でコピー）、フォルダ `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>`、ランチャー「PocketRoles Launcher」 | [5](#5-導入手順steam) |
 | ロビーの残り時間 | 画面左上に `ロビー残り mm:ss`、バニラのタイマー表示を最初から表示、`/time` で誰でも確認、残り 120 秒 / 60 秒でお知らせ | [16](#16-ロビーの残り時間自動開始廃村) |
 | 自動開始 | 設定した人数が揃うとカウントダウンして自動で開始。人数が減ると中止。`/autostart <人数>`、`/start`（今すぐ開始） | [16](#16-ロビーの残り時間自動開始廃村) |
 | 時間切れ対策（延長 / 廃村） | 残り時間が少なくなると、サーバーの延長を受け入れるか、**廃村**（一度開始してすぐ終了し、同じ部屋・同じコードのまま時間をリセット）を自動で実行。`/haison` で手動実行 | [16](#16-ロビーの残り時間自動開始廃村) |
@@ -219,8 +219,8 @@
 
 | 機能 | 説明 | 章 |
 |---|---|---|
-| 帽子・バイザー・ネームプレートの差し替え | `BepInEx\PocketRoles\hats\<ProductId>.png` などを置くと、ホストの画面上でその見た目が差し替わります（誰が着けていても）。`/cos ids` で ID を確認 | [22](#22-見た目のカスタマイズホストの画面だけ) |
-| ロビー BGM | `music\*.wav` / `*.ogg` をロビーで再生（`custom` / `vanilla` / `mute`、音量設定あり） | [22](#22-見た目のカスタマイズホストの画面だけ) |
+| 帽子・バイザー・ネームプレートの差し替え | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png` などを置くと、ホストの画面上でその見た目が差し替わります（誰が着けていても）。`/cos ids` で ID を確認 | [22](#22-見た目のカスタマイズホストの画面だけ) |
+| ロビー BGM | `music|distance|rpc|taskburst|report|teleport|killphase>*.wav` / `*.ogg` をロビーで再生（`custom` / `vanilla` / `mute`、音量設定あり） | [22](#22-見た目のカスタマイズホストの画面だけ) |
 | 装飾 | ロビーの壁絵、ドロップシップの飾り、メインメニューの背景、マウスカーソル | [22](#22-見た目のカスタマイズホストの画面だけ) |
 
 これらは **何も送信しません**。参加者にはバニラの見た目のままです。
@@ -230,7 +230,7 @@
 | 機能 | 説明 | 章 |
 |---|---|---|
 | 設定タブ | ロビーのノート PC（設定画面）に「PocketRoles」タブ | [8](#8-設定タブロビーの設定画面) |
-| 3 言語 | 日本語 / 简体中文 / English。部屋の既定言語と参加者ごとの `/lang`。文言は `BepInEx\PocketRoles\lang\*.json` で編集可能 | [13](#13-言語日本語--中文--english) |
+| 3 言語 | 日本語 / 简体中文 / English。部屋の既定言語と参加者ごとの `/lang`。文言は `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json` で編集可能 | [13](#13-言語日本語--中文--english) |
 | 挨拶文の編集 | `/welcome` で自由に設定（`{roles}` などの差し込みあり） | [14](#14-参加時の挨拶文とルール行) |
 | 自動再ホスト・自動公開 | 切断されたら自動で部屋を作り直す。数秒後に自動で公開。`/public now` | [15](#15-自動再ホストと自動公開) |
 | テストモード | `/test on` で 1 人でも開始でき、勝敗判定が止まる。`/assign` で役職を指定、`/end` で終了 | [23](#23-テストモードスマホ-1-台での動作確認) |
@@ -322,10 +322,10 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 ### 5.1 おすすめ: ランチャーで入れる（PocketRoles-Setup zip）
 
 1. GitHub Releases（<https://github.com/wakayamachannel/PocketRoles/releases>）から **`PocketRoles-Setup-<バージョン>.zip`** をダウンロードします。
-2. 消さないフォルダ（例: `ドキュメント\PocketRoles`）に展開します。**`PocketRoles-<バージョン>.zip`（MOD 本体）も同じフォルダに置いて（または展開して）おく** と、ネットにつながっていなくても導入できます。このフォルダをデスクトップのショートカットが指すので、後で移動・削除しないでください。
+2. 消さないフォルダ（例: `ドキュメント|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`）に展開します。**`PocketRoles-<バージョン>.zip`（MOD 本体）も同じフォルダに置いて（または展開して）おく** と、ネットにつながっていなくても導入できます。このフォルダをデスクトップのショートカットが指すので、後で移動・削除しないでください。
 3. **「PocketRoles Launcher.cmd」をダブルクリック** します。初回に「Windows によって PC が保護されました」（SmartScreen）が出たら **「詳細情報」→「実行」** を押してください。署名証明書を使っていないための表示で、ウイルスではありません。
 4. ランチャーの **「インストール」** を押します。次を自動で行います（数分。進行状況は下の欄に出ます）。
-   1. Steam 版の Among Us を探して（見つからない時はフォルダ選択）、`デスクトップ\Among Us PocketRoles` にコピー（1 GB 前後）。デスクトップが OneDrive でバックアップされている場合は代わりに `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` にコピーします（引数 `-GameDir` で好きなフォルダも選べます）
+   1. Steam 版の Among Us を探して（見つからない時はフォルダ選択）、`デスクトップ|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` にコピー（1 GB 前後）。デスクトップが OneDrive でバックアップされている場合は代わりに `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` にコピーします（引数 `-GameDir` で好きなフォルダも選べます）
    2. BepInEx 6.0.0-be.735（win-x86）を builds.bepinex.dev からダウンロードして展開
    3. GitHub の最新リリースから `PocketRoles-<ver>.zip` を取得して配置（ランチャーと同じフォルダに `PocketRoles-<ver>.zip` を置いておけばオフラインでも可）。旧 `HostRoles.dll` があれば削除
    4. デスクトップに「PocketRoles Launcher」ショートカットを作成
@@ -336,24 +336,24 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 
 ### 5.2 手動で入れる
 
-1. `C:\Program Files (x86)\Steam\steamapps\common\Among Us` を丸ごと別フォルダにコピーします（例: `デスクトップ\Among Us PocketRoles`）。
-2. 上の BepInEx の zip をそのコピー先に展開します（`Among Us.exe` と同じ階層に `winhttp.dll`、`doorstop_config.ini`、`BepInEx\` フォルダが並ぶ状態）。
-3. **Steam を起動した状態で**、コピー先の `Among Us.exe` を **1 回起動** します。初回は BepInEx が `BepInEx\interop` を生成するため、タイトル画面が出るまで **1〜3 分** かかります。タイトルまで出たら閉じて構いません。
-4. GitHub Releases の `PocketRoles-<ver>.zip` をコピー先に展開します（`BepInEx\plugins\PocketRoles.dll` と `BepInEx\PocketRoles\lang\*.json`、README、LICENSE、NOTICE が入っています）。**旧版の `HostRoles.dll` が残っている場合は削除してください**（同じパッチが二重に当たります）。
-5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.2`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx\LogOutput.log` に `PocketRoles v0.5.2 loaded` と出ていることでも確認できます。
+1. `C:|distance|rpc|taskburst|report|teleport|killphase>Program Files (x86)|distance|rpc|taskburst|report|teleport|killphase>Steam|distance|rpc|taskburst|report|teleport|killphase>steamapps|distance|rpc|taskburst|report|teleport|killphase>common|distance|rpc|taskburst|report|teleport|killphase>Among Us` を丸ごと別フォルダにコピーします（例: `デスクトップ|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`）。
+2. 上の BepInEx の zip をそのコピー先に展開します（`Among Us.exe` と同じ階層に `winhttp.dll`、`doorstop_config.ini`、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>` フォルダが並ぶ状態）。
+3. **Steam を起動した状態で**、コピー先の `Among Us.exe` を **1 回起動** します。初回は BepInEx が `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` を生成するため、タイトル画面が出るまで **1〜3 分** かかります。タイトルまで出たら閉じて構いません。
+4. GitHub Releases の `PocketRoles-<ver>.zip` をコピー先に展開します（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll` と `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`、README、LICENSE、NOTICE が入っています）。**旧版の `HostRoles.dll` が残っている場合は削除してください**（同じパッチが二重に当たります）。
+5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.2`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` に `PocketRoles v0.5.2 loaded` と出ていることでも確認できます。
 
-初回起動時に `BepInEx\config\jp.pocketroles.mod.cfg`（設定）、`BepInEx\PocketRoles\lang\`（言語ファイル）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` と `README.txt`（見た目カスタマイズ用）が生成されます。権限ファイル `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` は最初に部屋を作った時に `BepInEx\PocketRoles\` に作られます。DeepL を使う場合の `deepl-key.txt` は自分で作ります（[13 章](#13-言語日本語--中文--english)）。旧 HostRoles の設定 `jp.hostroles.mod.cfg` が同じフォルダにあり、新しい設定ファイルがまだ無い場合は、内容が自動でコピーされます（設定はそのまま引き継がれます）。
+初回起動時に `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（設定）、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>`（言語ファイル）、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>{hats,visors,nameplates,music,images}|distance|rpc|taskburst|report|teleport|killphase>` と `README.txt`（見た目カスタマイズ用）が生成されます。権限ファイル `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` は最初に部屋を作った時に `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` に作られます。DeepL を使う場合の `deepl-key.txt` は自分で作ります（[13 章](#13-言語日本語--中文--english)）。旧 HostRoles の設定 `jp.hostroles.mod.cfg` が同じフォルダにあり、新しい設定ファイルがまだ無い場合は、内容が自動でコピーされます（設定はそのまま引き継がれます）。
 
 ### 開発者の PC での構成（参考）
 
-- MOD 用コピー: `デスクトップ\Among Us PocketRoles`
-- ソース: `デスクトップ\PocketRoles`（ソース一式の中でランチャーを起動すると開発モードになります）
-- ランチャー: デスクトップの **「PocketRoles Launcher」ショートカット**（実体は `PocketRoles\PocketRoles Launcher.cmd`）
-- `build.cmd` を実行するとビルドした `PocketRoles.dll` が自動で `..\Among Us PocketRoles\BepInEx\plugins` にコピーされます。
-- 設定ファイル: `Among Us PocketRoles\BepInEx\config\jp.pocketroles.mod.cfg`（初回起動時に生成）
-- 言語ファイル: `Among Us PocketRoles\BepInEx\PocketRoles\lang\ja.json` / `zh-CN.json` / `en.json`
-- 見た目カスタマイズ用フォルダ: `Among Us PocketRoles\BepInEx\PocketRoles\`（`hats` `visors` `nameplates` `music` `images`）
-- ログ: `Among Us PocketRoles\BepInEx\LogOutput.log`
+- MOD 用コピー: `デスクトップ|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`
+- ソース: `デスクトップ|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`（ソース一式の中でランチャーを起動すると開発モードになります）
+- ランチャー: デスクトップの **「PocketRoles Launcher」ショートカット**（実体は `PocketRoles|distance|rpc|taskburst|report|teleport|killphase>PocketRoles Launcher.cmd`）
+- `build.cmd` を実行するとビルドした `PocketRoles.dll` が自動で `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` にコピーされます。
+- 設定ファイル: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（初回起動時に生成）
+- 言語ファイル: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>ja.json` / `zh-CN.json` / `en.json`
+- 見た目カスタマイズ用フォルダ: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>`（`hats` `visors` `nameplates` `music` `images`）
+- ログ: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log`
 
 ---
 
@@ -368,7 +368,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 | **友達モード（インストーラー）** | ランチャーの隣に `PocketRoles.csproj` が **無い** 時（`PocketRoles-Setup-<ver>.zip` を展開した場合） | インストール / 更新を確認 / 起動 / 報告 zip を作る / 設定ファイルを開く / ログを開く / 説明書 (README) / mod フォルダを開く |
 | **開発モード** | ソース一式の中で起動した時（`PocketRoles.csproj` が隣にある） | mod 付きで起動 / 更新チェック / 更新（コピー → interop → 再ビルド）/ 再ビルドのみ / GitHub の更新を確認 / バニラ (Steam 版) を起動 / 設定ファイルを開く / ログを開く / 説明書 (README) / mod フォルダを開く / 報告 zip を作る |
 
-共通: 右上の **「言語」** で 日本語 / 中文 (简体) / English を切り替えられます（初回は Windows の表示言語から自動判定、選択は `launcher-state.json` に保存）。上部に状態、中央にボタン、下部に進行状況のログが出ます。処理中はボタンが無効になります。MOD 用コピーの場所は `デスクトップ\Among Us PocketRoles`（開発モードではソースの隣の `..\Among Us PocketRoles` を優先）で、環境変数 `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` か引数 `-GameDir` / `-SteamDir` で変えられます。
+共通: 右上の **「言語」** で 日本語 / 中文 (简体) / English を切り替えられます（初回は Windows の表示言語から自動判定、選択は `launcher-state.json` に保存）。上部に状態、中央にボタン、下部に進行状況のログが出ます。処理中はボタンが無効になります。MOD 用コピーの場所は `デスクトップ|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`（開発モードではソースの隣の `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` を優先）で、環境変数 `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` か引数 `-GameDir` / `-SteamDir` で変えられます。
 
 状態表示:
 
@@ -377,8 +377,8 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 | Steam 版 Among Us / mod 用コピー | 両方のゲームフォルダから読み取ったバージョン。違っていれば **Steam 版が更新されています**（橙 / 赤字） |
 | BepInEx | 導入済みのバージョン（be.735 なら OK、違えば要更新）。開発モードでは「BepInEx / interop」の有無 |
 | PocketRoles.dll | 導入済みのバージョンと日時（開発モードではビルド時のゲームバージョンも。合っていなければ **再ビルドが必要**） |
-| interop (初回起動で生成) | 初回起動で生成される `BepInEx\interop` の有無 |
-| .NET SDK (再ビルド用) | 開発モードのみ。`%USERPROFILE%\.dotnet\dotnet.exe` の有無 |
+| interop (初回起動で生成) | 初回起動で生成される `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` の有無 |
+| .NET SDK (再ビルド用) | 開発モードのみ。`%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe` の有無 |
 | Steam クライアント | 起動中かどうか（ゲームを遊ぶ時も interop 生成の時も Steam が必要） |
 
 緑字で「準備 OK」（開発モードでは「最新です」）と出ていれば、そのまま遊べます。
@@ -388,15 +388,15 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 | ボタン | 動作 |
 |---|---|
 | **インストール** | [5.1](#51-おすすめ-ランチャーで入れるpocketroles-setup-zip) の手順を実行します。失敗した手順があっても、原因を直してもう一度押せば続きから再開します（終わっている手順はスキップ）。ゲームが起動中は実行できません |
-| **更新を確認** | GitHub の最新リリースと導入済みの `PocketRoles.dll` のバージョンを比べ、新しければ「今すぐ更新しますか？」→ ダウンロードして配置します（`BepInEx\config\` は上書きしないので設定は残ります。見た目ファイルもそのまま）。続けて Steam 版が更新されていれば「mod 用コピーを更新しますか？」と確認します（下の「Among Us のアップデート後」） |
+| **更新を確認** | GitHub の最新リリースと導入済みの `PocketRoles.dll` のバージョンを比べ、新しければ「今すぐ更新しますか？」→ ダウンロードして配置します（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>` は上書きしないので設定は残ります。見た目ファイルもそのまま）。続けて Steam 版が更新されていれば「mod 用コピーを更新しますか？」と確認します（下の「Among Us のアップデート後」） |
 | **起動** | MOD 用コピーの `Among Us.exe` を起動します。未インストール / Among Us 起動中 / Steam 未起動の時は案内だけ出します。Steam 版が更新されていれば先にコピーの更新を勧めます（更新しないとオンラインに入れません） |
 | **報告 zip を作る** | デスクトップに `PocketRoles-report-YYYYMMDD-HHMM.zip` を作り、送り先とメールを開くボタンのダイアログを出します（[第 28 章](#28-不具合の報告方法)） |
-| **設定ファイルを開く** | `BepInEx\config\jp.pocketroles.mod.cfg` をメモ帳で開きます |
-| **ログを開く** | `BepInEx\LogOutput.log` をメモ帳で開きます |
+| **設定ファイルを開く** | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` をメモ帳で開きます |
+| **ログを開く** | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` をメモ帳で開きます |
 | **説明書 (README)** | 選んでいる言語の README（MOD 用コピーに展開されたもの）を開きます |
 | **mod フォルダを開く** | MOD 用コピーのフォルダをエクスプローラーで開きます |
 
-**Among Us のアップデート後（友達モード）**: Steam 版が新しくなると「起動」や「更新を確認」で「mod 用コピーを更新しますか？」と聞かれます。「はい」で Steam 版のゲームファイルをコピーし直し、古い `BepInEx\interop` と `BepInEx\cache` を削除します（`BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt` は上書きしないので、設定・plugins・言語ファイル・見た目ファイルは残ります）。次の起動で interop が再生成されます（1〜2 分）。PocketRoles が新しいゲームバージョンに対応していない場合は、起動しても [バージョンチェック](#24-ゲームのバージョンチェック) で MOD が無効のままになるので、対応版が出たら「更新を確認」で更新してください。
+**Among Us のアップデート後（友達モード）**: Steam 版が新しくなると「起動」や「更新を確認」で「mod 用コピーを更新しますか？」と聞かれます。「はい」で Steam 版のゲームファイルをコピーし直し、古い `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` と `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache` を削除します（`BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt` は上書きしないので、設定・plugins・言語ファイル・見た目ファイルは残ります）。次の起動で interop が再生成されます（1〜2 分）。PocketRoles が新しいゲームバージョンに対応していない場合は、起動しても [バージョンチェック](#24-ゲームのバージョンチェック) で MOD が無効のままになるので、対応版が出たら「更新を確認」で更新してください。
 
 自動起動: ショートカットのリンク先に ` -AutoLaunch` を付けると、ランチャーを開いた直後に「起動」を自動で実行します（両モード）。テスト・自動化用に `-Action Install|Check|Report|Status` の画面なし実行、`-Language ja|zh-CN|en`、`-Friend`（友達モードを強制）もあります。
 
@@ -406,7 +406,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 |---|---|
 | **mod 付きで起動** | MOD 用コピーの `Among Us.exe` を起動します。Steam が起動していないと警告。アップデートを検知している時は「先に更新しますか？」と確認（更新しないとオンラインに入れません）、再ビルドが必要な時は「今ビルドしますか？」と確認します |
 | **更新チェック / 更新** | バージョンを比較し、違いがあれば下の「更新の流れ」を自動で実行。違いがなければ、必要に応じて再ビルドだけ行います |
-| **再ビルドのみ** | `dotnet build -c Release` を実行して `PocketRoles.dll` を `BepInEx\plugins` に配置します（1〜2 分） |
+| **再ビルドのみ** | `dotnet build -c Release` を実行して `PocketRoles.dll` を `BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` に配置します（1〜2 分） |
 | **GitHub の更新を確認** | GitHub の最新リリースを確認し、新しければダウンロードして配置します（ローカルでビルドした DLL は上書きされます） |
 | **バニラ (Steam 版) を起動** | Steam 版（MOD なし）を起動します。他人の部屋に参加する時はこちら |
 | **設定ファイルを開く** / **ログを開く** / **説明書 (README)** / **mod フォルダを開く** / **報告 zip を作る** | 友達モードと同じ |
@@ -414,7 +414,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 **更新の流れ（Among Us のアップデート後、開発モード）**: ランチャーの「更新チェック / 更新」（またはコマンド版の `update-game.cmd`）は次を行います。**ゲームを閉じ、Steam を起動した状態で** 実行してください。
 
 1. Steam 版のゲームファイルを MOD 用コピーへコピー（`BepInEx`、`dotnet`、`winhttp.dll`、`doorstop_config.ini`、`steam_appid.txt` は上書きしないので、設定・plugins・言語ファイル・見た目カスタマイズのファイルはそのまま残ります）
-2. 古い `BepInEx\interop` と `BepInEx\cache` を削除
+2. 古い `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` と `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache` を削除
 3. ゲームを起動して interop を再生成（1〜3 分。ランチャーはログに `Chainloader startup complete` が出ると自動でゲームを閉じます。`update-game.cmd` の場合はタイトル画面が出たら手動で閉じてください）
 4. `PocketRoles` を再ビルド（`build.cmd` 相当）
 
@@ -460,7 +460,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 
 - パネルの上部に **ページボタンが横一列** に並びます: **役職 / ロビー / 会話 / 見た目 / ホスト**（会話 = チャット、ホスト = ホスト支援）。選んだページはメニューを閉じても覚えています。
 - 役職の見出しの横と、説明のある項目の右端に小さな **「?」ボタン** があります。マウスを乗せると左の説明欄に説明が出て、クリックすると固定されます（もう一度クリックで元の説明に戻ります）。役職の「?」には役職の説明・陣営と「キル / ベント / サボタージュ / タスク」の ○×、項目の「?」にはその設定の意味が出ます。
-- 見出し・項目名・説明は部屋の既定言語で表示されます（`lang\*.json` の `opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` で変更できます）。
+- 見出し・項目名・説明は部屋の既定言語で表示されます（`lang|distance|rpc|taskburst|report|teleport|killphase>*.json` の `opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` で変更できます）。
 
 ### ページの内容
 
@@ -644,18 +644,18 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `reload` | 設定ファイルを読み直す（ロビーでのみ） |
 | `mod on` / `mod off` | MOD の有効 / 無効（ロビーでのみ。試合中は切り替え不可） |
 | `lang default ja|zh|en` | 部屋の既定言語を変更（`/opt lang` と同じ） |
-| `lang reload` | 言語ファイル `lang\*.json` を読み直す |
+| `lang reload` | 言語ファイル `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` を読み直す |
 | `welcome` | 挨拶文の状態と使い方を表示 |
-| `welcome <文章>` | 挨拶文を設定（最大 320 文字。`\n` で改行、`{rules}` `{roles}` `{settings}` `{help}` `{version}` を差し込み） |
+| `welcome <文章>` | 挨拶文を設定（最大 320 文字。`|distance|rpc|taskburst|report|teleport|killphase>n` で改行、`{rules}` `{roles}` `{settings}` `{help}` `{version}` を差し込み） |
 | `welcome show` | 挨拶文をホストの画面にプレビュー |
 | `welcome reset` | 挨拶文を標準に戻す |
 | `welcome settings on|off` | 挨拶に現在の設定を付けるかどうか（既定 off。参加者は `/cmd s` で見られます） |
 | `rules` / `rules show` | 挨拶のルール行の状態を表示 |
-| `rules <文章>` | ルール行を設定（最大 200 文字、`\n` で改行。`RulesMode` が `custom` になります） |
+| `rules <文章>` | ルール行を設定（最大 200 文字、`|distance|rpc|taskburst|report|teleport|killphase>n` で改行。`RulesMode` が `custom` になります） |
 | `rules none` | ルール行を標準（「ルールなし」）に戻す |
 | `test` / `test on|off` | テストモードの表示 / 切り替え（ロビーでのみ） |
-| `next [impostor \| crew \| auto \| <本体の役職名>]` | 次の 1 試合の自分の役を指定（v0.5.1）。テストモード不要、登録オフの部屋でも可。設定タブ「ホスト」の「次の自分」ボタンでも。例: `/next impostor`、`/next shapeshifter`。`/next` だけで現在の指定（他の人の指名も一緒に表示） |
-| `next <名前\|#番号> impostor \| crew \| auto`、`next reset` | 次の 1 試合の**他の人**の役を指定（v0.5.2）。名前の一部か `#番号`（`/next 太郎 impostor`、`/next impostor #3` の順でも可）。インポスター枠の人数まで（自分の `/next impostor` も 1 人分）、多く指名した時は先に指名した人が優先。指名した人が退室すると解除、試合が始まると使い切り、部屋を出ると消える。`/next 太郎 auto` でその人だけ解除、`/next reset` で自分の分も含めて全部解除、`/next 太郎` でその人の指定を表示。設定タブ「ホスト」の「次のインポ」ボタンで参加者を順に 1 人だけ指名。登録オフの部屋でも可。結果はホストの画面にだけ「今回: 太郎 = インポスター（花子 と入れ替え）」 |
+| `next [impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto |distance|rpc|taskburst|report|teleport|killphase>| <本体の役職名>]` | 次の 1 試合の自分の役を指定（v0.5.1）。テストモード不要、登録オフの部屋でも可。設定タブ「ホスト」の「次の自分」ボタンでも。例: `/next impostor`、`/next shapeshifter`。`/next` だけで現在の指定（他の人の指名も一緒に表示） |
+| `next <名前|distance|rpc|taskburst|report|teleport|killphase>|#番号> impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto`、`next reset` | 次の 1 試合の**他の人**の役を指定（v0.5.2）。名前の一部か `#番号`（`/next 太郎 impostor`、`/next impostor #3` の順でも可）。インポスター枠の人数まで（自分の `/next impostor` も 1 人分）、多く指名した時は先に指名した人が優先。指名した人が退室すると解除、試合が始まると使い切り、部屋を出ると消える。`/next 太郎 auto` でその人だけ解除、`/next reset` で自分の分も含めて全部解除、`/next 太郎` でその人の指定を表示。設定タブ「ホスト」の「次のインポ」ボタンで参加者を順に 1 人だけ指名。登録オフの部屋でも可。結果はホストの画面にだけ「今回: 太郎 = インポスター（花子 と入れ替え）」 |
 | `assign <名前|ID> <役職>` | 次の試合でそのプレイヤーに役職を強制。例: `/assign Taro sheriff`、`/assign 2 jackal`。`/assign <名前> none` で個別解除 |
 | `assign show` / `assign clear` | 役職指定の一覧 / 全解除 |
 | `end` | 試合を強制終了（クルー勝利扱い。テストモードの終了に使う） |
@@ -686,7 +686,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `admin remove <名前|コード>` / `admin reload` | 削除 / ファイルを読み直す |
 | `mod add|remove|list <…>`, `moderator …` | モデレーター（`Moderator.txt`）の追加・削除・一覧。`/mod on|off` は従来どおり MOD の切り替え |
 | `vip add|remove|list <…>` / `vip <名前>` | VIP（`VIP.txt`）の追加・削除・一覧。`/vip <名前>` だけで追加 |
-| `ac`（`anticheat`） | チート検知（v0.5.3）の記録の一覧。`/ac clear` で消去、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc> <#番号\|名前> [kick]` で判定と通知を試す（`kick` を付けた時だけ本当に退出） |
+| `ac`（`anticheat`） | チート検知（v0.5.3）の記録の一覧。`/ac clear` で消去、`/ac on|distance|rpc|taskburst|report|teleport|killphase>|off`、`/ac kick on|distance|rpc|taskburst|report|teleport|killphase>|off`、`/ac test <kill|distance|rpc|taskburst|report|teleport|killphase>|vent|distance|rpc|taskburst|report|teleport|killphase>|ability|distance|rpc|taskburst|report|teleport|killphase>|task|distance|rpc|taskburst|report|teleport|killphase>|chat|distance|rpc|taskburst|report|teleport|killphase>|sabotage|distance|rpc|taskburst|report|teleport|killphase>|killcd|distance|rpc|taskburst|report|teleport|killphase>|protect|distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase> <#番号|distance|rpc|taskburst|report|teleport|killphase>|名前> [kick]` で判定と通知を試す（`kick` を付けた時だけ本当に退出） |
 | `kick <名前|番号>` | その人をキックします（部屋にいる時だけ。ホストと、自分と同等以上の権限の人はキックできません） |
 | `ban <名前|番号>` | キックして `Banlist.txt` に登録（次に参加した時も自動でキック）。サーバー側の一時 BAN も送ります |
 | `ban list` / `ban remove <名前|コード>` / `unban <…>` / `ban reload` | BAN 一覧 / 解除 / 読み直し |
@@ -695,7 +695,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 
 ### 権限（共同編集）: アドミン / モデレーター / VIP / BAN（v0.4b）
 
-友達と一緒に部屋を運営するための仕組みです。`BepInEx\PocketRoles\` の 4 つのテキストファイルで管理します（最初に部屋を作った時に見出し付きで作られます）。
+友達と一緒に部屋を運営するための仕組みです。`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` の 4 つのテキストファイルで管理します（最初に部屋を作った時に見出し付きで作られます）。
 
 | ファイル | 権限 | できること |
 |---|---|---|
@@ -829,13 +829,13 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `credits.url` | URL | `[Credits] RepoUrl` |
 | `credits.show` | on / off | `[Credits] ShowInMenu` |
 
-範囲外の値は範囲内に丸められます。on / off は `1`/`0`、`true`/`false`、`yes`/`no`、`オン`/`オフ` でも指定できます。DeepL の API キーは `/opt` では設定できません（ファイル `BepInEx\PocketRoles\deepl-key.txt`、[第 13 章](#13-言語日本語--中文--english)）。
+範囲外の値は範囲内に丸められます。on / off は `1`/`0`、`true`/`false`、`yes`/`no`、`オン`/`オフ` でも指定できます。DeepL の API キーは `/opt` では設定できません（ファイル `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`、[第 13 章](#13-言語日本語--中文--english)）。
 
 ---
 
 ## 12. 設定ファイル
 
-`BepInEx\config\jp.pocketroles.mod.cfg`（初回起動時に自動生成。設定タブ・歯車パネル・`/set` `/opt` で変えた値は即座にここへ保存されます。ゲームを閉じた状態でテキストエディタで編集するか、編集後にロビーで `/reload`）。実際のファイルではセクションがアルファベット順に並びます。
+`BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg`（初回起動時に自動生成。設定タブ・歯車パネル・`/set` `/opt` で変えた値は即座にここへ保存されます。ゲームを閉じた状態でテキストエディタで編集するか、編集後にロビーで `/reload`）。実際のファイルではセクションがアルファベット順に並びます。
 
 ```ini
 [General]
@@ -848,22 +848,22 @@ GameMaster = false              # ゲームマスター: ホストは役職を�
 [Chat]
 WelcomeMessage = true           # 参加者へ MOD 部屋の案内を送る
 RoleInfoAtMeeting = true        # 会議開始時に役職説明を再送する
-WelcomeText =                   # 挨拶文（空 = 標準）。\n で改行、{rules} {roles} {settings} {help} {version} を差し込み
+WelcomeText =                   # 挨拶文（空 = 標準）。|distance|rpc|taskburst|report|teleport|killphase>n で改行、{rules} {roles} {settings} {help} {version} を差し込み
 WelcomeIncludeSettings = false  # 挨拶に現在の役職設定を付ける（既定オフ。設定は /cmd s でいつでも見られる）
 PlayerCommands = true           # 参加者のチャットコマンドを許可（false = 無視して 1 回だけ案内）
 AllCommands = true              # チャットコマンド全体を許可（false = ホストも /mod だけ）
 RulesMode = none                # 挨拶のルール行: none（標準の「ルールなし」）| custom（RulesText）
-RulesText =                     # custom の時のルール文（\n で改行、/rules <文章>）
+RulesText =                     # custom の時のルール文（|distance|rpc|taskburst|report|teleport|killphase>n で改行、/rules <文章>）
 WelcomeAllLanguages = true      # 短い挨拶（2 行）をその人の言語 → 残り 2 言語の順に送る（false = その人の言語だけ + 3 言語の /lang 案内 1 行）
 
 [Discord]                       # Discord に部屋コードを自動投稿（v0.4.5）。Bot 不要
 WebhookUrl =                    # チャンネル設定「連携サービス → ウェブフック → URL をコピー」の URL。空 = 投稿しない。他人に見せないこと（このファイルからだけ変更可）
 Announce = true                 # 部屋を作ると「🔑 部屋コード ABCDEF — 3/15人 募集中（役職あり）」を投稿し、入退室・開始・終了で同じ投稿を書き換える（5 秒に 1 回まで）
-Text =                          # 文面（空 = 標準）。{code} {count} {max} {state} {kind}、\n で改行、**太字** や @here も可
+Text =                          # 文面（空 = 標準）。{code} {count} {max} {state} {kind}、|distance|rpc|taskburst|report|teleport|killphase>n で改行、**太字** や @here も可
 
 [Translate]                     # チャット翻訳（v0.4b）。文章は Google / DeepL に送られます。DeepL のキーはこのファイルには書きません
 Enabled = true                  # 外国語のチャットを翻訳する（既定オン。文章は Google / DeepL に送られます。設定タブ「チャット翻訳」か /opt translate off でオフ）
-Provider = auto                 # auto（BepInEx\PocketRoles\deepl-key.txt にキーがあれば DeepL、なければ Google）| google | deepl
+Provider = auto                 # auto（BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt にキーがあれば DeepL、なければ Google）| google | deepl
 TargetLang =                    # ホストが読む言語 ja | zh | en（空 = [General] Language）
 ShowOnHost = true               # 翻訳をホストの画面に表示（送信なし）
 BroadcastToAll = true           # 外国語のチャットをホストの言語に訳して全員に送る（個別訳が届く人には送らない）
@@ -872,7 +872,7 @@ AutoDetectLang = true           # /lang 未設定の人が中国語・英語で�
 MinChars = 3                    # この文字数未満は翻訳しない（1〜50）
 MaxPerMinute = 20               # 1 分あたりの翻訳回数の上限（1〜120。超えた分は翻訳しない）
 
-[Permissions]                   # 権限（v0.4b）。名簿は BepInEx\PocketRoles\Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
+[Permissions]                   # 権限（v0.4b）。名簿は BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
 AdminsCanChangeSettings = true  # Admin.txt の人がホスト用コマンド（/set /opt /show /start /cancel /autostart /welcome /rules /kick /ban /vset …）を使える
 ModeratorsCanKick = true        # Moderator.txt の人が /kick と /ban を使える
 VipMarker = true                # VIP.txt の人の名前に★を付け、参加時に個別の挨拶を送る
@@ -931,10 +931,10 @@ Enabled = true                  # 見た目カスタマイズ全体のオン/オ
 LobbyMusic = custom             # custom（music フォルダのファイル。無ければバニラ）| vanilla | mute
 LobbyMusicFile =                # music フォルダ内のファイル名（WAV / OGG。空 = 最初に見つかったファイル）
 LobbyMusicVolume = 0.07         # カスタム曲の音量（0〜1。バニラのテーマは約 0.07）
-LobbyPaint = true               # images\lobbypaint.png をロビーの壁に表示
-Dropship = true                 # images\dropship.png をドロップシップの飾りとして表示
-MenuBackground = true           # images\menu.png をメインメニューの背景にする
-Cursor = true                   # images\cursor.png をマウスカーソルにする
+LobbyPaint = true               # images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png をロビーの壁に表示
+Dropship = true                 # images|distance|rpc|taskburst|report|teleport|killphase>dropship.png をドロップシップの飾りとして表示
+MenuBackground = true           # images|distance|rpc|taskburst|report|teleport|killphase>menu.png をメインメニューの背景にする
+Cursor = true                   # images|distance|rpc|taskburst|report|teleport|killphase>cursor.png をマウスカーソルにする
 
 [Roles]                         # 役職ごとに Count（人数 0〜15）と Chance（出現率 0〜100）
 Sheriff.Count = 1
@@ -1072,7 +1072,7 @@ KnownToJackal = false           # ジャッカルがジャッカルフレンズ�
 SheriffCanKill = true           # シェリフはジャッカルフレンズを撃っても死なない
 ```
 
-テストモードと `/assign` の内容、逆スケルドの選択状態は設定ファイルには保存されません（部屋ごとに解除されます）。DeepL の API キー（`BepInEx\PocketRoles\deepl-key.txt`）と権限の名簿（`Admin.txt` など）は設定ファイルとは別のファイルです。
+テストモードと `/assign` の内容、逆スケルドの選択状態は設定ファイルには保存されません（部屋ごとに解除されます）。DeepL の API キー（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`）と権限の名簿（`Admin.txt` など）は設定ファイルとは別のファイルです。
 
 ---
 
@@ -1097,7 +1097,7 @@ PocketRoles がプレイヤーに送る文章（挨拶、役職名と説明、�
 
 ### 文言ファイル（編集可能）
 
-文章は `BepInEx\PocketRoles\lang\` の `ja.json` / `zh-CN.json` / `en.json` から読み込まれます（初回起動時に MOD 内蔵の既定内容が書き出されます）。
+文章は `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` の `ja.json` / `zh-CN.json` / `en.json` から読み込まれます（初回起動時に MOD 内蔵の既定内容が書き出されます）。
 
 ```json
 {
@@ -1139,7 +1139,7 @@ PocketRoles がプレイヤーに送る文章（挨拶、役職名と説明、�
 **DeepL を使う場合（キーの設定）**
 
 1. DeepL API のアカウント（無料の DeepL API Free でも可）を作り、API キー（`xxxxxxxx-xxxx-…:fx` の形。Free のキーは末尾が `:fx`）を取得します。
-2. メモ帳で **`BepInEx\PocketRoles\deepl-key.txt`** を作り、**キーだけを 1 行目に** 書いて保存します（UTF-8。空行と `#` で始まる行は無視されます）。
+2. メモ帳で **`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`** を作り、**キーだけを 1 行目に** 書いて保存します（UTF-8。空行と `#` で始まる行は無視されます）。
 3. `Provider` は `auto` のままで構いません（キーがあれば自動で DeepL になります）。ゲーム起動中に作った場合も 1 分以内に読み込まれます。
 
 キーは **設定ファイル（`jp.pocketroles.mod.cfg`）には絶対に書かないでください**（`/opt` にもキーの項目はありません）。キーはこのファイルから読んで DeepL にだけ送り、ログには出さず、ランチャーの報告 zip にも含めません（万一ログなどに紛れ込んでも、報告 zip を作る時に `<api-key-masked>` に置き換えます）。DeepL が失敗した時（キー無効・上限超過など）は Google で代用し、ログに 1 回だけ警告を出します。
@@ -1187,26 +1187,26 @@ PocketRoles がプレイヤーに送る文章（挨拶、役職名と説明、�
 | コマンド | 内容 |
 |---|---|
 | `/rules` / `/rules show` | 現在のルール行と使い方 |
-| `/rules <文章>` | ルールを設定（最大 200 文字。`\n` で改行）。`[Chat] RulesMode = custom`、`RulesText` に保存 |
+| `/rules <文章>` | ルールを設定（最大 200 文字。`|distance|rpc|taskburst|report|teleport|killphase>n` で改行）。`[Chat] RulesMode = custom`、`RulesText` に保存 |
 | `/rules none` | 標準（「この部屋に特別なルールはありません…」）に戻す（`RulesMode = none`） |
 
-例: `/rules 初心者歓迎！\n暴言・晒しは禁止です。` → 挨拶文の 3 行目に入ります（`/welcome show` でプレビュー）。標準のルール文は言語ごとに翻訳されますが、自分で書いた文はそのままです。
+例: `/rules 初心者歓迎！|distance|rpc|taskburst|report|teleport|killphase>n暴言・晒しは禁止です。` → 挨拶文の 3 行目に入ります（`/welcome show` でプレビュー）。標準のルール文は言語ごとに翻訳されますが、自分で書いた文はそのままです。
 
 ### 自分の文章にする（`/welcome`）
 
 `/welcome <文章>` で本文（2 行目以降）を置き換えられます（最大 320 文字）。1 行目の「役職MOD部屋です。何も入れなくてOK。…」は MOD 部屋の案内（MOD ポリシー上の通知）なので **必ず付き、外せません**。
 
-- `\n`（バックスラッシュと n の 2 文字）で改行。
+- `|distance|rpc|taskburst|report|teleport|killphase>n`（バックスラッシュと n の 2 文字）で改行。
 - 差し込み: `{rules}` = ルール行、`{roles}` = 有効な役職の一覧、`{settings}` = 現在の設定（`/show` と同じ内容）、`{help}` = ヘルプと言語変更の 1 行、`{version}` = MOD のバージョン。
 - `{settings}` を書かなくても「挨拶に設定を含める」がオン（既定オフ）なら設定は末尾に付きます。`{rules}` を書かなくても、`/rules` でルールを設定していればルール行は末尾に付きます（標準の「ルールなし」文は `{rules}` を書いた場所にだけ入ります）。
 
 例:
 
 ```
-/welcome ようこそ！初心者歓迎です。\n今日の役職: {roles}\n{rules}\n{help}
+/welcome ようこそ！初心者歓迎です。|distance|rpc|taskburst|report|teleport|killphase>n今日の役職: {roles}|distance|rpc|taskburst|report|teleport|killphase>n{rules}|distance|rpc|taskburst|report|teleport|killphase>n{help}
 ```
 
-`/welcome show` でホストの画面にプレビュー、`/welcome reset` で標準に戻ります。`/welcome` だけで現在の状態と使い方が出ます。設定ファイルでは `[Chat] WelcomeText` に同じ文章（`\n` 付き）が保存されます。
+`/welcome show` でホストの画面にプレビュー、`/welcome reset` で標準に戻ります。`/welcome` だけで現在の状態と使い方が出ます。設定ファイルでは `[Chat] WelcomeText` に同じ文章（`|distance|rpc|taskburst|report|teleport|killphase>n` 付き）が保存されます。
 
 挨拶は受け取る人の言語で組み立てられます（標準の文章と差し込み部分は翻訳されますが、自分で書いた本文はそのままです）。
 
@@ -1389,20 +1389,20 @@ Among Us には左右反転したスケルド「Dleks（dlekS ehT）」がエイ
 
 ## 22. 見た目のカスタマイズ（ホストの画面だけ）
 
-v0.3 の機能です。`BepInEx\PocketRoles\` に画像や音楽を置くと、**ホスト（あなた）の画面だけ** 見た目が変わります。**参加者には何も送信されず、参加者側はバニラのままです**（帽子を差し替えても、他の人にはその人が着けている元の帽子が見えています）。同じフォルダに MOD が書き出す `README.txt`（日本語）にも同じ説明があります。
+v0.3 の機能です。`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` に画像や音楽を置くと、**ホスト（あなた）の画面だけ** 見た目が変わります。**参加者には何も送信されず、参加者側はバニラのままです**（帽子を差し替えても、他の人にはその人が着けている元の帽子が見えています）。同じフォルダに MOD が書き出す `README.txt`（日本語）にも同じ説明があります。
 
 ### フォルダ構成（初回起動時に自動作成）
 
 ```
-<ゲーム>\BepInEx\PocketRoles\
-  hats\<ProductId>.png            帽子のメイン画像。省略可: <ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
-  visors\<ProductId>.png          バイザー。省略可: _left.png / _climb.png / _floor.png
-  nameplates\<ProductId>.png      会議画面のネームプレート
-  music\*.wav | *.ogg             ロビー BGM（最初に見つかったファイル、または LobbyMusicFile で指定したもの）
-  images\lobbypaint.png           ロビーの壁の絵（省略可）
-  images\dropship.png             ドロップシップの飾り（省略可）
-  images\menu.png                 メインメニューの背景（省略可）
-  images\cursor.png               マウスカーソル（省略可、64×64 以下推奨）
+<ゲーム>|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>
+  hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png            帽子のメイン画像。省略可: <ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
+  visors|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png          バイザー。省略可: _left.png / _climb.png / _floor.png
+  nameplates|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png      会議画面のネームプレート
+  music|distance|rpc|taskburst|report|teleport|killphase>*.wav | *.ogg             ロビー BGM（最初に見つかったファイル、または LobbyMusicFile で指定したもの）
+  images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png           ロビーの壁の絵（省略可）
+  images|distance|rpc|taskburst|report|teleport|killphase>dropship.png             ドロップシップの飾り（省略可）
+  images|distance|rpc|taskburst|report|teleport|killphase>menu.png                 メインメニューの背景（省略可）
+  images|distance|rpc|taskburst|report|teleport|killphase>cursor.png               マウスカーソル（省略可、64×64 以下推奨）
   README.txt                      MOD が書き出す説明（編集しても次回上書きされます）
 ```
 
@@ -1414,7 +1414,7 @@ v0.3 の機能です。`BepInEx\PocketRoles\` に画像や音楽を置くと、*
 Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 ```
 
-例: `hat_pk05_Cheese` → `hats\hat_pk05_Cheese.png`、`visor_Cat` → `visors\visor_Cat.png`、`nameplate_Bavarian` → `nameplates\nameplate_Bavarian.png`。
+例: `hat_pk05_Cheese` → `hats|distance|rpc|taskburst|report|teleport|killphase>hat_pk05_Cheese.png`、`visor_Cat` → `visors|distance|rpc|taskburst|report|teleport|killphase>visor_Cat.png`、`nameplate_Bavarian` → `nameplates|distance|rpc|taskburst|report|teleport|killphase>nameplate_Bavarian.png`。
 
 - 差し替えは **誰が着けていても** ホストの画面上のその ID の帽子・バイザー・プレートに適用されます（ロビー、ゲーム中、会議画面、ショップのプレビューを含む）。
 - スキンとペットはアニメーションのため差し替え対象外です（ID の確認だけできます）。
@@ -1424,7 +1424,7 @@ Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 - 元の画像と **同じピクセルサイズ** で描くと、位置・大きさがそのまま一致します。サイズが違う場合は帽子・バイザーは既定の基準点（SNR / TOR と同じ）で表示されます。
 - プレイヤー色に合わせて色が変わる帽子（adaptive）は、画像の **純粋な赤 (255,0,0) が本体色、緑 (0,255,0) が影、青 (0,0,255) がバイザー色** に置き換わります（他 MOD の慣例から推定した仕様なので、まず 1 つ試してください）。色が変わらない帽子は通常の色で描いてください。
 - 透過 PNG を推奨します。
-- `images\lobbypaint.png` は 290 px/unit、`dropship.png` は 60 px/unit、`menu.png` は 150 px/unit（1920×1080 程度）で表示されます。カーソルは左上が指す位置です。
+- `images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png` は 290 px/unit、`dropship.png` は 60 px/unit、`menu.png` は 150 px/unit（1920×1080 程度）で表示されます。カーソルは左上が指す位置です。
 
 ### ロビー BGM
 
@@ -1485,7 +1485,7 @@ v0.4b の機能を試す時（PC + スマホの 2 台。所要 10 分ほど）:
 2. **設定タブ**: ロビーのノート PC で「PocketRoles」が一番上、「バニラ設定」で 3 つのバニラボタンが展開すること。役職 / ロビー / チャット / 見た目 / ホスト支援 のページ切り替え、「?」にマウスを乗せると左の説明欄に説明が出ること。
 3. **挨拶**: スマホの挨拶が 2 行 × 3 言語（その人の言語 → 残り 2 言語）で届き、最後に「翻訳あり…」の行が 1 回だけ付くこと。設定の羅列が無いこと（`/cmd s` で出ること）。
 4. **翻訳**: スマホから `Hello, can I be sheriff?` のように **英語で** 書く → PC の画面に `[訳] <名前>: …` の日本語訳が出ること。スマホには「Display language switched to English. Type /cmd lang ja to switch back.」が届き、以後スマホ宛ての MOD メッセージが英語になること（言語の自動判定）。その後 PC から日本語で書く → スマホに `[Tr] <ホスト名>: …` の英訳が届くこと（外国語の人へ翻訳）。`/cmd lang ja` で戻せること。
-5. **VIP**: PC で `/vip add <スマホの名前>` → `BepInEx\PocketRoles\VIP.txt` に 1 行増えること。スマホを一度抜けて入り直すと挨拶に「★ VIP … ようこそ」が付き、試合を始めるとスマホの名前の先頭に ★ が付くこと（全員の画面）。
+5. **VIP**: PC で `/vip add <スマホの名前>` → `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>VIP.txt` に 1 行増えること。スマホを一度抜けて入り直すと挨拶に「★ VIP … ようこそ」が付き、試合を始めるとスマホの名前の先頭に ★ が付くこと（全員の画面）。
 6. **アドミン**: PC で `/admin add <スマホの名前>` → スマホから `/cmd h` の最後が「あなたの権限: アドミン」になり、`/cmd set sheriff 2` や `/cmd show` が通ること（PC のチャットにも設定変更が出ます）。`/cmd test on` は「ホスト専用です。」になること。`/admin remove <名前>` で戻す。
 7. **モデレーター / キック**: `/mod add <スマホの名前>` → スマホから `/cmd kick <PC の名前>` は「ホストはキックできません。」になること。PC から `/kick <スマホの名前>` でスマホが退出すること（`/ban` なら入り直した時にすぐキックされ、`/ban remove <名前>` で解除）。
 8. **バニラ設定の範囲拡張**: PC の設定画面「ゲーム設定」でキルクールダウンの矢印を 10 秒より下（例: 5 秒）に動かす → スマホのロビーの設定一覧にも「5 秒」と出ること。`/vset vote 0`、`/vset short 12` も同様に反映されること。試合を始めてキルクールダウンが短くなっていること。終わったら通常の値に戻す。
@@ -1730,7 +1730,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 - ホストが死亡中に MOD のメッセージを送る時は、通信上一瞬ホストが「生存」扱いになります（登録オフの部屋ではこの処理をしないため、死亡中のホストのメッセージは死者にしか見えません）。
 - 追放直後の数秒間は、ブラックアウト対策のために一部のプレイヤーの表示（役職・生死）が一時的に本来と違うことがあります。
 - 追加役職を持つプレイヤーとゲームマスターのホストは、死亡後に守護天使になりません（通常の幽霊になります）。
-- 設定タブ・歯車パネルの見出しと項目名は部屋の既定言語で表示されます（`lang\*.json` の `opt.section.*` / `opt.name.*` / `ui.gear.*` で変更できます）。
+- 設定タブ・歯車パネルの見出しと項目名は部屋の既定言語で表示されます（`lang|distance|rpc|taskburst|report|teleport|killphase>*.json` の `opt.section.*` / `opt.name.*` / `ui.gear.*` で変更できます）。
 - ロビーの残り時間は **推定値** です（サーバーの通知が来るまでは 597 秒からの引き算）。数秒〜十数秒ずれることがあります。
 - 見た目カスタマイズはホストの画面だけです。スキン・ペットは差し替えられません。
 - 名前タグの記号 ♥（ラバーズ）†（魔女）♨（放火魔）Ⓦ（崇拝者）はクライアントのフォント次第で □ になることがあります（ソースの定数 `Lovers.Heart` / `Witch.Mark` / `Arsonist.Mark` / `Worshipper.ImpostorViewMark` で変更できます）。
@@ -1797,7 +1797,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 
 zip の中身: `LogOutput.log`（MOD のログ）、`jp.pocketroles.mod.cfg`（設定）、`launcher-state.json`、`launcher.log`、`system.txt`（Windows のバージョン、ゲームと MOD と BepInEx のバージョン、plugins の一覧、Steam の状態）。ユーザー名を含むパスは `%USERPROFILE%` に置き換え、API キーの形の文字列は `<api-key-masked>` に置き換えます。**`deepl-key.txt`（DeepL の API キー）は絶対に含めません**。プレイヤー名はログに残るので、伏せたい場合は zip の中のログを編集してから送ってください。
 
-ログはゲームを起動するたびに上書きされるので、不具合が出た **直後に** zip を作っておくと確実です。ランチャーが使えない場合は、`BepInEx\LogOutput.log` と `BepInEx\config\jp.pocketroles.mod.cfg` を自分で zip にして添付してください。
+ログはゲームを起動するたびに上書きされるので、不具合が出た **直後に** zip を作っておくと確実です。ランチャーが使えない場合は、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` と `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` を自分で zip にして添付してください。
 
 要望の場合は、どんな機能・役職が欲しいか、なぜ・どんな場面で使うか、参考になる他の MOD があればその名前を書いてください。
 
@@ -1805,38 +1805,38 @@ zip の中身: `LogOutput.log`（MOD のログ）、`jp.pocketroles.mod.cfg`（�
 
 ## 29. ビルド方法
 
-必要: **.NET 8 SDK**。`build.cmd`（とランチャー）は `%USERPROFILE%\.dotnet\dotnet.exe`（ユーザー用インストール）があればそれを使い、なければ PATH 上の `dotnet` を使います。
+必要: **.NET 8 SDK**。`build.cmd`（とランチャー）は `%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe`（ユーザー用インストール）があればそれを使い、なければ PATH 上の `dotnet` を使います。
 
 ```
 build.cmd
 ```
 
-（中身は `dotnet build -c Release`。ランチャーの「再ビルドのみ」も同じです。）出力は `bin\PocketRoles.dll` で、`..\Among Us PocketRoles\BepInEx\plugins` が存在すれば自動でコピーされます。
+（中身は `dotnet build -c Release`。ランチャーの「再ビルドのみ」も同じです。）出力は `bin|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll` で、`..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` が存在すれば自動でコピーされます。
 
-- 参照している DLL は `..\Among Us PocketRoles\BepInEx\core` と `BepInEx\interop`（interop は第 5 章の初回起動で生成されます。先に一度ゲームを起動してください）。
-- 別のフォルダのゲームを参照する場合: `build.cmd -p:GameDir="C:\path\to\Among Us"`
+- 参照している DLL は `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>core` と `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop`（interop は第 5 章の初回起動で生成されます。先に一度ゲームを起動してください）。
+- 別のフォルダのゲームを参照する場合: `build.cmd -p:GameDir="C:|distance|rpc|taskburst|report|teleport|killphase>path|distance|rpc|taskburst|report|teleport|killphase>to|distance|rpc|taskburst|report|teleport|killphase>Among Us"`
 - ターゲット: net6.0、C# latest、Nullable off、ImplicitUsings off。NuGet のゲームライブラリや Reactor は使いません。
-- `lang\*.json` と `assets\PocketRoles-256.png`（タイトル画面のアイコン）は埋め込みリソースとして DLL に含まれ、言語ファイルは初回起動時に `BepInEx\PocketRoles\lang\` へ書き出されます。文言を変えたい時は DLL を作り直さなくても書き出されたファイルを編集すれば済みます。
-- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx\LogOutput.log` に `PocketRoles v0.5.2 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
+- `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` と `assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-256.png`（タイトル画面のアイコン）は埋め込みリソースとして DLL に含まれ、言語ファイルは初回起動時に `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` へ書き出されます。文言を変えたい時は DLL を作り直さなくても書き出されたファイルを編集すれば済みます。
+- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` に `PocketRoles v0.5.2 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
 
-配布用 zip の作成: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` でビルドを省略）。`dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README 3 種、LICENSE、NOTICE）と `dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）、`SHA256SUMS.txt` ができます。バージョンは `PocketRoles.csproj` の `<Version>` から取ります。この 2 つを GitHub Releases に添付すると、ランチャーの「更新を確認」「インストール」が最新版を取得できます（リリースの資産名 `PocketRoles-<ver>.zip` を探します）。
+配布用 zip の作成: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` でビルドを省略）。`dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-<ver>.zip`（`BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`、`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`、README 3 種、LICENSE、NOTICE）と `dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.ico`、`はじめに.txt`）、`SHA256SUMS.txt` ができます。バージョンは `PocketRoles.csproj` の `<Version>` から取ります。この 2 つを GitHub Releases に添付すると、ランチャーの「更新を確認」「インストール」が最新版を取得できます（リリースの資産名 `PocketRoles-<ver>.zip` を探します）。
 
-ソース構成（`src\`）:
+ソース構成（`src|distance|rpc|taskburst|report|teleport|killphase>`）:
 
 | フォルダ | 内容 |
 |---|---|
 | `PocketRolesPlugin.cs` | プラグイン本体、バージョンチェック、左上の表示、毎フレームの処理 |
-| `Core\` | 役職定義（Roles）、言語（Lang）、設定と設定タブ用の項目一覧（Options）、試合状態（GameState）、遅延実行（Scheduler）、ホットキー（Hotkeys）、権限（Permissions: Admin / Moderator / VIP / Banlist.txt、キック・BAN） |
-| `Net\` | クライアント別送信とセーフモード（Rpc）、個別ゲーム設定（OptionsDesync）、+25 登録（Registration）、簡易アンチチート（AntiCheat） |
-| `Game\` | 役職配布（RoleAssignment）、診断（Diagnostics: `/diag`）、名前タグ（NameTags）、キル・ベント・サボタージュ（Kills）、会議（Meetings）、会議の強制終了（MeetingTools）、ブラックアウト対策（AntiBlackout）、勝敗（WinConditions）、テストモード（TestMode）、ゲームマスター（GameMaster）、バニラ設定の範囲拡張（VanillaRanges: 設定画面の行と `/vset`） |
-| `Chat\` | チャット送信・挨拶文・ルール行（Chat）、コマンド（Commands）、チャット翻訳（Translator: Google / DeepL、言語の自動判定） |
-| `Lobby\` | 自動再ホスト・自動公開・`/move` の作り直し（Rehost）、高 PING の確認ダイアログ（RehostPrompt）、ロビータイマー（LobbyTimer）、自動開始・廃村・キャンセルボタン（AutoStart）、廃村後のロビー復帰（HaisonReturn）、地域の自動選択（AutoRegion）、逆スケルド（DleksMap） |
-| `UI\` | 設定タブ（SettingsTab: ページボタン、「?」ヘルプ、バニラ設定ボタン、ホストページのボタン列）、歯車メニューのパネル（ClientOptions）、タイトル画面のパネル（MenuPanel）と予備のクレジット行（Credits）、部屋コードの大表示（CodeOverlay）、ロビーのバナー制御（LobbyBanner） |
-| `Cosmetics\` | 見た目カスタマイズ（Cosmetics: フォルダと `/cos`、SpriteLoader、CosmeticOverrides: 帽子・バイザー・ネームプレート、LobbyMusic、LobbyDecor: 壁絵・ドロップシップ・メニュー背景・カーソル） |
-| `lang\`（ルート） | 言語ファイルの既定内容（`ja.json` / `zh-CN.json` / `en.json`） |
-| `assets\`（ルート） | アイコン（`PocketRoles-256.png` / `-512.png` / `.ico`） |
+| `Core|distance|rpc|taskburst|report|teleport|killphase>` | 役職定義（Roles）、言語（Lang）、設定と設定タブ用の項目一覧（Options）、試合状態（GameState）、遅延実行（Scheduler）、ホットキー（Hotkeys）、権限（Permissions: Admin / Moderator / VIP / Banlist.txt、キック・BAN） |
+| `Net|distance|rpc|taskburst|report|teleport|killphase>` | クライアント別送信とセーフモード（Rpc）、個別ゲーム設定（OptionsDesync）、+25 登録（Registration）、簡易アンチチート（AntiCheat） |
+| `Game|distance|rpc|taskburst|report|teleport|killphase>` | 役職配布（RoleAssignment）、診断（Diagnostics: `/diag`）、名前タグ（NameTags）、キル・ベント・サボタージュ（Kills）、会議（Meetings）、会議の強制終了（MeetingTools）、ブラックアウト対策（AntiBlackout）、勝敗（WinConditions）、テストモード（TestMode）、ゲームマスター（GameMaster）、バニラ設定の範囲拡張（VanillaRanges: 設定画面の行と `/vset`） |
+| `Chat|distance|rpc|taskburst|report|teleport|killphase>` | チャット送信・挨拶文・ルール行（Chat）、コマンド（Commands）、チャット翻訳（Translator: Google / DeepL、言語の自動判定） |
+| `Lobby|distance|rpc|taskburst|report|teleport|killphase>` | 自動再ホスト・自動公開・`/move` の作り直し（Rehost）、高 PING の確認ダイアログ（RehostPrompt）、ロビータイマー（LobbyTimer）、自動開始・廃村・キャンセルボタン（AutoStart）、廃村後のロビー復帰（HaisonReturn）、地域の自動選択（AutoRegion）、逆スケルド（DleksMap） |
+| `UI|distance|rpc|taskburst|report|teleport|killphase>` | 設定タブ（SettingsTab: ページボタン、「?」ヘルプ、バニラ設定ボタン、ホストページのボタン列）、歯車メニューのパネル（ClientOptions）、タイトル画面のパネル（MenuPanel）と予備のクレジット行（Credits）、部屋コードの大表示（CodeOverlay）、ロビーのバナー制御（LobbyBanner） |
+| `Cosmetics|distance|rpc|taskburst|report|teleport|killphase>` | 見た目カスタマイズ（Cosmetics: フォルダと `/cos`、SpriteLoader、CosmeticOverrides: 帽子・バイザー・ネームプレート、LobbyMusic、LobbyDecor: 壁絵・ドロップシップ・メニュー背景・カーソル） |
+| `lang|distance|rpc|taskburst|report|teleport|killphase>`（ルート） | 言語ファイルの既定内容（`ja.json` / `zh-CN.json` / `en.json`） |
+| `assets|distance|rpc|taskburst|report|teleport|killphase>`（ルート） | アイコン（`PocketRoles-256.png` / `-512.png` / `.ico`） |
 
-ルートのその他: `PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd`（ランチャー、[第 6 章](#6-ランチャーと更新)）、`update-game.cmd`（更新のコマンド版）、`build-release.ps1`（配布 zip）、`.github\ISSUE_TEMPLATE\`（Issue テンプレート 3 言語）。`stubs\` は単一モジュールを個別にビルドするための契約スタブで、通常のビルドには含まれません。`tools\ReportFetcher`（報告メールの添付を取り込む）、`fetch-reports.cmd`、`analyze-reports.ps1`（報告 zip と Issue を集計）、`reply-mail.cmd` は作者用の補助ツールで、プラグインのビルドには含まれません。
+ルートのその他: `PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd`（ランチャー、[第 6 章](#6-ランチャーと更新)）、`update-game.cmd`（更新のコマンド版）、`build-release.ps1`（配布 zip）、`.github|distance|rpc|taskburst|report|teleport|killphase>ISSUE_TEMPLATE|distance|rpc|taskburst|report|teleport|killphase>`（Issue テンプレート 3 言語）。`stubs|distance|rpc|taskburst|report|teleport|killphase>` は単一モジュールを個別にビルドするための契約スタブで、通常のビルドには含まれません。`tools|distance|rpc|taskburst|report|teleport|killphase>ReportFetcher`（報告メールの添付を取り込む）、`fetch-reports.cmd`、`analyze-reports.ps1`（報告 zip と Issue を集計）、`reply-mail.cmd` は作者用の補助ツールで、プラグインのビルドには含まれません。
 
 ---
 
