@@ -15,24 +15,31 @@ namespace PocketRoles.Net
     /// fast"). Nothing runs on the players' devices (they play vanilla); the host watches the broadcasts and requests it
     /// receives anyway and flags behaviour a vanilla 2026.8.18 client never produces.
     ///
-    /// Unregistered (compat) lobbies only for the role rules: there every kill / vent / ability / task is a client
-    /// broadcast the host merely observes (no host authority), and only vanilla roles exist, so "may this player do
-    /// that" has one answer. Registered lobbies already route kills / vents / sabotage through the host (Kills.cs) and
-    /// use per-client role views, so these rules stay off there. The unknown-RPC rule works in both modes.
+    /// Unregistered (compat) lobbies only for the game rules: there every kill / vent / ability / task / report is a client
+    /// message the host merely observes (no host authority), and only vanilla roles exist, so "may this player do that"
+    /// has one answer. Registered lobbies already route kills / vents / sabotage through the host (Kills.cs) and use
+    /// per-client role views, so these rules stay off there. The unknown-RPC rule works in both modes.
     ///
-    /// Roles come from <see cref="Roles"/>, a snapshot taken from the host's own table at the end of vanilla's
-    /// SelectRoles (never from an incoming SetRole, which a cheat can forge in compat to poison the verdict).
+    /// Roles: a CERTAIN verdict needs two sources to agree — <see cref="Roles"/>, a snapshot of the host's own table at
+    /// the end of vanilla's SelectRoles (the host's CoSetRole applies roles synchronously, verified in the 2026-09-08
+    /// traces), and the live NetworkedPlayerInfo.RoleType (ghost roles mapped to their team). A forged mid-game SetRole
+    /// can therefore neither frame an innocent impostor nor hide a cheater; a disagreement only yields a host notice.
     /// Every payload peek restores the reader position in a finally block (a shifted reader desyncs the host — the
-    /// v0.4.4 lesson), and every patch only observes (always returns true).
+    /// v0.4.4 lesson), and every patch only observes (void prefixes, vanilla always runs).
     ///
-    /// Levels: Certain = impossible for a vanilla client (auto-kick on the first hit, [AntiCheat] AutoKick, default on);
-    /// Repeat = kicked on the second separate hit; Notice = host screen only (lag / spoofing possible); Log = log only.
-    /// A GameData RPC carries no sender id, so the owner of the addressed object is the suspect — a strong hint, not proof.
+    /// Levels: Certain = impossible for a vanilla client (auto-kick with a room ban on the first hit, [AntiCheat]
+    /// AutoKick, default on); Repeat = kicked on the second separate hit within the same game; Notice = host screen only
+    /// (lag / spoofing possible). A GameData RPC carries no sender id, so the owner of the addressed object is the suspect.
     /// </summary>
     public static class CheatDetector
     {
-        internal enum Rule { KillRole, VentRole, AbilityRole, TaskImpostor, ChatAlive, KillDead, SabotageCrew, KillCooldown, ProtectAlive, TaskUnknown, KillDistance, RpcUnknown }
-        internal enum Level { Certain, Repeat, Notice, Log }
+        internal enum Rule
+        {
+            KillRole, VentRole, AbilityRole, TaskImpostor, ChatAlive,
+            KillDead, SabotageCrew, KillCooldown, ProtectAlive, TaskUnknown, KillDistance, RpcUnknown,
+            TaskBurst, ReportForge, Teleport, KillPhase,
+        }
+        internal enum Level { Certain, Repeat, Notice }
 
         internal static Level LevelOf(Rule r)
         {
@@ -60,6 +67,10 @@ namespace PocketRoles.Net
                 case Rule.TaskUnknown: return Lang.T("ac.rule.taskid", "持っていないタスクを完了した", "completed a task they do not have", "完成了自己没有的任务");
                 case Rule.KillDistance: return Lang.T("ac.rule.distance", "遠すぎる位置からキルした(ラグの可能性あり)", "killed from too far away (could be lag)", "从过远的位置击杀(可能是延迟)");
                 case Rule.RpcUnknown: return Lang.T("ac.rule.rpc", "普通のAmong Usにない通信を送った(改造版やチートツールの可能性)", "sent a message vanilla Among Us never sends (modded client or cheat tool)", "发送了原版Among Us没有的通信(可能是修改版或作弊工具)");
+                case Rule.TaskBurst: return Lang.T("ac.rule.taskburst", "ありえない速さでタスクを完了した", "completed tasks impossibly fast", "以不可能的速度完成了任务");
+                case Rule.ReportForge: return Lang.T("ac.rule.report", "ありえない通報をした(生きている人の死体、死んだ後の通報)", "made an impossible report (a living player's body, or while dead)", "发出了不可能的举报(活人的尸体或死后举报)");
+                case Rule.Teleport: return Lang.T("ac.rule.teleport", "試合中に瞬間移動した", "teleported during the game", "在对局中瞬间移动");
+                case Rule.KillPhase: return Lang.T("ac.rule.killphase", "会議中や追放画面でキルした", "killed during a meeting or the exile screen", "在会议或放逐画面中击杀");
             }
             return r.ToString();
         }
@@ -68,11 +79,12 @@ namespace PocketRoles.Net
         {
             public string Name = "";
             public byte PlayerId = 255;
-            public bool Left, Kicked, KickQueued;
+            public bool Left, Kicked, KickQueued, Exempt;
             public readonly Dictionary<Rule, int> Hits = new Dictionary<Rule, int>();
             public readonly HashSet<Rule> NoticedThisGame = new HashSet<Rule>();
             public readonly Dictionary<Rule, float> LastLogAt = new Dictionary<Rule, float>();
             public readonly Dictionary<Rule, int> Suppressed = new Dictionary<Rule, int>();
+            // Repeat-level counters: per GAME (cleared in ResetGame) — two late lines in unrelated games never add up
             public readonly Dictionary<Rule, float> LastEventAt = new Dictionary<Rule, float>();
             public readonly Dictionary<Rule, int> Events = new Dictionary<Rule, int>();
         }
@@ -86,14 +98,23 @@ namespace PocketRoles.Net
         // per game timing (Time.time)
         private static bool _prevStarted, _prevIntro, _prevMeeting, _prevExile;
         private static float _introEndAt = -1f, _lastPauseEnd = -100f, _roundStartAt = -1f, _lastExileEndAt = -100f;
+        private static float _meetingStartAt = -100f, _exileStartAt = -100f, _gameEndAt = -100f;
         private static bool _roundStartIsExile;
         private static int _meetingCount;
         private static readonly Dictionary<int, float> LastKillAt = new Dictionary<int, float>();
+        private static readonly Dictionary<byte, float> DeathAt = new Dictionary<byte, float>();
+        private static readonly Dictionary<int, List<float>> TaskTimes = new Dictionary<int, List<float>>();
+        private static readonly HashSet<int> TaskBurstThisRound = new HashSet<int>();
+        private static readonly Dictionary<int, float> LastMoveRpcAt = new Dictionary<int, float>();   // ladder / platform / zipline
 
         private struct PendingChat { public byte PlayerId; public float At; public int Meetings; }
         private static readonly Dictionary<int, PendingChat> Pending = new Dictionary<int, PendingChat>();
+        private struct PendingReport { public int Owner; public byte Reporter; public byte Target; public bool ReporterDead; public float At; }
+        private static readonly List<PendingReport> Reports = new List<PendingReport>();
         private static readonly List<KeyValuePair<int, Rule>> KickQueue = new List<KeyValuePair<int, Rule>>();
         private static readonly Queue<string> NoticeBacklog = new Queue<string>();
+        /// <summary>Public removal lines held while the host is dead in a compat game (living players cannot see a dead sender's chat).</summary>
+        private static readonly List<string> PublicBacklog = new List<string>();
         private static float _lastNoticeAt = -100f;
         private const float NoticeSpacing = 1.2f;
 
@@ -112,7 +133,7 @@ namespace PocketRoles.Net
             return c != null && c.AmHost && Options.CheatDetect && Core.Game.IsHostActive;
         }
 
-        /// <summary>The role rules: an unregistered lobby, a real (non-haison) game running, roles known.</summary>
+        /// <summary>The game rules: an unregistered lobby, a real (non-haison) game running, roles known.</summary>
         private static bool Active()
         {
             if (!HostWatching() || !Registration.CompatMode) return false;
@@ -145,7 +166,7 @@ namespace PocketRoles.Net
             return null;
         }
 
-        // ------------------------------------------------------------------ role snapshot
+        // ------------------------------------------------------------------ roles
 
         internal static void OnSelectRolesBegin() { Roles.Clear(); }
 
@@ -164,7 +185,7 @@ namespace PocketRoles.Net
             PocketRolesPlugin.Logger.LogInfo($"CheatDetector: role snapshot of {n} player(s) taken at SelectRoles end");
         }
 
-        /// <summary>Intro end: players whose role was not visible at SelectRoles end (the local CoSetRole was still running) are added once.</summary>
+        /// <summary>Intro end: players whose role was not visible at SelectRoles end are added once (never overwritten).</summary>
         private static void FillMissingRoles()
         {
             foreach (var pc in Core.Game.AllPlayers())
@@ -183,6 +204,19 @@ namespace PocketRoles.Net
             return pc != null && Roles.TryGetValue(pc.PlayerId, out role);
         }
 
+        /// <summary>The live role on the host (ghost roles mapped to their team: ImpostorGhost → Impostor, others → Crewmate).</summary>
+        private static RoleTypes Live(PlayerControl pc)
+        {
+            try
+            {
+                var r = pc.Data.RoleType;
+                if (r == RoleTypes.ImpostorGhost) return RoleTypes.Impostor;
+                if (r == RoleTypes.CrewmateGhost || r == RoleTypes.GuardianAngel) return RoleTypes.Crewmate;
+                return r;
+            }
+            catch (Exception) { return RoleTypes.Crewmate; }
+        }
+
         // ------------------------------------------------------------------ RPC observers (called from the patches)
 
         internal static void OnPlayerRpc(PlayerControl pc, byte callId, MessageReader reader)
@@ -199,16 +233,20 @@ namespace PocketRoles.Net
             {
                 case 12: OnMurder(pc, reader); break;
                 case 1: OnCompleteTask(pc, reader); break;
+                case 11: OnReport(pc, reader); break;
                 case 13: case 33: OnChat(pc); break;
                 case 46: case 55:
-                    if (RoleOf(pc, out var ss) && ss != RoleTypes.Shapeshifter) Report(Rule.AbilityRole, pc, $"RPC {callId}, role {ss}", false, false);
+                    if (RoleOf(pc, out var ss) && ss != RoleTypes.Shapeshifter)
+                        Report(Rule.AbilityRole, pc, $"RPC {callId}, role {ss} (live {Live(pc)})", false, false, Live(pc) != RoleTypes.Shapeshifter);
                     break;
                 case 62: case 63: case 64: case 65:
-                    if (RoleOf(pc, out var ph) && ph != RoleTypes.Phantom) Report(Rule.AbilityRole, pc, $"RPC {callId}, role {ph}", false, false);
+                    if (RoleOf(pc, out var ph) && ph != RoleTypes.Phantom)
+                        Report(Rule.AbilityRole, pc, $"RPC {callId}, role {ph} (live {Live(pc)})", false, false, Live(pc) != RoleTypes.Phantom);
                     break;
                 case 45:
                     if (!pc.Data.IsDead) Report(Rule.ProtectAlive, pc, "ProtectPlayer while alive", false, false);
                     break;
+                case 32: case 51: case 52: LastMoveRpcAt[pc.OwnerId] = Time.time; break;   // platform / zipline
             }
         }
 
@@ -229,13 +267,26 @@ namespace PocketRoles.Net
                 finally { reader.Position = pos; }
             }
             float now = Time.time;
-            if (!IsImpostorTeam(role)) { Report(Rule.KillRole, killer, $"role {role}", false, false); return; }
+            if (target != null && (flags & 1) != 0) DeathAt[target.PlayerId] = now;
+            if (!IsImpostorTeam(role))
+            {
+                // certain only when the live role agrees (a stale or poisoned table must never kick an innocent impostor)
+                Report(Rule.KillRole, killer, $"role {role} (live {Live(killer)})", false, false, !IsImpostorTeam(Live(killer)));
+                return;
+            }
             if (target != null && target.Data != null && !target.Data.IsDead && RoleOf(target, out var tr) && IsImpostorTeam(tr))
             {
-                Report(Rule.KillRole, killer, $"killed impostor-team {Core.Game.NameOf(target.PlayerId)} ({tr})", false, false);
+                Report(Rule.KillRole, killer, $"killed impostor-team {Core.Game.NameOf(target.PlayerId)} ({tr})", false, false, IsImpostorTeam(Live(target)));
                 return;
             }
             if (killer.Data.IsDead && now - _lastExileEndAt > 5f) Report(Rule.KillDead, killer, "killer is dead", false, false);
+            try
+            {
+                bool meeting = MeetingHud.Instance != null, exile = ExileController.Instance != null;
+                if ((meeting && now - _meetingStartAt > 4f) || (exile && now - _exileStartAt > 2f))
+                    Report(Rule.KillPhase, killer, meeting ? $"{now - _meetingStartAt:0.0}s into a meeting" : "during the exile screen", false, false);
+            }
+            catch (Exception) { }
             // cooldown: only against a reference vanilla also resets (a previous kill of this round, or the end of an exile)
             try
             {
@@ -265,7 +316,23 @@ namespace PocketRoles.Net
 
         private static void OnCompleteTask(PlayerControl pc, MessageReader reader)
         {
-            if (RoleOf(pc, out var role) && IsImpostorTeam(role)) { Report(Rule.TaskImpostor, pc, $"role {role}", false, false); return; }
+            float now = Time.time;
+            if (RoleOf(pc, out var role) && IsImpostorTeam(role))
+            {
+                Report(Rule.TaskImpostor, pc, $"role {role} (live {Live(pc)})", false, false, IsImpostorTeam(Live(pc)));
+                return;
+            }
+            // "complete all tasks": several completions far faster than any task can be done
+            try
+            {
+                if (!TaskTimes.TryGetValue(pc.OwnerId, out var times)) { times = new List<float>(); TaskTimes[pc.OwnerId] = times; }
+                times.Add(now);
+                int n = times.Count;
+                bool burst = (n >= 4 && now - times[n - 4] < 2f) || (n >= 3 && _roundStartAt > 0f && now - _roundStartAt < 1.5f * n);
+                if (burst && TaskBurstThisRound.Add(pc.OwnerId))
+                    Report(Rule.TaskBurst, pc, $"{n} task(s) this round, the last 4 within {(n >= 4 ? now - times[n - 4] : now - times[0]):0.0}s", false, false);
+            }
+            catch (Exception) { }
             if (reader == null) return;
             uint idx = 0;
             int pos = reader.Position;
@@ -281,6 +348,26 @@ namespace PocketRoles.Net
             catch (Exception) { }
         }
 
+        /// <summary>ReportDeadBody (11): the reporter's own client sends it to the host (target PlayerId, 255 = emergency button).</summary>
+        private static void OnReport(PlayerControl pc, MessageReader reader)
+        {
+            if (reader == null || Paused() || Time.time - _lastPauseEnd < 3f) return;
+            byte target = 255;
+            int pos = reader.Position;
+            try { if (reader.BytesRemaining > 0) target = reader.ReadByte(); }
+            catch (Exception) { return; }
+            finally { reader.Position = pos; }
+            bool dead = false;
+            if (pc.Data.IsDead)
+            {
+                // dead for a while (not a report in flight when the reporter was killed)
+                if (DeathAt.TryGetValue(pc.PlayerId, out float died)) dead = Time.time - died > 3f;
+                else dead = Time.time - _lastExileEndAt > 5f;
+            }
+            if (Reports.Count < 16)
+                Reports.Add(new PendingReport { Owner = pc.OwnerId, Reporter = pc.PlayerId, Target = target, ReporterDead = dead, At = Time.time });
+        }
+
         private static void OnChat(PlayerControl pc)
         {
             if (pc.Data.IsDead || Core.Game.IsDead(pc.PlayerId)) return;
@@ -293,11 +380,32 @@ namespace PocketRoles.Net
 
         internal static void OnPhysicsRpc(PlayerPhysics physics, byte callId)
         {
-            if (callId != 19 || physics == null) return;   // EnterVent
+            if (physics == null) return;
             var pc = physics.myPlayer;
             if (!HostWatching() || !Suspectable(pc) || !Active()) return;
+            if (callId == 31 || callId == 32) { LastMoveRpcAt[pc.OwnerId] = Time.time; return; }   // ladder / platform
+            if (callId != 19) return;   // EnterVent
             if (pc.Data.IsDead) return;   // a vent press in flight when the player was killed
-            if (RoleOf(pc, out var role) && !CanVent(role)) Report(Rule.VentRole, pc, $"role {role}", false, false);
+            if (RoleOf(pc, out var role) && !CanVent(role))
+                Report(Rule.VentRole, pc, $"role {role} (live {Live(pc)})", false, false, !CanVent(Live(pc)));
+        }
+
+        /// <summary>SnapTo (21) on a player's network transform: vanilla sends it at the intro, at meeting start, for the Airship spawn picker and for vent moves.</summary>
+        internal static void OnSnapTo(CustomNetworkTransform cnt)
+        {
+            if (cnt == null) return;
+            var pc = cnt.myPlayer;
+            if (!HostWatching() || !Suspectable(pc) || !Active()) return;
+            if (pc.Data.IsDead || Paused() || _introEndAt < 0f) return;
+            float now = Time.time;
+            if (now - _lastPauseEnd < 15f) return;   // spawn picker (Airship) and any snap tied to a meeting / exile / intro
+            try { if (pc.onLadder || pc.inMovingPlat || pc.walkingToVent) return; } catch (Exception) { }
+            if (LastMoveRpcAt.TryGetValue(pc.OwnerId, out float mv) && now - mv < 10f) return;
+            RoleOf(pc, out var role);
+            bool inVent = false;
+            try { inVent = pc.inVent; } catch (Exception) { }
+            if (CanVent(role) && inVent) return;   // vent-to-vent move
+            Report(Rule.Teleport, pc, $"SnapTo mid-round (role {role}, inVent {inVent})", false, false);
         }
 
         internal static void OnUpdateSystem(SystemTypes systemType, PlayerControl player, MessageReader reader)
@@ -335,25 +443,26 @@ namespace PocketRoles.Net
         /// <summary>
         /// One detection. Counts it, logs it (at most once per 5 s per player and rule, with a suppressed count), shows
         /// the host one notice per player and rule per game, and queues the auto-kick when the rule's level calls for it.
-        /// <paramref name="simulated"/>: from /ac test — notice and log only, the counters and the kick stay untouched
-        /// unless <paramref name="simKick"/> is set (then the real kick flow runs).
+        /// <paramref name="mayKick"/> false turns a Certain / Repeat hit into a notice (the two role sources disagree).
+        /// <paramref name="simulated"/> (/ac test): notice and log only; the real counters are never touched, and the kick
+        /// flow runs only when <paramref name="simKick"/> is set. Returns true when a kick was queued.
         /// </summary>
-        internal static void Report(Rule rule, PlayerControl pc, string detail, bool simulated, bool simKick)
+        internal static bool Report(Rule rule, PlayerControl pc, string detail, bool simulated, bool simKick, bool mayKick = true)
         {
             try
             {
-                if (pc == null) return;
+                if (pc == null) return false;
                 int clientId = pc.OwnerId;
                 var s = Get(clientId, pc);
                 float now = Time.time;
                 var level = LevelOf(rule);
+                if (!mayKick && level != Level.Notice) level = Level.Notice;
                 string tag = simulated ? "[test] " : "";
                 if (!simulated)
                 {
                     s.Hits.TryGetValue(rule, out int h);
                     s.Hits[rule] = h + 1;
                 }
-                // log, rate-limited per player and rule
                 if (!s.LastLogAt.TryGetValue(rule, out float lastLog) || now - lastLog >= 5f || simulated)
                 {
                     s.Suppressed.TryGetValue(rule, out int sup);
@@ -366,26 +475,25 @@ namespace PocketRoles.Net
                     s.Suppressed.TryGetValue(rule, out int sup);
                     s.Suppressed[rule] = sup + 1;
                 }
-                if (level == Level.Log) return;
-                // host notice: once per player and rule per game (tests always show)
+                bool autoKicks = Options.CheatAutoKick && (level == Level.Certain || level == Level.Repeat) && !s.Exempt;
                 if (simulated || s.NoticedThisGame.Add(rule))
                 {
                     string text = string.Format(Lang.T("ac.notice",
                         "チートの疑い: {0} - {1}",
                         "Cheat suspected: {0} - {1}",
                         "疑似作弊: {0} - {1}"), s.Name, Text(rule));
-                    if (level != Level.Certain && !(level == Level.Repeat && Options.CheatAutoKick))
+                    if (!autoKicks)
                         text += Lang.T("ac.notice.manual", "（なりすましやラグの可能性もあります。退出させるならホストが /kick）", " (could be spoofing or lag; /kick to remove)", "（也可能是冒充或延迟。需要移出请用 /kick）");
                     Notice((simulated ? Lang.T("ac.test.tag", "[テスト] ", "[test] ", "[测试] ") : "") + text);
                 }
-                // auto-kick
-                if (simulated && !simKick) return;
-                bool due = false;
-                if (level == Level.Certain) due = true;
+                bool due;
+                if (simulated) due = simKick;
+                else if (level == Level.Certain) due = true;
                 else if (level == Level.Repeat)
                 {
+                    due = false;
                     s.LastEventAt.TryGetValue(rule, out float lastEvent);
-                    if (simulated || lastEvent <= 0f || now - lastEvent >= 10f)
+                    if (lastEvent <= 0f || now - lastEvent >= 10f)
                     {
                         s.Events.TryGetValue(rule, out int ev);
                         s.Events[rule] = ev + 1;
@@ -393,13 +501,16 @@ namespace PocketRoles.Net
                         due = ev + 1 >= 2;
                     }
                 }
-                if (due && Options.CheatAutoKick && !s.Kicked && !s.KickQueued)
+                else due = false;
+                if (due && Options.CheatAutoKick && !s.Kicked && !s.KickQueued && !s.Exempt)
                 {
                     s.KickQueued = true;
                     KickQueue.Add(new KeyValuePair<int, Rule>(clientId, rule));
+                    return true;
                 }
             }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector.Report: {e}"); }
+            return false;
         }
 
         private static void Notice(string text)
@@ -410,6 +521,17 @@ namespace PocketRoles.Net
                 Chat.Chat.Local(Chat.Chat.Title, text);
             }
             else if (NoticeBacklog.Count < 20) NoticeBacklog.Enqueue(text);
+        }
+
+        private static bool HostDeadInGame()
+        {
+            try
+            {
+                var c = AmongUsClient.Instance;
+                var lp = PlayerControl.LocalPlayer;
+                return c != null && c.IsGameStarted && lp != null && lp.Data != null && lp.Data.IsDead;
+            }
+            catch (Exception) { return false; }
         }
 
         private static void RunKicks()
@@ -429,8 +551,8 @@ namespace PocketRoles.Net
             string reason = Text(item.Value);
             if (Permissions.LevelOf(pc) != PermLevel.Player)
             {
+                s.Exempt = true;   // no further attempt this lobby; /ac shows it
                 Notice(string.Format(Lang.T("ac.exempt", "{0} はVIP以上なので自動では退出させませんでした（{1}）", "{0} is VIP or above: not removed automatically ({1})", "{0} 是VIP以上，未自动移出（{1}）"), s.Name, reason));
-                s.Kicked = true;   // no second attempt this lobby
                 return;
             }
             try
@@ -438,14 +560,21 @@ namespace PocketRoles.Net
                 s.Kicked = true;
                 PocketRolesPlugin.Logger.LogWarning($"CheatDetector: removing #{s.PlayerId} {s.Name} (client {clientId}) with a room ban: {item.Value}");
                 client.KickPlayer(clientId, true);
-                Chat.Chat.Local(Chat.Chat.Title, string.Format(Lang.T("ac.kicked", "{0} を自動で退出させました（{1}）。記録は /ac", "Removed {0} automatically ({1}). Records: /ac", "已自动移出 {0}（{1}）。记录: /ac"), s.Name, reason));
+                string local = string.Format(Lang.T("ac.kicked", "{0} を自動で退出させました（{1}）。記録は /ac", "Removed {0} automatically ({1}). Records: /ac", "已自动移出 {0}（{1}）。记录: /ac"), s.Name, reason);
                 if (Options.CheatAnnounceKick)
                 {
                     string pub;
                     using (Lang.Scope(Lang.Default))
-                        pub = string.Format(Lang.T("ac.kicked.public", "{0} はありえない操作({1})をしたので退出になりました", "{0} was removed for an impossible action ({1})", "{0} 因不可能的操作({1})被移出"), s.Name, Text(item.Value));
-                    Chat.Chat.All(Chat.Chat.Title, pub);
+                        pub = string.Format(Lang.T("ac.kicked.public", "{0} はありえない操作({1})をしたので退出になりました", "{0} removed: impossible action ({1})", "{0} 因不可能的操作({1})被移出"), s.Name, Text(item.Value));
+                    if (Registration.CompatMode && HostDeadInGame())
+                    {
+                        // a dead sender's chat is hidden from the living: show it when everyone is back in the lobby
+                        if (PublicBacklog.Count < 8) PublicBacklog.Add(pub);
+                        local += Lang.T("ac.kicked.later", " 全員へのお知らせは、ホストが死亡中なので試合後にロビーで出します。", " The public line waits for the lobby (the host is dead).", " 主持已死亡，公告将在赛后大厅发出。");
+                    }
+                    else Chat.Chat.All(Chat.Chat.Title, pub);
                 }
+                Chat.Chat.Local(Chat.Chat.Title, local);
             }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector kick: {e}"); }
         }
@@ -459,13 +588,15 @@ namespace PocketRoles.Net
             float now = Time.time;
             bool started = c.IsGameStarted;
             if (started && !_prevStarted) ResetGame(now);
+            if (!started && _prevStarted) _gameEndAt = now;
             _prevStarted = started;
             bool intro = false, meeting = false, exile = false;
             try { intro = IntroCutscene.Instance != null; meeting = MeetingHud.Instance != null; exile = ExileController.Instance != null; } catch (Exception) { }
-            if (_prevIntro && !intro) { _introEndAt = now; _lastPauseEnd = now; _roundStartAt = now; _roundStartIsExile = false; FillMissingRoles(); }
-            if (!_prevMeeting && meeting) _meetingCount++;
+            if (_prevIntro && !intro) { _introEndAt = now; _lastPauseEnd = now; StartRound(now, false); FillMissingRoles(); }
+            if (!_prevMeeting && meeting) { _meetingCount++; _meetingStartAt = now; }
             if (_prevMeeting && !meeting) _lastPauseEnd = now;
-            if (_prevExile && !exile) { _lastPauseEnd = now; _lastExileEndAt = now; _roundStartAt = now; _roundStartIsExile = true; }
+            if (!_prevExile && exile) _exileStartAt = now;
+            if (_prevExile && !exile) { _lastPauseEnd = now; _lastExileEndAt = now; StartRound(now, true); }
             _prevIntro = intro; _prevMeeting = meeting; _prevExile = exile;
 
             if (Pending.Count > 0)
@@ -483,21 +614,67 @@ namespace PocketRoles.Net
                 }
                 if (done != null) foreach (var k in done) Pending.Remove(k);
             }
+            if (Reports.Count > 0)
+            {
+                for (int i = Reports.Count - 1; i >= 0; i--)
+                {
+                    var r = Reports[i];
+                    if (now - r.At < 0.7f) continue;   // a kill that raced the report has landed by now
+                    Reports.RemoveAt(i);
+                    if (!HostWatching() || !Registration.CompatMode) continue;
+                    var pc = Core.Game.Player(r.Reporter);
+                    if (pc == null || pc.OwnerId != r.Owner || !Suspectable(pc)) continue;
+                    if (r.ReporterDead) { Report(Rule.ReportForge, pc, "report / emergency while dead", false, false); continue; }
+                    if (r.Target == 255) continue;
+                    var t = Core.Game.Player(r.Target);
+                    if (t != null && t.Data != null && !t.Data.Disconnected && !t.Data.IsDead)
+                        Report(Rule.ReportForge, pc, $"reported the body of living #{r.Target} {Core.Game.NameOf(r.Target)}", false, false);
+                }
+            }
             RunKicks();
             if (NoticeBacklog.Count > 0 && now - _lastNoticeAt >= NoticeSpacing)
             {
                 _lastNoticeAt = now;
                 Chat.Chat.Local(Chat.Chat.Title, NoticeBacklog.Dequeue());
             }
+            if (PublicBacklog.Count > 0 && !started && now - _gameEndAt > 4f)
+            {
+                bool inLobby = false;
+                try { inLobby = LobbyBehaviour.Instance != null; } catch (Exception) { }
+                if (inLobby)
+                {
+                    foreach (var line in PublicBacklog) Chat.Chat.All(Chat.Chat.Title, line);
+                    PublicBacklog.Clear();
+                }
+            }
+        }
+
+        private static void StartRound(float now, bool afterExile)
+        {
+            _roundStartAt = now;
+            _roundStartIsExile = afterExile;
+            TaskTimes.Clear();
+            TaskBurstThisRound.Clear();
         }
 
         private static void ResetGame(float now)
         {
             _introEndAt = -1f; _lastPauseEnd = now; _roundStartAt = -1f; _roundStartIsExile = false; _lastExileEndAt = -100f;
+            _meetingStartAt = -100f; _exileStartAt = -100f;
             _prevIntro = _prevMeeting = _prevExile = false;
             LastKillAt.Clear();
+            DeathAt.Clear();
+            TaskTimes.Clear();
+            TaskBurstThisRound.Clear();
+            LastMoveRpcAt.Clear();
             Pending.Clear();
-            foreach (var s in Suspects.Values) s.NoticedThisGame.Clear();
+            Reports.Clear();
+            foreach (var s in Suspects.Values)
+            {
+                s.NoticedThisGame.Clear();
+                s.Events.Clear();        // Repeat rules count within one game only
+                s.LastEventAt.Clear();
+            }
         }
 
         internal static void OnLobbyJoined()
@@ -509,7 +686,9 @@ namespace PocketRoles.Net
             UnknownRpcLogged.Clear();
             KickQueue.Clear();
             NoticeBacklog.Clear();
+            PublicBacklog.Clear();
             Pending.Clear();
+            Reports.Clear();
         }
 
         internal static void OnPlayerLeft(int clientId)
@@ -542,9 +721,9 @@ namespace PocketRoles.Net
         }
 
         private static string Usage() => Lang.T("ac.usage",
-            "使い方: /ac（記録の一覧）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc> <#番号|名前> [kick]",
-            "Usage: /ac (records), /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc> <#id|name> [kick]",
-            "用法: /ac（记录）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc> <#编号|名字> [kick]");
+            "使い方: /ac（記録の一覧）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase> <#番号|名前> [kick]",
+            "Usage: /ac (records), /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase> <#id|name> [kick]",
+            "用法: /ac（记录）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase> <#编号|名字> [kick]");
 
         private static string TestCommand(string[] tokens)
         {
@@ -562,6 +741,10 @@ namespace PocketRoles.Net
                 case "protect": rule = Rule.ProtectAlive; break;
                 case "distance": rule = Rule.KillDistance; break;
                 case "rpc": rule = Rule.RpcUnknown; break;
+                case "taskburst": rule = Rule.TaskBurst; break;
+                case "report": rule = Rule.ReportForge; break;
+                case "teleport": rule = Rule.Teleport; break;
+                case "killphase": rule = Rule.KillPhase; break;
                 default: return Usage();
             }
             bool kick = tokens[tokens.Length - 1].ToLowerInvariant() == "kick";
@@ -570,19 +753,23 @@ namespace PocketRoles.Net
             var pc = Permissions.FindPlayer(sb.ToString());
             if (pc == null) return Lang.T("ac.test.noplayer", "その参加者が見つかりません（#番号か名前の一部）。", "No such player (#id or part of the name).", "找不到该玩家（#编号或名字的一部分）。");
             if (pc.AmOwner) return Lang.T("ac.test.self", "ホスト自身は対象にできません。", "The host cannot be tested.", "不能对主持测试。");
-            Report(rule, pc, "simulated by /ac test", true, kick);
+            bool queued = Report(rule, pc, "simulated by /ac test", true, kick);
+            string outcome = queued ? "kick"
+                : kick ? (Options.CheatAutoKick ? "no kick (already removed, queued or VIP+)" : "no kick: anticheat.kick off")
+                : "notice only";
             return string.Format(Lang.T("ac.test.done", "[テスト] {0} に「{1}」を入力しました（{2}）", "[test] fed '{1}' for {0} ({2})", "[测试] 已对 {0} 输入“{1}”（{2}）"),
-                Core.Game.NameOf(pc.PlayerId), Text(rule), kick ? (Options.CheatAutoKick ? "kick" : "kick: anticheat.kick off") : "notice only");
+                Core.Game.NameOf(pc.PlayerId), Text(rule), outcome);
         }
 
         private static string ListText()
         {
-            if (Suspects.Count == 0) return Lang.T("ac.list.none", "チート検知の記録はありません。", "No anti-cheat records.", "没有作弊检测记录。");
             var sb = new StringBuilder(Lang.T("ac.list.header", "チート検知（この部屋）:", "Anti-cheat (this lobby):", "作弊检测（本房间）:"));
+            int rows = 0;
             foreach (var kv in Suspects)
             {
                 var s = kv.Value;
                 if (s.Hits.Count == 0) continue;
+                rows++;
                 sb.Append('\n').Append(s.Name).Append(" #").Append(s.PlayerId).Append(": ");
                 bool first = true;
                 foreach (var h in s.Hits)
@@ -592,13 +779,15 @@ namespace PocketRoles.Net
                     sb.Append(Text(h.Key)).Append('×').Append(h.Value);
                 }
                 if (s.Kicked) sb.Append(Lang.T("ac.list.kicked", " (退出済み)", " (removed)", " (已移出)"));
+                else if (s.Exempt) sb.Append(Lang.T("ac.list.exempt", " (VIP以上のため退出させず)", " (VIP+: not removed)", " (VIP以上，未移出)"));
                 else if (s.Left) sb.Append(Lang.T("ac.list.left", " (退出)", " (left)", " (已离开)"));
             }
+            if (rows == 0) return Lang.T("ac.list.none", "チート検知の記録はありません。", "No anti-cheat records.", "没有作弊检测记录。");
             return sb.ToString();
         }
     }
 
-    // ====================================================================== patches (observation only: always return true)
+    // ====================================================================== patches (observation only: void prefixes, vanilla always runs)
 
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     [HarmonyPriority(Priority.First)]
@@ -619,6 +808,17 @@ namespace PocketRoles.Net
         {
             try { CheatDetector.OnPhysicsRpc(__instance, callId); }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector_PlayerPhysicsHandleRpcPatch: {e}"); }
+        }
+    }
+
+    [HarmonyPatch(typeof(CustomNetworkTransform), nameof(CustomNetworkTransform.HandleRpc))]
+    [HarmonyPriority(Priority.First)]
+    internal static class CheatDetector_NetworkTransformHandleRpcPatch
+    {
+        private static void Prefix(CustomNetworkTransform __instance, byte callId)
+        {
+            try { if (callId == 21) CheatDetector.OnSnapTo(__instance); }
+            catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector_NetworkTransformHandleRpcPatch: {e}"); }
         }
     }
 
