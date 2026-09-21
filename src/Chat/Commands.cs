@@ -218,6 +218,7 @@ namespace PocketRoles.Chat
                         Reply(sender, ToggleMod(arg1));
                         return true;
                     case "kick": Reply(sender, KickCommand(sender, JoinArgs(tokens, 1), false)); return true;
+                    case "ac": case "anticheat": Reply(sender, Net.CheatDetector.Command(tokens), 8); return true;   // v0.5.3 cheat detection
                     case "ban": HandleBan(sender, arg1, JoinArgs(tokens, 1), JoinArgs(tokens, 2)); return true;
                     case "unban": Reply(sender, UnbanText(JoinArgs(tokens, 1))); return true;
                     case "vset": Reply(sender, VanillaSet(arg1, JoinArgs(tokens, 2))); return true;
@@ -330,6 +331,7 @@ namespace PocketRoles.Chat
                 case "diag": case "diagnostics": case "診断":
                 case "admin": case "admins": case "moderator": case "moderators": case "vip": case "vips":
                 case "kick": case "ban": case "unban": case "vset":
+                case "ac": case "anticheat":
                 case "code": case "コード": case "announce": case "guide": case "案内": case "move": case "migrate": case "移動":
                 case "backup": case "restore": case "復元":
                 case "who": case "生存":

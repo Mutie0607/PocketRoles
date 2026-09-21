@@ -336,7 +336,7 @@ namespace PocketRoles.Chat
             if (!string.IsNullOrWhiteSpace(custom)) return custom.Replace("\\n", " ").Trim();
             return Lang.T("compat.welcome",
                 "ようこそ! 普通のAmong Us(役職なし)です。何も入れなくてOK。MODで翻訳とチート対策をしています。説明 /cmd about、困ったら /cmd h",
-                "Welcome! Normal Among Us (no roles). Chat translation + anti-cheat by mod: /cmd about",
+                "Welcome! Normal Among Us (no roles). Mod: chat translation, anti-cheat. /cmd about",
                 "欢迎! 普通的Among Us(无职业)，无需安装。MOD负责翻译和防作弊，说明 /cmd about，帮助 /cmd h");
         }
 

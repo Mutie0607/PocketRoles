@@ -57,6 +57,7 @@ namespace PocketRoles.Core
         private static ConfigEntry<bool> _discordAnnounce;
         private static ConfigEntry<string> _discordText;
         private static ConfigEntry<bool> _antiCheatKick;
+        private static ConfigEntry<bool> _cheatDetect, _cheatAutoKick, _cheatAnnounceKick;   // v0.5.3 CheatDetector
         private static ConfigEntry<bool> _wireLog;
 
         private static ConfigEntry<bool> _autoRehost;
@@ -254,6 +255,9 @@ namespace PocketRoles.Core
             _wireLog = cfg.Bind("Diagnostics", "WireLog", false, "Investigation aid: log every packet this client sends (InnerNetClient.SendOrDisconnect) and receives (HandleMessage), decoded one level (GameData / GameDataTo -> Data / RPC / Spawn ...), plus every disconnect, to LogOutput.log. Off (default) = no effect");
             _antiCheatKick = cfg.Bind("AntiCheat", "KickOnForgedRpc", false, "Reserved, currently no effect: forged host-only RPCs (SetRole/SetName/MurderPlayer/...) are always dropped and logged, but the sender of a relayed RPC cannot be identified, so nobody is kicked");
 
+            _cheatDetect = cfg.Bind("AntiCheat", "Detect", true, "v0.5.3: in unregistered lobbies, detect actions a vanilla client never produces (kill / vent / ability / task by a role that cannot, alive chat outside meetings, crew sabotage, kills faster than the cooldown or from too far, unknown RPC ids) and show them on the host's screen (/ac lists them)");
+            _cheatAutoKick = cfg.Bind("AntiCheat", "AutoKick", true, "v0.5.3: remove (with a ban for this room) a player on the first CERTAIN detection (kill / vent / ability / task by a role that cannot) or on the second alive chat outside a meeting. VIP and above are never removed automatically. Note: the sender of a relayed message cannot be proven, so a spoofing cheater could in theory frame someone");
+            _cheatAnnounceKick = cfg.Bind("AntiCheat", "AnnounceKick", true, "v0.5.3: when the anti-cheat removes a player, tell everyone in one public line (who and why)");
             _autoRehost = cfg.Bind("Lobby", "AutoRehost", false, "Automatically create a new lobby after an unexpected disconnect (server error, timeout) while hosting");
             _autoPublic = cfg.Bind("Lobby", "AutoPublic", false, "Automatically make the lobby public a few seconds after it is created / re-hosted");
             _autoPublicDelay = cfg.Bind("Lobby", "AutoPublicDelay", 3, new ConfigDescription("Seconds to wait before making the lobby public", new AcceptableValueRange<int>(0, 60)));
@@ -439,6 +443,12 @@ namespace PocketRoles.Core
         public static bool DiscordAnnounce { get => _discordAnnounce == null || _discordAnnounce.Value; set { if (_discordAnnounce != null) _discordAnnounce.Value = value; } }
         public static string DiscordText => _discordText == null ? "" : (_discordText.Value ?? "");
         public static bool AntiCheatKick { get => _antiCheatKick != null && _antiCheatKick.Value; set { if (_antiCheatKick != null) _antiCheatKick.Value = value; } }
+        /// <summary>[AntiCheat] Detect (v0.5.3): CheatDetector on (default true).</summary>
+        public static bool CheatDetect { get => _cheatDetect == null || _cheatDetect.Value; set { if (_cheatDetect != null) _cheatDetect.Value = value; } }
+        /// <summary>[AntiCheat] AutoKick (v0.5.3): remove on the first certain detection (default true).</summary>
+        public static bool CheatAutoKick { get => _cheatAutoKick == null || _cheatAutoKick.Value; set { if (_cheatAutoKick != null) _cheatAutoKick.Value = value; } }
+        /// <summary>[AntiCheat] AnnounceKick (v0.5.3): one public line when the anti-cheat removes a player (default true).</summary>
+        public static bool CheatAnnounceKick { get => _cheatAnnounceKick == null || _cheatAnnounceKick.Value; set { if (_cheatAnnounceKick != null) _cheatAnnounceKick.Value = value; } }
         /// <summary>[Diagnostics] WireLog: packet-level send/receive trace (Net.WireLog), off by default.</summary>
         public static bool WireLog { get => _wireLog != null && _wireLog.Value; set { if (_wireLog != null) _wireLog.Value = value; } }
 
@@ -1037,8 +1047,12 @@ namespace PocketRoles.Core
             _descriptors.Add(Bool("roles.revealall", gJa, gEn, "役職表示を全員に(オフ=ホストのみ)", "Reveal to everyone (off = host only)", _revealToAll));
             _descriptors.Add(Bool("roleinfo", gJa, gEn, "会議で役職説明", "Role info at meetings", _roleInfoAtMeeting)
                 .Tip("会議開始時に各自の役職説明を個別に送り直します。", "Re-sends each player's role description privately when a meeting starts.", "会议开始时再次私聊发送各自的职业说明。"));
-            _descriptors.Add(Bool("kick", gJa, gEn, "不正RPCでキック（予約・現在は記録のみ）", "Kick on forged RPC (reserved, log only)", _antiCheatKick)
-                .Tip("現在は効果がありません: 偽装されたホスト専用RPCは常に捨てて記録しますが、中継された送信者を特定できないためキックはしません。", "No effect at the moment: forged host-only RPCs are always dropped and logged, but the relayed sender cannot be identified, so nobody is kicked.", "目前无效：伪造的房主专用 RPC 总是被丢弃并记录，但无法识别转发者，因此不会踢人。"));
+            _descriptors.Add(Bool("anticheat", gJa, gEn, "チート検知(登録オフ)", "Cheat detection (unregistered)", _cheatDetect)
+                .Tip("登録オフの部屋で、普通のAmong Usではありえない操作(キルできない役のキル、ベント、能力、タスク、生存中の会議外チャットなど)を見つけてホストの画面に出します。/ac で一覧。", "In unregistered rooms, spots actions vanilla Among Us never produces (kills, vents, abilities, tasks by roles that cannot, alive chat outside meetings...) and shows them on the host's screen. /ac lists them.", "在未登记房间中，发现原版Among Us不可能出现的操作(不能击杀的职业击杀、通风管、能力、任务、存活时会议外聊天等)并显示在主持画面上。/ac 查看列表。"));
+            _descriptors.Add(Bool("anticheat.kick", gJa, gEn, "チートの人を自動で退出", "Remove cheaters automatically", _cheatAutoKick)
+                .Tip("確実な検知(キル・ベント・能力・タスク)は1回、会議外チャットは2回で、この部屋へのバン付きで退出させます。VIP以上は対象外。", "Removes (with a ban for this room) on the first certain detection (kill / vent / ability / task) or the second alive chat outside a meeting. VIP and above are exempt.", "确定的检测(击杀/通风管/能力/任务)1次、会议外聊天2次即移出并禁止再次进入本房间。VIP以上除外。"));
+            _descriptors.Add(Bool("anticheat.announce", gJa, gEn, "退出させたことを全員に知らせる", "Announce removals to everyone", _cheatAnnounceKick)
+                .Tip("チート検知で退出させた時、誰をなぜ退出させたかを全員のチャットに1行出します。", "When the anti-cheat removes someone, one public chat line says who and why.", "因作弊检测移出玩家时，在所有人的聊天中显示一行：谁以及原因。"));
             _descriptors.Add(Bool("general.ignoreversion", gJa, gEn, "バージョン不一致を無視", "Ignore version mismatch", _ignoreVersion)
                 .Tip("ゲームのバージョンが対応版と違ってもMODを動かします（自己責任）。", "Keeps the mod active on an unsupported game version (at your own risk).", "游戏版本不匹配时仍启用模组（风险自负）。"));
             _descriptors.Add(Bool("credits.show", gJa, gEn, "クレジット表示", "Show credits", _showCredits)
@@ -1288,7 +1302,9 @@ namespace PocketRoles.Core
                 case "welcome": return SetBool(_welcome, value, "welcome", out message);
                 case "roleinfo": return SetBool(_roleInfoAtMeeting, value, "roleinfo", out message);
                 case "register": case "modded": case "+25": return SetBool(_register, value, "register", out message);
-                case "kick": case "anticheatkick": return SetBool(_antiCheatKick, value, "kick", out message);
+                case "anticheat": case "cheat": return SetBool(_cheatDetect, value, "anticheat", out message);
+                case "anticheat.kick": case "kick": case "anticheatkick": return SetBool(_cheatAutoKick, value, "anticheat.kick", out message);   // v0.5.3: the old reserved toggle now means the real auto-kick
+                case "anticheat.announce": case "anticheatannounce": return SetBool(_cheatAnnounceKick, value, "anticheat.announce", out message);
                 case "general.ignoreversion": case "ignoreversion": return SetBool(_ignoreVersion, value, "general.ignoreversion", out message);
                 case "lobby.autorehost": case "autorehost": case "rehost": return SetBool(_autoRehost, value, "lobby.autorehost", out message);
                 case "lobby.autopublic": case "autopublic": return SetBool(_autoPublic, value, "lobby.autopublic", out message);
