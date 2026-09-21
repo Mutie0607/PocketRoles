@@ -778,12 +778,25 @@ function Install-ModDir([string]$dll) {
 }
 
 # common tail of a mod install: drop the old plugin, record the version
+function Save-AegisFingerprint {
+    # v0.5.4: the DLL this launcher just installed / built is the one Aegis expects (the tamper check compares against it)
+    try {
+        if (-not (Test-Path $script:DllPath)) { return }
+        $dir = Join-Path $env:LOCALAPPDATA 'PocketRoles\Aegis'
+        if (-not (Test-Path $dir)) { [void][IO.Directory]::CreateDirectory($dir) }
+        $sha = (Get-FileHash -LiteralPath $script:DllPath -Algorithm SHA256).Hash.ToLowerInvariant()
+        $ver = Get-DllVersionString $script:DllPath
+        [IO.File]::WriteAllText((Join-Path $dir 'mod-fingerprint.txt'), ($sha + '|' + $ver))
+    } catch { }
+}
+
 function Finish-ModInstall {
     $old = Join-Path $script:Modded 'BepInEx\plugins\HostRoles.dll'
     if (Test-Path $old) { Remove-FileQuiet $old; Log 'HostRoles.dll (old plugin) removed' }
     $v = Get-DllVersionString $script:DllPath
     Update-State @{ installedVersion = $v; installedAt = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss'); gameVersion = (Get-GameVersion $script:Modded) }
     Log (T 'in_mod_done' $v)
+    Save-AegisFingerprint
     return $true
 }
 
@@ -1183,6 +1196,7 @@ function Invoke-Build {
     $errors = $text | Where-Object { $_ -match 'error CS|error MSB|エラー CS|エラー MSB' } | Select-Object -Unique
     if ($p.ExitCode -eq 0 -and (Test-Path $script:DllPath)) {
         Log 'ビルド成功。PocketRoles.dll を BepInEx\plugins に配置しました。'
+        Save-AegisFingerprint
         $modVer = Get-GameVersion $script:Modded
         if ($modVer) { Save-State $modVer }
         return $true
@@ -1482,6 +1496,10 @@ function Start-Aegis {
     $a = Join-Path $script:Here 'aegis\Aegis.ps1'
     if (-not (Test-Path $a)) { return }
     try {
+        # a second launcher window keeps an already running Aegis alive (it reads this file)
+        $dir = Join-Path $env:LOCALAPPDATA 'PocketRoles\Aegis'
+        if (-not (Test-Path $dir)) { [void][IO.Directory]::CreateDirectory($dir) }
+        [IO.File]::WriteAllText((Join-Path $dir 'launcher.pid'), [string]$PID)
         $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-WindowStyle', 'Hidden', '-File', ('"' + $a + '"'),
                      '-GameDir', ('"' + $script:Modded + '"'), '-LauncherPid', $PID, '-Lang', $script:Lang)
         Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden | Out-Null

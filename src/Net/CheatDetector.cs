@@ -48,7 +48,7 @@ namespace PocketRoles.Net
             switch (r)
             {
                 case Rule.KillRole: case Rule.VentRole: case Rule.AbilityRole: case Rule.TaskImpostor: return Level.Certain;
-                case Rule.ChatAlive: case Rule.ChatFlood: case Rule.NameChange: case Rule.ColorSpam: case Rule.SpeedHack: return Level.Repeat;
+                case Rule.ChatAlive: case Rule.ChatFlood: case Rule.SpeedHack: return Level.Repeat;
                 default: return Level.Notice;
             }
         }
@@ -75,8 +75,8 @@ namespace PocketRoles.Net
                 case Rule.KillPhase: return Lang.T("ac.rule.killphase", "会議中や追放画面でキルした", "killed during a meeting or the exile screen", "在会议或放逐画面中击杀");
                 case Rule.Callout: return Lang.T("ac.rule.callout", "まだ何もしていないインポスターを会議で言い当てた(インポスターが見えるチートの可能性)", "named impostors nobody could know yet (possible role-seeing cheat)", "在会议中点中了尚未行动的内鬼(可能是能看到内鬼的作弊)");
                 case Rule.ChatFlood: return Lang.T("ac.rule.chatflood", "人間には無理な速さでチャットを連投した", "flooded the chat faster than a person can type", "以人类不可能的速度刷屏");
-                case Rule.NameChange: return Lang.T("ac.rule.namechange", "部屋の中で名前を変えた(普通のAmong Usではできない)", "changed their name inside the room (vanilla cannot)", "在房间内更改了名字(原版无法做到)");
-                case Rule.ColorSpam: return Lang.T("ac.rule.colorspam", "試合中の色変更か、色の高速切り替え", "changed colour during a game or cycled colours rapidly", "对局中更改颜色或快速切换颜色");
+                case Rule.NameChange: return Lang.T("ac.rule.namechange", "部屋の中で名前を変えようとした(普通のAmong Usではできない。無視しました)", "tried to change a name inside the room (vanilla cannot; ignored)", "试图在房间内更改名字(原版无法做到，已忽略)");
+                case Rule.ColorSpam: return Lang.T("ac.rule.colorspam", "試合中に色を変えようとした、または人の手では無理な速さの色の切り替え", "tried to change colour during a game, or cycled colours faster than a hand can", "对局中试图改色，或以人手不可能的速度切换颜色");
                 case Rule.SpeedHack: return Lang.T("ac.rule.speedhack", "設定の2.5倍を超える速さで移動した(スピードハック)", "moved faster than 2.5x their speed setting (speed hack)", "以超过设置2.5倍的速度移动(加速外挂)");
                 case Rule.SpeedFast: return Lang.T("ac.rule.speedfast", "設定より明らかに速く移動した(ラグの可能性あり)", "moved clearly faster than their speed setting (could be lag)", "移动明显快于设置(可能是延迟)");
                 case Rule.VentFar: return Lang.T("ac.rule.ventfar", "ベントから遠い位置でベントに入った", "entered a vent from far away", "在远离通风管的位置进入了通风管");
@@ -147,6 +147,8 @@ namespace PocketRoles.Net
 
         /// <summary>The game rules: an unregistered lobby, a real (non-haison) game running, roles known.</summary>
         internal static bool IsActive() => Active();
+        /// <summary>v0.5.4: the host watches this player (detection on, not the host itself).</summary>
+        internal static bool Watches(PlayerControl pc) => HostWatching() && Suspectable(pc);
 
         private static bool Active()
         {
@@ -532,6 +534,9 @@ namespace PocketRoles.Net
                 {
                     due = false;
                     s.LastEventAt.TryGetValue(rule, out float lastEvent);
+                    // v0.5.4 review: the second event counts within 5 minutes of the previous one (lobby rules keep their
+                    // counters until the next game starts: two unrelated moments an hour apart never add up)
+                    if (lastEvent > 0f && now - lastEvent > 300f) s.Events[rule] = 0;
                     if (lastEvent <= 0f || now - lastEvent >= 10f)
                     {
                         s.Events.TryGetValue(rule, out int ev);

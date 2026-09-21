@@ -13,10 +13,13 @@ namespace PocketRoles.Net
     ///
     /// Lobby and game, both lobby kinds (a lobby cheat needs no roles):
     ///   ChatFlood  (Repeat) — 5 chat lines (typed or quick chat) within 3 s from one player; people cannot type that fast.
-    ///   NameChange (Repeat) — a second CheckName on the same player object (vanilla sends one when it spawns; there is no
-    ///                         rename inside a lobby), or any CheckName during a game.
-    ///   ColorSpam  (Repeat) — any CheckColor during a game (the colour picker exists only in the lobby), or 8 within 3 s in
-    ///                         the lobby ("rainbow" colour cycling).
+    ///   NameChange (Notice + dropped) — a second CheckName on the same player object (vanilla sends one when it spawns;
+    ///                         there is no rename inside a lobby), or any CheckName during a game.
+    ///   ColorSpam  (Notice) — any CheckColor during a game (dropped: the colour picker exists only in the lobby), or 20 within
+    ///                         3 s in the lobby ("rainbow" cycling; a child tapping the picker reaches 8 in 3 s — review 2026-09-21).
+    ///   Name / colour requests are never a kick: any client can address them to someone else's object (the review showed a
+    ///   cheater could have had an innocent player banned); chat (relayed only from its owner's connection) and movement
+    ///   (what the host renders) can be attributed, so those two keep their kicks.
     /// Unregistered games (CheatDetector.Active):
     ///   SpeedHack  (Repeat) — sustained movement above 2.5× the player's own speed setting for 2 s; SpeedFast (Notice) at 1.8×.
     ///                         Measured from the positions the host renders; single-frame jumps (snaps, vents, lag catch-up
@@ -61,14 +64,7 @@ namespace PocketRoles.Net
                     if (Burst(ChatTimes, pc.OwnerId, now, 3f, 5))
                         CheatDetector.Report(CheatDetector.Rule.ChatFlood, pc, "5 chat lines within 3 s", false, false);
                     break;
-                case 5:
-                    if (inGame) CheatDetector.Report(CheatDetector.Rule.NameChange, pc, "CheckName during a game", false, false);
-                    else if (!NamedObjects.Add(pc.NetId)) CheatDetector.Report(CheatDetector.Rule.NameChange, pc, "a second CheckName in the lobby", false, false);
-                    break;
-                case 7:
-                    if (inGame) CheatDetector.Report(CheatDetector.Rule.ColorSpam, pc, "CheckColor during a game", false, false);
-                    else if (Burst(ColorTimes, pc.OwnerId, now, 3f, 8)) CheatDetector.Report(CheatDetector.Rule.ColorSpam, pc, "8 colour changes within 3 s", false, false);
-                    break;
+                // 5 CheckName / 7 CheckColor: decided and reported in Allow (the dropping prefix), one place, one order
             }
             if (Registration.CompatMode && HostOnly.Contains(callId) && ForgedNoticed.Add(callId))
             {
@@ -79,6 +75,27 @@ namespace PocketRoles.Net
                     "[Aegis] A forged message (RPC {0}) arrived: vanilla Among Us never sends it, someone is cheating (the sender cannot be identified)",
                     "[Aegis] 检测到伪造的通信(RPC {0})。原版Among Us不会发送，有人在作弊（无法确定发送者）"), callId));
             }
+        }
+
+        /// <summary>
+        /// PlayerControl.HandleRpc prefix for 5 CheckName / 7 CheckColor (v0.5.4 review): a rename or recolour vanilla never
+        /// requests is reported (notice) and dropped, so a name / colour changer does nothing whoever it targets. The first
+        /// CheckName of each player object is recorded here and passes.
+        /// </summary>
+        internal static bool Allow(PlayerControl pc, byte callId, bool inGame)
+        {
+            if (callId == 5)
+            {
+                if (inGame) { CheatDetector.Report(CheatDetector.Rule.NameChange, pc, "CheckName during a game (dropped)", false, false); return false; }
+                if (!NamedObjects.Add(pc.NetId)) { CheatDetector.Report(CheatDetector.Rule.NameChange, pc, "a second CheckName in the lobby (dropped)", false, false); return false; }
+                return true;
+            }
+            if (callId == 7)
+            {
+                if (inGame) { CheatDetector.Report(CheatDetector.Rule.ColorSpam, pc, "CheckColor during a game (dropped)", false, false); return false; }
+                if (Burst(ColorTimes, pc.OwnerId, Time.time, 3f, 20)) CheatDetector.Report(CheatDetector.Rule.ColorSpam, pc, "20 colour changes within 3 s", false, false);
+            }
+            return true;
         }
 
         /// <summary>Adds a timestamp; true when <paramref name="count"/> of them fall within <paramref name="window"/> seconds (then restarts).</summary>
@@ -111,7 +128,11 @@ namespace PocketRoles.Net
                 {
                     if (v == null || v.Id != id) continue;
                     float d = Vector2.Distance(pc.GetTruePosition(), (Vector2)v.transform.position);
-                    if (d > 3.5f) CheatDetector.Report(CheatDetector.Rule.VentFar, pc, $"vent {id} at distance {d:0.0}", false, false);
+                    // the host renders a remote player a few hundred ms behind: allow for that at the room's speed (review 2026-09-21)
+                    float speed = 2.5f;
+                    try { speed = pc.MyPhysics.TrueSpeed; } catch (Exception) { }
+                    float limit = 1.5f + Mathf.Max(2.5f, speed) * 0.8f;
+                    if (d > limit) CheatDetector.Report(CheatDetector.Rule.VentFar, pc, $"vent {id} at distance {d:0.0} (limit {limit:0.0})", false, false);
                     return;
                 }
             }
@@ -164,6 +185,29 @@ namespace PocketRoles.Net
                 if (avg > speed * 2.5f) CheatDetector.Report(CheatDetector.Rule.SpeedHack, pc, $"{avg:0.0} u/s for {span:0.0} s (speed {speed:0.0})", false, false);
                 else if (avg > speed * 1.8f) CheatDetector.Report(CheatDetector.Rule.SpeedFast, pc, $"{avg:0.0} u/s for {span:0.0} s (speed {speed:0.0})", false, false);
                 m.WindowStart = now; m.Sum = 0f;
+            }
+        }
+    }
+
+    /// <summary>v0.5.4 review: drops the renames / recolours vanilla never requests (5 CheckName, 7 CheckColor) — see AegisMore.Allow.</summary>
+    [HarmonyLib.HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
+    [HarmonyLib.HarmonyPriority(HarmonyLib.Priority.First)]
+    internal static class AegisMore_HandleRpcPatch
+    {
+        private static bool Prefix(PlayerControl __instance, byte callId)
+        {
+            try
+            {
+                if (callId != 5 && callId != 7) return true;
+                if (!CheatDetector.Watches(__instance)) return true;
+                bool inGame = false;
+                try { var c = AmongUsClient.Instance; inGame = c != null && c.IsGameStarted && ShipStatus.Instance != null; } catch (Exception) { }
+                return AegisMore.Allow(__instance, callId, inGame);
+            }
+            catch (Exception e)
+            {
+                PocketRolesPlugin.Logger.LogError($"AegisMore_HandleRpcPatch: {e}");
+                return true;
             }
         }
     }

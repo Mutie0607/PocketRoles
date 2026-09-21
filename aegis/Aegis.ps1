@@ -132,9 +132,9 @@ namespace AegisApp
             { "st.wait",    new[] { "待機中（ゲームは起動していません）", "待机中（游戏未运行）", "Standing by (the game is not running)" } },
             { "st.watch",   new[] { "監視中 · 検知 {0} 件 · 退出 {1} 人", "监视中 · 检测 {0} 次 · 移出 {1} 人", "Watching · {0} flagged · {1} removed" } },
             { "st.none",    new[] { "この起動中の記録はまだありません。", "本次启动尚无记录。", "No records in this session yet." } },
-            { "st.about",   new[] { "Aegis は PocketRoles のホスト用アンチチートです。検知と退出はゲーム内の MOD が行い、このアプリはその状態と通知を表示します。この PC のファイルとプロセス一覧を見るだけで、ほかのゲームやアプリには触れません。",
-                                    "Aegis 是 PocketRoles 的主持用反作弊。检测和移出由游戏内的 MOD 执行，本应用只显示其状态和通知。它只查看本机文件和进程列表，不会接触其他游戏或应用。",
-                                    "Aegis is the PocketRoles host anti-cheat. The in-game mod detects and removes; this app shows its state and notifications. It only reads files on this PC and the process list, and never touches other games or apps." } },
+            { "st.about",   new[] { "Aegis は PocketRoles のホスト用アンチチートです。検知と退出はゲーム内の MOD が行い、このアプリはその状態と通知を表示します。この PC のファイルとプロセス一覧を見るだけで、ほかのゲームやアプリには触れません。ネットには、定義ファイルの取得のために GitHub へつなぐだけです（この PC の情報は送りません）。",
+                                    "Aegis 是 PocketRoles 的主持用反作弊。检测和移出由游戏内的 MOD 执行，本应用只显示其状态和通知。它只查看本机文件和进程列表，不会接触其他游戏或应用。联网只为从 GitHub 获取定义文件（不发送本机信息）。",
+                                    "Aegis is the PocketRoles host anti-cheat. The in-game mod detects and removes; this app shows its state and notifications. It only reads files on this PC and the process list, never touches other games or apps, and connects only to GitHub for its definitions file (nothing about this PC is sent)." } },
             { "st.close",   new[] { "閉じる", "关闭", "Close" } },
             // rule texts (the mod's CheatDetector.Rule names)
             { "r.KillRole",     new[] { "キルできない役職のキル", "不能击杀的职业击杀", "kill without a killing role" } },
@@ -273,7 +273,7 @@ namespace AegisApp
             if (Version == 0)
             {
                 // nothing readable: the built-in list (v0)
-                Tools = new List<string> { "cheatengine", "artmoney", "wemod", "extremeinjector", "xenos", "ghinjector", "squalr", "cosmos", "speedhack", "gameguardian", "sickomenu", "amongusmenu", "reclass" };
+                Tools = new List<string> { "cheatengine*", "artmoney*", "wemod", "extremeinjector*", "xenos", "xenos64", "ghinjector*", "squalr", "speedhack*", "gameguardian", "sickomenu*", "amongusmenu*", "reclass*" };
                 Dlls = new List<string> { "version.dll", "dxgi.dll", "d3d11.dll", "dinput8.dll", "winmm.dll", "dsound.dll", "xinput1_3.dll", "xinput1_4.dll", "xinput9_1_0.dll", "opengl32.dll" };
                 DllWords = new List<string> { "menu", "cheat", "inject" };
             }
@@ -308,12 +308,38 @@ namespace AegisApp
                     if (line == "[dllwords]") { cur = words; continue; }
                     if (line.StartsWith("[")) { cur = null; continue; }
                     if (cur != null) cur.Add(line.ToLowerInvariant());
+                    if (tools.Count + dlls.Count + words.Count > 500) return false;
                 }
                 if (version <= 0 || tools.Count == 0) return false;
+                // a broken or hostile file must not stop every launch: short entries and the game's own files are refused
+                tools.RemoveAll(t => t.TrimEnd('*').Length < 5 || HitsKeptProcess(t));
+                dlls.RemoveAll(d => !d.EndsWith(".dll") || Array.IndexOf(KeepDlls, d) >= 0);
+                words.RemoveAll(w => w.Length < 4 || HitsKeptDll(w));
+                if (tools.Count == 0) return false;
                 Version = version; Tools = tools; Dlls = dlls; DllWords = words;
                 return true;
             }
             catch (Exception) { return false; }
+        }
+
+        // never flagged, whatever a definitions file says: processes a host always runs, and the game's own DLLs
+        static readonly string[] KeepProcesses = { "amongus", "steam", "steamwebhelper", "steamservice", "powershell", "explorer", "svchost", "system", "discord", "valorant", "valorantwin64shipping", "riotclientservices", "riotclientux", "vgc", "vgtray", "mumuplayer", "mumunxmain", "mumunxdevice", "chrome", "msedge", "obs64", "claude" };
+        static readonly string[] KeepDlls = { "winhttp.dll", "gameassembly.dll", "unityplayer.dll", "baselib.dll", "steam_api.dll", "steam_api64.dll", "d3dcompiler_47.dll" };
+        static bool HitsKeptProcess(string entry)
+        {
+            foreach (var k in KeepProcesses) if (ToolMatch(k, entry)) return true;
+            return false;
+        }
+        static bool HitsKeptDll(string word)
+        {
+            foreach (var k in KeepDlls) if (k.Contains(word)) return true;
+            return false;
+        }
+
+        /// <summary>A process name (normalized) against one entry: "name*" matches the start, otherwise the whole name.</summary>
+        public static bool ToolMatch(string key, string entry)
+        {
+            return entry.EndsWith("*") ? key.StartsWith(entry.TrimEnd('*')) : key == entry;
         }
 
         /// <summary>Background fetch of the newest definitions; saved when newer and well-formed (used from the next scan on).</summary>
@@ -476,7 +502,7 @@ namespace AegisApp
                 p.Dispose();
                 string key = n.Replace(" ", "").Replace("-", "").Replace("_", "").ToLowerInvariant();
                 foreach (var t in Defs.Tools)
-                    if (key.StartsWith(t) && !found.Contains(n)) { found.Add(n); break; }
+                    if (Defs.ToolMatch(key, t) && !found.Contains(n)) { found.Add(n); break; }
             }
             return found;
         }
@@ -534,12 +560,18 @@ namespace AegisApp
             string state = Path.Combine(stateDir, "mod-fingerprint.txt");
             string prevSha = null, prevVer = null;
             try { if (File.Exists(state)) { var p = File.ReadAllText(state).Trim().Split('|'); if (p.Length >= 2) { prevSha = p[0]; prevVer = p[1]; } } } catch (Exception) { }
-            try { File.WriteAllText(state, sha + "|" + ver); } catch (Exception) { }
-            if (prevSha == null) { c.Detail = S.Get("mod.first", ver); return true; }
+            // never overwritten on a mismatch (review 2026-09-21: rewriting it let a tampered DLL pass the next scan);
+            // the launcher writes it after its own install / update / build
+            if (prevSha == null) { Save(state, sha, ver); c.Detail = S.Get("mod.first", ver); return true; }
             if (prevSha == sha) { c.Detail = S.Get("mod.same", ver); return true; }
-            if (prevVer != ver) { c.Detail = S.Get("mod.update", ver, prevVer); return true; }
+            if (prevVer != ver) { Save(state, sha, ver); c.Detail = S.Get("mod.update", ver, prevVer); return true; }
             c.Detail = S.Get("mod.changed", ver);
             c.Fix = S.Get("mod.fix"); return false;
+        }
+
+        static void Save(string state, string sha, string ver)
+        {
+            try { File.WriteAllText(state, sha + "|" + ver); } catch (Exception) { }
         }
 
         static Dictionary<string, string> ReadSection(string file, string section)
@@ -615,7 +647,9 @@ namespace AegisApp
             {
                 var c = checks[step];
                 bool ok;
-                try { ok = c.Run(c); } catch (Exception ex) { c.Detail = ex.Message; ok = false; }
+                bool crashed = false;
+                try { ok = c.Run(c); } catch (Exception ex) { c.Detail = ex.Message; c.Fix = ""; ok = false; crashed = true; }
+                if (crashed) c.SeriousOnFail = false;   // Aegis's own failure never stops a launch
                 c.State = ok ? 2 : c.SeriousOnFail ? 4 : 3;
                 if (!ok) { warnings++; if (c.SeriousOnFail) serious++; }
                 if (step + 1 < checks.Count) BeginStep(step + 1);
@@ -829,7 +863,7 @@ namespace AegisApp
             var wa = Screen.PrimaryScreen.WorkingArea;
             Location = new Point(wa.Right - Width - 18, wa.Bottom - Height - 18 - Open.Count * (Height + 10));
             Open.Add(this);
-            FormClosed += (s, e) => { Open.Remove(this); t.Stop(); };
+            FormClosed += (s, e) => { Open.Remove(this); t.Stop(); Relayout(); };
             MouseClick += (s, e) => closing = true;
             t.Interval = 30;
             t.Tick += (s, e) =>
@@ -840,6 +874,17 @@ namespace AegisApp
                 else Opacity = Math.Min(0.96, ms / 250.0);
             };
             t.Start();
+        }
+
+        static void Relayout()
+        {
+            var wa = Screen.PrimaryScreen.WorkingArea;
+            for (int k = 0; k < Open.Count; k++)
+            {
+                var t = Open[k];
+                if (t.IsDisposed) continue;
+                t.Location = new Point(wa.Right - t.Width - 18, wa.Bottom - t.Height - 18 - k * (t.Height + 10));
+            }
         }
 
         protected override bool ShowWithoutActivation { get { return true; } }
@@ -883,9 +928,11 @@ namespace AegisApp
         double alertUntil;
         DateTime lastBalloon = DateTime.MinValue;
         long logPos = -1, logBaseline = -1;
+        DateTime gameSeenAt = DateTime.MinValue;
+        readonly Decoder decoder = Encoding.UTF8.GetDecoder();
         int toolTick;
         readonly HashSet<string> toolsSeen = new HashSet<string>();
-        bool firstPoll = true;
+
         string logRest = "", modVersion = "";
         readonly Stopwatch clock = Stopwatch.StartNew();
         readonly List<string> events = new List<string>();
@@ -945,6 +992,12 @@ namespace AegisApp
             return any;
         }
 
+        int LauncherPidFile()
+        {
+            try { int p; return int.TryParse(File.ReadAllText(Path.Combine(stateDir, "launcher.pid")).Trim(), out p) ? p : 0; }
+            catch (Exception) { return 0; }
+        }
+
         static bool Alive(int pid)
         {
             if (pid <= 0) return false;
@@ -957,11 +1010,12 @@ namespace AegisApp
             if (game && !watching)
             {
                 watching = true; everWatched = true; flagged = 0; removed = 0;
-                // Aegis started while the game already ran: the log on disk is this run's. Otherwise BepInEx rewrites the
-                // log a moment after the game starts: wait until it shrinks below its old length, then read from 0.
-                logPos = firstPoll ? 0 : -2;
+                // BepInEx rewrites the log when its chainloader starts (seconds after the process, longer after an interop
+                // rebuild). A log written before the game was seen is last run's: wait until it shrinks or is written again.
+                gameSeenAt = DateTime.Now;
+                logPos = -2;
                 logBaseline = LogLength();
-                logRest = "";
+                logRest = ""; decoder.Reset();
                 modVersion = "";
                 AddEvent(S.Get("b.watch0"));
             }
@@ -972,7 +1026,6 @@ namespace AegisApp
                 Balloon(S.Get("b.stop"), ToolTipIcon.Info);
                 AddEvent(S.Get("b.stop"));
             }
-            firstPoll = false;
             if (watching) ReadLog();
             if (++toolTick >= 30)
             {
@@ -985,7 +1038,7 @@ namespace AegisApp
             // the launcher is closed and no game runs: done (a manual start stays until Quit, or 15 s after its game)
             if (!game)
             {
-                if (launcherPid > 0 && !Alive(launcherPid)) Quit();
+                if (launcherPid > 0 && !Alive(launcherPid) && !Alive(LauncherPidFile())) Quit();
                 else if (launcherPid <= 0 && everWatched && (DateTime.Now - gameGoneAt).TotalSeconds > 15) Quit();
             }
         }
@@ -1001,16 +1054,19 @@ namespace AegisApp
                     long len = fs.Length;
                     if (logPos == -2)
                     {
-                        if (logBaseline > 0 && len >= logBaseline) return;   // still the previous run's log
-                        logPos = 0;
+                        bool rewritten = len < logBaseline || File.GetLastWriteTime(path) >= gameSeenAt.AddSeconds(-2);
+                        if (!rewritten) return;   // still the previous run's log
+                        logPos = 0; logRest = ""; decoder.Reset();
                     }
-                    if (len < logPos) { logPos = 0; logRest = ""; }
+                    if (len < logPos) { logPos = 0; logRest = ""; decoder.Reset(); }
                     if (len == logPos) return;
                     fs.Position = logPos;
                     var buf = new byte[Math.Min(len - logPos, 4 * 1024 * 1024)];
                     int n = fs.Read(buf, 0, buf.Length);
                     logPos += n;
-                    string text = logRest + Encoding.UTF8.GetString(buf, 0, n);
+                    var chars = new char[decoder.GetCharCount(buf, 0, n)];
+                    int cn = decoder.GetChars(buf, 0, n, chars, 0);   // keeps a character split across two reads
+                    string text = logRest + new string(chars, 0, cn);
                     int cut = text.LastIndexOf('\n');
                     if (cut < 0) { logRest = text; return; }
                     logRest = text.Substring(cut + 1);

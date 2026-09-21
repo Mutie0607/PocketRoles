@@ -1,25 +1,26 @@
 # Aegis definitions (like an antivirus's): edit on GitHub (main/aegis/definitions.txt); every Aegis fetches the newest
 # when the launcher opens and uses it from the next scan on. Raise version= on every change. Names are lower case.
-# [tools]    the start of a running process name (spaces, '-' and '_' removed): memory editors, trainers, injectors,
-#            cheat menus — for any game, not only Among Us
-# [dlls]     file names next to Among Us.exe that cheats load through (BepInEx's own winhttp.dll is expected)
-# [dllwords] parts of a DLL file name next to Among Us.exe
+# [tools]    a running process name with spaces, '-' and '_' removed: "name*" matches the start, "name" the whole name.
+#            Memory editors, trainers, injectors, cheat menus — for any game, not only Among Us. Entries shorter than
+#            5 letters and anything matching the game, Steam, VALORANT / Riot, Discord, Windows etc. are ignored.
+# [dlls]     file names next to Among Us.exe that cheats load through (BepInEx's own winhttp.dll is never flagged)
+# [dllwords] parts of a DLL file name next to Among Us.exe (4 letters or more)
 version=1
 
 [tools]
-cheatengine
-artmoney
+cheatengine*
+artmoney*
 wemod
-extremeinjector
+extremeinjector*
 xenos
-ghinjector
+xenos64
+ghinjector*
 squalr
-cosmos
-speedhack
+speedhack*
 gameguardian
-sickomenu
-amongusmenu
-reclass
+sickomenu*
+amongusmenu*
+reclass*
 
 [dlls]
 version.dll
