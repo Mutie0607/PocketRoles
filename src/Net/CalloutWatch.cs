@@ -115,10 +115,19 @@ namespace PocketRoles.Net
             DisguiseColors.Clear();
         }
 
-        /// <summary>/ac clear: the players' lobby totals only (this game's names and who named whom first stay).</summary>
+        /// <summary>
+        /// /ac clear: the players' lobby totals. During a game this game's names and who named whom first stay (they are
+        /// facts of the running game); in the lobby the finished game (folded in only at the next start) goes too.
+        /// </summary>
         internal static void ClearTallies()
         {
-            foreach (var t in Tallies.Values) { t.LobbyHits = 0; t.LobbyWrong = 0; t.LobbyGames = 0; t.LobbyNoticedAt = -1; }
+            bool inGame = false;
+            try { inGame = AmongUsClient.Instance != null && AmongUsClient.Instance.IsGameStarted; } catch (Exception) { }
+            foreach (var t in Tallies.Values)
+            {
+                t.LobbyHits = 0; t.LobbyWrong = 0; t.LobbyGames = 0; t.LobbyNoticedAt = -1;
+                if (!inGame) { t.Hidden.Clear(); t.Labels.Clear(); t.Wrong.Clear(); t.NoticedGame = false; }
+            }
         }
 
         /// <summary>A different lobby: nothing carries over.</summary>
@@ -176,32 +185,42 @@ namespace PocketRoles.Net
             catch (Exception) { return false; }
         }
 
-        /// <summary>SendChat (13) received by the host during a meeting (CheatDetector.Active() already holds).</summary>
-        internal static void OnChat(PlayerControl pc, MessageReader reader)
+        /// <summary>RPC 33 (quick chat) just arrived from this player: the AddChat that follows carries real player names.</summary>
+        internal static void MarkQuickChat(PlayerControl pc)
         {
-            if (!Options.CheatCallout || pc == null || reader == null || pc.Data == null || !InMeeting()) return;
-            if (pc.Data.IsDead || Core.Game.IsDead(pc.PlayerId)) return;   // ghost chat: only the dead read it (and ghosts can watch kills)
-            string text = null;
-            int pos = reader.Position;
-            try { text = reader.ReadString(); }
-            catch (Exception) { return; }
-            finally { reader.Position = pos; }
-            if (string.IsNullOrEmpty(text)) return;
-            // impostors' lines are read too: an impostor naming a partner makes that partner public ("named first")
+            if (pc == null) return;
+            _quickFrom = pc.PlayerId;
+            _quickFrame = Time.frameCount;
+        }
+        private static byte _quickFrom = 255;
+        private static int _quickFrame = -1;
+
+        /// <summary>
+        /// Every line another player's chat puts on the host's screen (Chat_AddChatPatch): typed chat and quick chat
+        /// alike (vanilla renders a quick-chat phrase into text before AddChat). Impostors' lines are read too: an
+        /// impostor naming a partner makes that partner public ("named first"). Only living senders (ghost chat is read by
+        /// the dead only, and ghosts can watch kills).
+        /// </summary>
+        internal static void OnAddChat(PlayerControl pc, string text)
+        {
+            if (!Options.CheatCallout || pc == null || pc.AmOwner || string.IsNullOrEmpty(text)) return;
+            if (!CheatDetector.IsActive() || !InMeeting()) return;
+            if (pc.Data == null || pc.Data.Disconnected || pc.Data.IsDead || Core.Game.IsDead(pc.PlayerId)) return;
+            bool quick = _quickFrom == pc.PlayerId && _quickFrame == Time.frameCount;
             bool crew = CheatDetector.Roles.TryGetValue(pc.PlayerId, out var role) && !CheatDetector.IsImpostorTeam(role)
                         && !CheatDetector.IsImpostorTeam(CheatDetector.LiveRole(pc));
-            Evaluate(pc, text, crew);
+            Evaluate(pc, text, crew, quick);
         }
 
-        /// <summary>The host's own meeting line (Chat_SendChatPatch): never scored, but what it names is public from now on.</summary>
+        /// <summary>The host's own typed meeting line (Chat_SendChatPatch): never scored, but what it names is public from now on.</summary>
         internal static void OnHostChat(string text)
         {
             if (!Options.CheatCallout || string.IsNullOrEmpty(text) || !CheatDetector.IsActive() || !InMeeting()) return;
             var lp = PlayerControl.LocalPlayer;
-            if (lp != null) Evaluate(lp, text, false);
+            if (lp != null) Evaluate(lp, text, false, false);
         }
 
-        private static void Evaluate(PlayerControl speaker, string text, bool score)
+        private static void Evaluate(PlayerControl speaker, string text, bool score, bool quick)
         {
             var players = new List<PlayerControl>();
             var cands = new List<CalloutParser.Cand>();
@@ -213,12 +232,13 @@ namespace PocketRoles.Net
                 players.Add(p);
                 cands.Add(new CalloutParser.Cand { Color = color, Name = Lang.StripTags(Core.Game.NameOf(p.PlayerId) ?? "") });
             }
+            text = Lang.StripTags(text);
             bool zh = false;
             try { zh = Chat.Translator.Classify(text) == Chat.Translator.Script.Chinese; } catch (Exception) { }
-            var parsed = CalloutParser.Parse(text, cands, zh);
-            if (parsed.Targets.Count == 0) return;
+            var parsed = CalloutParser.Parse(text, cands, zh, quick);
+            if (parsed.Mentioned.Count == 0) return;
             string me = Key(speaker);
-            score = score && parsed.Accusing;
+            score = score && parsed.Accusing && parsed.Targets.Count > 0;
             Tally t = null;
             if (score)
             {
@@ -227,40 +247,47 @@ namespace PocketRoles.Net
             }
             var log = new StringBuilder();
             bool counted = false, newHidden = false;
-            foreach (int index in parsed.Targets)
-            {
-                var target = players[index];
-                if (target == null || target.Data == null || target.Data.Disconnected || target.PlayerId == speaker.PlayerId) continue;
-                if (!CheatDetector.Roles.TryGetValue(target.PlayerId, out var tr)) continue;
-                string k = Key(target);
-                string label = Lang.StripTags(Core.Game.NameOf(target.PlayerId) ?? "").Trim();
-                if (CheatDetector.IsImpostorTeam(tr))
+            if (score)
+                foreach (int index in parsed.Targets)
                 {
-                    string why = null;
-                    if (score)
+                    var target = players[index];
+                    if (target == null || target.Data == null || target.Data.Disconnected || target.PlayerId == speaker.PlayerId) continue;
+                    if (!CheatDetector.Roles.TryGetValue(target.PlayerId, out var tr)) continue;
+                    string k = Key(target);
+                    string label = Lang.StripTags(Core.Game.NameOf(target.PlayerId) ?? "").Trim();
+                    int color = -1;
+                    try { color = target.Data.DefaultOutfit.ColorId; } catch (Exception) { }
+                    if (CheatDetector.IsImpostorTeam(tr))
                     {
+                        string why = null;
                         if (target.AmOwner || Core.Game.IsHost(target.PlayerId)) why = "host";
                         else if (target.Data.IsDead) why = "dead";
                         else if (Acted.Contains(k)) why = "acted";
                         else if (Named.TryGetValue(k, out var first) && first != me) why = "named by another";
                         else if (Known(k)) why = "impostor in recent games";
+                        else if (DisguiseColors.Contains(color)) why = "a partner disguised as this colour";   // the witness saw the disguise
                         if (why == null && t.Hidden.Add(k)) newHidden = true;
                         t.Labels[k] = label + "(" + RoleName(tr) + ")";
                         log.Append($" imp {label} {(why ?? "HIDDEN")};");
                         counted = true;
                     }
-                    if (!Named.ContainsKey(k)) Named[k] = me;
+                    else
+                    {
+                        if (target.Data.IsDead) continue;
+                        if (DisguiseColors.Contains(color)) { log.Append($" crew {label} skipped (an impostor disguised as that colour);"); continue; }
+                        t.Wrong.Add(k);
+                        log.Append($" crew {label} wrong;");
+                        counted = true;
+                    }
                 }
-                else if (score)
-                {
-                    if (target.Data.IsDead) continue;
-                    int color = -1;
-                    try { color = target.Data.DefaultOutfit.ColorId; } catch (Exception) { }
-                    if (DisguiseColors.Contains(color)) { log.Append($" crew {label} skipped (an impostor disguised as that colour);"); continue; }
-                    t.Wrong.Add(k);
-                    log.Append($" crew {label} wrong;");
-                    counted = true;
-                }
+            // everyone the line refers to is public from now on (after the scoring above: the speaker's own first mention still counts)
+            foreach (int index in parsed.Mentioned)
+            {
+                var target = players[index];
+                if (target == null || target.Data == null || target.PlayerId == speaker.PlayerId) continue;
+                if (!CheatDetector.Roles.TryGetValue(target.PlayerId, out var tr) || !CheatDetector.IsImpostorTeam(tr)) continue;
+                string k = Key(target);
+                if (!Named.ContainsKey(k)) Named[k] = me;
             }
             if (!score || !counted) return;
             string quote = text.Length > 40 ? text.Substring(0, 40) + "…" : text;

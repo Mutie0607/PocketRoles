@@ -245,8 +245,8 @@ namespace PocketRoles.Net
                 case 12: CalloutWatch.OnVisibleAction(pc); OnMurder(pc, reader); break;
                 case 1: OnCompleteTask(pc, reader); break;
                 case 11: OnReport(pc, reader); break;
-                case 13: OnChat(pc); CalloutWatch.OnChat(pc, reader); break;
-                case 33: OnChat(pc); break;
+                case 13: OnChat(pc); break;   // the callout reading runs in Chat_AddChatPatch (typed and quick chat alike)
+                case 33: OnChat(pc); CalloutWatch.MarkQuickChat(pc); break;
                 case 46: case 55:
                     if (RoleOf(pc, out var ss) && ss != RoleTypes.Shapeshifter)
                         Report(Rule.AbilityRole, pc, $"RPC {callId}, role {ss} (live {Live(pc)})", false, false, Live(pc) != RoleTypes.Shapeshifter);

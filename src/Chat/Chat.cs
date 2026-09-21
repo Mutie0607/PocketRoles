@@ -1273,6 +1273,9 @@ namespace PocketRoles.Chat
                 if (!Core.Game.IsHostActive) return true;
                 if (sourcePlayer == null || sourcePlayer.AmOwner) return true;
                 if (string.IsNullOrEmpty(chatText)) return true;
+                // v0.5.3 CalloutWatch: other players' meeting lines, typed or quick chat (rendered into text by vanilla)
+                try { Net.CalloutWatch.OnAddChat(sourcePlayer, chatText); }
+                catch (Exception ce) { PocketRolesPlugin.Logger.LogWarning($"Chat_AddChatPatch callout: {ce.Message}"); }
                 Lobby.AfkKick.Touch(sourcePlayer.PlayerId); // v0.4.6: chatting counts as lobby activity
                 string trimmed = chatText.Trim();
                 if (!trimmed.StartsWith("/")) return true;
