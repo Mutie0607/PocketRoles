@@ -683,6 +683,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `admin remove <name|code>` / `admin reload` | Remove / re-read the file |
 | `mod add|remove|list <…>`, `moderator …` | Add / remove / list moderators (`Moderator.txt`). `/mod on|off` still toggles the mod |
 | `vip add|remove|list <…>` / `vip <name>` | Add / remove / list VIPs (`VIP.txt`). `/vip <name>` alone adds |
+| `ac` (`anticheat`) | Cheat-detection records (v0.5.3). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
 | `kick <name|id>` | Kicks that player (only while in a lobby or game; the host and anyone of the same or a higher level cannot be kicked) |
 | `ban <name|id>` | Kick plus an entry in `Banlist.txt` (kicked again automatically on the next join); a server-side temporary ban is sent as well |
 | `ban list` / `ban remove <name|code>` / `unban <…>` / `ban reload` | List / lift / re-read bans |
@@ -789,7 +790,9 @@ A way to run the lobby together with friends, managed through four text files in
 | `vanilla.discussmax` | 0–3600 | `[Vanilla] DiscussionTimeMax` |
 | `vanilla.emergencymax` | 0–600 | `[Vanilla] EmergencyCooldownMax` |
 | `vanilla.taskmax` | 1–60 | `[Vanilla] TaskCountMax` |
-| `kick` | on / off | `[AntiCheat] KickOnForgedRpc` |
+| `anticheat` | on / off | `[AntiCheat] Detect` (v0.5.3 cheat detection, unregistered rooms; default on) |
+| `anticheat.kick` (`kick`) | on / off | `[AntiCheat] AutoKick` (removal with a room ban after 1 certain detection or 2 alive chats outside meetings; default on) |
+| `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick` (one public line on removal; default on) |
 | `lobby.autorehost` | on / off | `[Lobby] AutoRehost` |
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0–60 | `[Lobby] AutoPublicDelay` |
@@ -883,7 +886,10 @@ EmergencyCooldownMax = 120      # highest emergency-meeting cooldown (s, 0-600; 
 TaskCountMax = 30               # highest common / short / long task count (1-60; vanilla 2 / 5 / 3)
 
 [AntiCheat]
-KickOnForgedRpc = false         # kick a player after 3 forged host-only RPCs (false = drop and log only)
+KickOnForgedRpc = false         # reserved (no effect); v0.5.3 uses the three below
+Detect = true                   # v0.5.3 cheat detection (unregistered rooms, during a game: impossible actions shown to the host)
+AutoKick = true                 # remove with a room ban after 1 certain detection or 2 alive chats outside meetings (VIP and above exempt)
+AnnounceKick = true             # one public chat line when someone is removed
 
 [Lobby]
 AutoRehost = false              # recreate the lobby after an unexpected server disconnect
@@ -1764,6 +1770,7 @@ Names are sent per client by the host. Right after a death / leave or after the 
 - Official servers limit the traffic; beyond it the host is kicked as "hacking". Sends are spread out, but the risk grows with the player count (15).
 - Registered lobbies do not appear in the public list (chapter 3), auto public or not. An unregistered vanilla room is listed but has no roles, and a host broadcast may still get the host disconnected there (chapter 25).
 - A simple host-side anti-cheat drops and logs host-only RPCs (role / name changes, kills, exiles …) that arrive from players and notifies the host; `KickOnForgedRpc = true` kicks after 3.
+- From v0.5.3 cheat detection also runs in unregistered rooms. Nothing can be installed on the players' devices, so the host looks at what reaches it for actions vanilla Among Us never produces (kills or vents by roles that cannot, abilities a role lacks, impostor task completions, alive chat outside meetings …); certain ones remove the player with a room ban on the first hit (`/ac` shows the records, `/opt anticheat.kick off` stops the automatic removal). The official server's own anti-cheat only checks the shape of the traffic, so this kind of in-game cheating goes unnoticed there.
 - A game version other than the supported one disables the mod (chapter 24).
 
 ---

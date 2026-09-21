@@ -686,6 +686,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `admin remove <名前|コード>` / `admin reload` | 削除 / ファイルを読み直す |
 | `mod add|remove|list <…>`, `moderator …` | モデレーター（`Moderator.txt`）の追加・削除・一覧。`/mod on|off` は従来どおり MOD の切り替え |
 | `vip add|remove|list <…>` / `vip <名前>` | VIP（`VIP.txt`）の追加・削除・一覧。`/vip <名前>` だけで追加 |
+| `ac`（`anticheat`） | チート検知（v0.5.3）の記録の一覧。`/ac clear` で消去、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc> <#番号\|名前> [kick]` で判定と通知を試す（`kick` を付けた時だけ本当に退出） |
 | `kick <名前|番号>` | その人をキックします（部屋にいる時だけ。ホストと、自分と同等以上の権限の人はキックできません） |
 | `ban <名前|番号>` | キックして `Banlist.txt` に登録（次に参加した時も自動でキック）。サーバー側の一時 BAN も送ります |
 | `ban list` / `ban remove <名前|コード>` / `unban <…>` / `ban reload` | BAN 一覧 / 解除 / 読み直し |
@@ -792,7 +793,9 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `vanilla.discussmax` | 0〜3600 | `[Vanilla] DiscussionTimeMax` |
 | `vanilla.emergencymax` | 0〜600 | `[Vanilla] EmergencyCooldownMax` |
 | `vanilla.taskmax` | 1〜60 | `[Vanilla] TaskCountMax` |
-| `kick` | on / off | `[AntiCheat] KickOnForgedRpc` |
+| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 チート検知、登録オフの部屋。既定 on） |
+| `anticheat.kick`（`kick`） | on / off | `[AntiCheat] AutoKick`（確実な検知 1 回・会議外チャット 2 回で部屋バン付き退出。既定 on） |
+| `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick`（退出させたことを全員に 1 行。既定 on） |
 | `lobby.autorehost` | on / off | `[Lobby] AutoRehost` |
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0〜60 | `[Lobby] AutoPublicDelay` |
@@ -886,7 +889,10 @@ EmergencyCooldownMax = 120      # 緊急会議クールダウンの最大（秒�
 TaskCountMax = 30               # コモン / ショート / ロングタスク数の最大（1〜60。バニラ 2 / 5 / 3）
 
 [AntiCheat]
-KickOnForgedRpc = false         # 偽装 RPC を 3 回検出したプレイヤーをキックする（false = 無視してログに記録するだけ）
+KickOnForgedRpc = false         # 予約（効果なし）。v0.5.3 からは下の 3 つ
+Detect = true                   # v0.5.3 チート検知（登録オフの部屋の試合中、ありえない操作をホストの画面に出す）
+AutoKick = true                 # 確実な検知 1 回・生存中の会議外チャット 2 回で、この部屋へのバン付きで退出させる（VIP 以上は対象外）
+AnnounceKick = true             # 退出させた時に全員のチャットへ 1 行
 
 [Lobby]
 AutoRehost = false              # サーバーから切断されたら自動で部屋を作り直す
@@ -1767,6 +1773,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 - 公式サーバーには通信量の制限があり、超えるとホストが「hacking」としてキックされます。MOD は送信を分散していますが、大人数（15 人）ほどリスクが高くなります。
 - 登録した部屋は公開一覧に表示されません（第 3 章）。自動公開をオンにしても同じです。登録オフの便利ホスト部屋は一覧に出ますが役職なしで、全体メッセージでホストが切断される可能性が残っています（第 25 章）。
 - ホスト側の簡易アンチチートとして、ホストしか送れないはずの RPC（役職変更、名前変更、キル、追放など）が参加者から届いた場合は無視してログに記録し、ホストの画面に通知します。`KickOnForgedRpc = true` なら 3 回でキックします。
+- v0.5.3 からは登録オフの部屋でもチート検知が動きます。参加者の端末には何も入れられないので、ホストに届く通信から普通の Among Us ではありえない操作（キルできない役職のキル、ベントを使えない役職のベント、持っていない能力、インポスターのタスク完了、生きている人の会議外チャットなど）を見つけ、確実なものは 1 回でこの部屋へのバン付きで退出させます（`/ac` で記録、`/opt anticheat.kick off` で自動退出を止める）。本体（公式サーバー）のアンチチートは通信の形しか見ていないので、こうしたゲームの中身の不正は見逃されます。
 - ゲームのバージョンが対応版と違うと MOD は自動で無効になります（第 24 章）。
 
 ---

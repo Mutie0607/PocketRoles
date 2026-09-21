@@ -687,6 +687,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `admin remove <名字|代码>` / `admin reload` | 删除 / 重新读取文件 |
 | `mod add|remove|list <…>`, `moderator …` | 版主（`Moderator.txt`）的添加、删除、列表。`/mod on|off` 仍是模组开关 |
 | `vip add|remove|list <…>` / `vip <名字>` | VIP（`VIP.txt`）的添加、删除、列表。只写 `/vip <名字>` 即为添加 |
+| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
 | `kick <名字|编号>` | 踢出该玩家（仅在房间中。房主以及权限不低于自己的人不能踢） |
 | `ban <名字|编号>` | 踢出并写入 `Banlist.txt`（下次加入时也会自动踢出）。同时发送服务器端的临时封禁 |
 | `ban list` / `ban remove <名字|代码>` / `unban <…>` / `ban reload` | 封禁列表 / 解除 / 重新读取 |
@@ -793,7 +794,9 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `vanilla.discussmax` | 0〜3600 | `[Vanilla] DiscussionTimeMax` |
 | `vanilla.emergencymax` | 0〜600 | `[Vanilla] EmergencyCooldownMax` |
 | `vanilla.taskmax` | 1〜60 | `[Vanilla] TaskCountMax` |
-| `kick` | on / off | `[AntiCheat] KickOnForgedRpc` |
+| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 作弊检测，未注册房间；默认 on） |
+| `anticheat.kick`（`kick`） | on / off | `[AntiCheat] AutoKick`（确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间；默认 on） |
+| `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick`（移出时向所有人发一行；默认 on） |
 | `lobby.autorehost` | on / off | `[Lobby] AutoRehost` |
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0〜60 | `[Lobby] AutoPublicDelay` |
@@ -887,7 +890,10 @@ EmergencyCooldownMax = 120      # 紧急会议冷却最大值（秒，0〜600。
 TaskCountMax = 30               # 普通 / 短 / 长任务数最大值（1〜60。原版 2 / 5 / 3）
 
 [AntiCheat]
-KickOnForgedRpc = false         # 检测到 3 次伪造 RPC 后踢出该玩家（false = 忽略并只记录日志）
+KickOnForgedRpc = false         # 预留（无效果）；v0.5.3 起使用下面三项
+Detect = true                   # v0.5.3 作弊检测（未注册房间的对局中，把不可能的操作显示给房主）
+AutoKick = true                 # 确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间（VIP 以上除外）
+AnnounceKick = true             # 移出时在所有人的聊天中发一行
 
 [Lobby]
 AutoRehost = false              # 被服务器断开后自动重新创建房间
@@ -1768,6 +1774,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 - 官方服务器有通信量限制，超出时房主会被判定为“hacking”踢出。模组已把发送分散，但人数越多（15 人）风险越高。
 - 已注册的房间不会出现在公开列表中（第 3 章）。开启自动公开也一样。关闭注册的便利房会出现在列表里但没有职业，而且房主的广播仍有可能导致断开（第 25 章）。
 - 作为房主端的简易反作弊，如果收到了只有房主才能发送的 RPC（职业变更、名字变更、击杀、放逐等）来自玩家，会忽略并记录日志，并在房主画面上提示。`KickOnForgedRpc = true` 时 3 次后踢出。
+- 从 v0.5.3 起，未注册房间也会进行作弊检测。玩家的设备上无法安装任何东西，所以房主从收到的通信中找出原版 Among Us 不可能出现的操作（不能击杀的职业击杀、不能用通风管的职业进通风管、使用自己没有的能力、内鬼完成任务、存活时在会议外聊天等），确定的情况第 1 次就移出并禁止再进本房间（`/ac` 查看记录，`/opt anticheat.kick off` 停止自动移出）。官方服务器的反作弊只检查通信的格式，这类游戏内容上的作弊不会被发现。
 - 游戏版本与支持版本不同时模组自动停用（第 24 章）。
 
 ---
