@@ -85,6 +85,12 @@ foreach ($n in @('PocketRolesLauncher.ps1', 'PocketRoles Launcher.cmd')) {
     Copy-Into $p $setupStage
 }
 Copy-Into (Join-Path $root 'assets\PocketRoles.ico') (Join-Path $setupStage 'assets')
+# v0.5.4: Aegis Anti-Cheat (its own app; the launcher starts it)
+foreach ($n in @('Aegis.ps1', 'Aegis.cmd')) {
+    $p = Join-Path $root ('aegis\' + $n)
+    if (-not (Test-Path $p)) { throw "見つかりません: $p" }
+    Copy-Into $p (Join-Path $setupStage 'aegis')
+}
 $readme = @'
 PocketRoles Launcher — はじめに / 入门 / Getting started
 =========================================================

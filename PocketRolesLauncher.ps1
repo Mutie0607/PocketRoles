@@ -187,6 +187,7 @@ $script:Strings = @{
     la_notinstalled = 'まだインストールされていません。「インストール」を押してください。'
     la_start = 'mod 付きの Among Us を起動します...'
     la_started = '起動しました。左上に "PocketRoles v..." と表示されれば mod が有効です。'
+    la_aegis_block = 'Aegis がチートにつながる異常を見つけたので、起動を止めました。スキャン画面の赤い項目（見知らぬプラグイン・ゲームフォルダの不審な DLL・起動中のチートツール・テスト署名／デバッグモード・MOD 本体の改ざん）を直してから、もう一度起動してください。'
     la_update_q = 'アップデートを検知しました。先に更新しますか？ (更新しないとオンラインに入れません)'
     la_rebuild_q = 'PocketRoles.dll の再ビルドが必要です。今ビルドしますか？'
     la_vanilla = 'Steam 版 (mod なし) を起動しました。'
@@ -307,6 +308,7 @@ $script:Strings = @{
     la_notinstalled = '尚未安装。请点击“安装”。'
     la_start = '正在启动带 mod 的 Among Us...'
     la_started = '已启动。左上角显示 "PocketRoles v..." 即表示 mod 生效。'
+    la_aegis_block = 'Aegis 发现了与作弊相关的异常，已阻止启动。请处理扫描画面中的红色项目（未知插件、游戏文件夹中的可疑 DLL、运行中的作弊工具、测试签名／调试模式、MOD 本体被篡改）后再启动。'
     la_update_q = '检测到游戏更新。要先更新吗？(不更新将无法进入在线游戏)'
     la_rebuild_q = '需要重新编译 PocketRoles.dll。现在编译吗？'
     la_vanilla = '已启动 Steam 原版 (无 mod)。'
@@ -427,6 +429,7 @@ $script:Strings = @{
     la_notinstalled = 'Not installed yet. Press "Install".'
     la_start = 'Launching Among Us with the mod...'
     la_started = 'Launched. The mod is active when "PocketRoles v..." appears at the top-left.'
+    la_aegis_block = 'Aegis found a cheat-related problem and stopped the start. Fix the red rows of the scan (unknown plugin, suspicious DLL in the game folder, running cheat tool, test-signing / debug mode, modified mod) and start again.'
     la_update_q = 'A game update was detected. Update first? (required to play online)'
     la_rebuild_q = 'PocketRoles.dll needs a rebuild. Build now?'
     la_vanilla = 'Launched the Steam version (no mod).'
@@ -1231,6 +1234,22 @@ function Invoke-Update {
 }
 
 # ---------- launch ----------
+function Test-AegisPreLaunch {
+    # v0.5.4: Aegis scans again right before the start; exit code 3 = a cheat-related problem (the start is stopped).
+    # Aegis missing or failing never blocks the game.
+    $a = Join-Path $script:Here 'aegis\Aegis.ps1'
+    if (-not (Test-Path $a)) { return $true }
+    try {
+        $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-WindowStyle', 'Hidden', '-File', ('"' + $a + '"'), '-PreLaunch',
+                     '-GameDir', ('"' + $script:Modded + '"'), '-Lang', $script:Lang)
+        $p = Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden -PassThru
+        $deadline = (Get-Date).AddSeconds(60)
+        while (-not $p.HasExited -and (Get-Date) -lt $deadline) { Pump; Start-Sleep -Milliseconds 100 }
+        if (-not $p.HasExited) { return $true }
+        return ($p.ExitCode -ne 3)
+    } catch { Log ('Aegis: ' + $_.Exception.Message); return $true }
+}
+
 function Invoke-Launch {
     if (Game-Running) { Log (T 'la_running'); return }
     [void](Get-StatusLines)
@@ -1250,6 +1269,7 @@ function Invoke-Launch {
         if ($r -eq 'Yes') { if (-not (Sync-GameCopy)) { return } }
     }
     if (-not (Test-Path (Join-Path $script:Modded 'BepInEx\interop\Assembly-CSharp.dll'))) { Log (T 'in_firstrun') }
+    if (-not (Test-AegisPreLaunch)) { Log (T 'la_aegis_block'); Show-Info (T 'la_aegis_block'); return }
     Log (T 'la_start')
     if ($Windowed) {
         # Unity の起動引数: フルスクリーン解除 + サイズ指定 (前回の設定に関係なくウィンドウで開く)
@@ -1447,8 +1467,22 @@ $script:LangBox.Add_SelectedIndexChanged({
 
 Apply-Language
 
+function Start-Aegis {
+    # v0.5.4: Aegis Anti-Cheat (aegis\Aegis.ps1), its own app: the scan screen, then a tray icon while the launcher / game run.
+    # Started once per launcher window; it quits by itself when the launcher is closed and no game runs.
+    if ($script:Headless) { return }
+    $a = Join-Path $script:Here 'aegis\Aegis.ps1'
+    if (-not (Test-Path $a)) { return }
+    try {
+        $argList = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-STA', '-WindowStyle', 'Hidden', '-File', ('"' + $a + '"'),
+                     '-GameDir', ('"' + $script:Modded + '"'), '-LauncherPid', $PID, '-Lang', $script:Lang)
+        Start-Process -FilePath 'powershell.exe' -ArgumentList $argList -WindowStyle Hidden | Out-Null
+    } catch { Log ('Aegis: ' + $_.Exception.Message) }
+}
+
 $form.Add_Shown({
     $script:UiReady = $true
+    Start-Aegis
     Refresh-Status
     Log (T 'log_mode' $(if ($script:DevMode) { T 'mode_dev' $script:Src } else { T 'mode_friend' }))
     Log (T 'log_modded' $script:Modded)
