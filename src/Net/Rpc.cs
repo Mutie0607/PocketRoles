@@ -320,6 +320,7 @@ namespace PocketRoles.Net
                 if (c == '\n') { sb.Append(" / "); continue; }        // a packed multi-line chunk: keep the lines apart
                 if (c >= '！' && c <= '～') c = (char)(c - 0xFEE0);   // full-width ASCII (！（）：１２Ａ) → ASCII
                 else if (c == '　') c = ' ';
+                if (c == '…') { sb.Append("..."); continue; }          // translations end with an ellipsis often
                 switch (c)
                 {
                     // vanilla SymbolChars (2026.8.18): ?!,.':;()/\%^&-=¿？# — everything else below is rejected
@@ -328,11 +329,20 @@ namespace PocketRoles.Net
                     case '|': c = '/'; break;
                     case '_': case '~': c = '-'; break;
                     case '"': c = '\''; break;
+                    // v0.5.3: typographic marks from the translation providers ("next match—everyone" came out "matcheveryone")
+                    case '—': case '–': case '―': case '−': c = '-'; break;
+                    case '“': case '”': case '‘': case '’': c = '\''; break;
                 }
                 bool ok;
                 if (box != null) { try { ok = box.IsCharAllowed(c); } catch (Exception) { ok = FallbackAllowed(c); } }
                 else ok = FallbackAllowed(c);
-                if (ok) sb.Append(c); else dropped++;
+                if (ok) sb.Append(c);
+                else
+                {
+                    dropped++;
+                    // keep the words on both sides apart (a dropped mark between two words must not glue them)
+                    if (sb.Length > 0 && sb[sb.Length - 1] != ' ' && char.IsLetterOrDigit(sb[sb.Length - 1]) && c > 0x7f && !char.IsLetterOrDigit(c)) sb.Append(' ');
+                }
             }
             if (dropped > 0) PocketRolesPlugin.Logger.LogInfo($"Rpc.SanitizeForVanillaChat: dropped {dropped} character(s) the vanilla chat filter rejects ({(box != null ? "vanilla filter" : "fallback table")})");
             return sb.ToString();

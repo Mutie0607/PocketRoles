@@ -152,7 +152,7 @@
 - バニラ設定の範囲拡張（v0.4b）も、バニラの設定同期をそのまま使います。ホストの設定画面で選んだ値（例: キルクールダウン 5 秒）が、参加者のロビー設定一覧にもそのまま表示されます。
 - チャット翻訳（v0.4b）はホストの PC から Google / DeepL に文章を送って翻訳します。既定でオンで、**併用モード**（外国語のチャットをホストの言語に訳して全員へ、ホストの言葉を外国語の参加者へ個別に）で動きます。文章を外部に送りたくない場合は設定タブ「会話」の「チャット翻訳」か `/opt translate off` でオフにできます（[第 13 章](#13-言語日本語--中文--english)）。
 - 役職を配れるのは **MOD 部屋登録をした部屋だけ** です。登録オフの部屋（便利ホスト）では個別メッセージを送るとホストがサーバーに切断されるため、役職・個別通知は無効になり、バニラの進行にホスト支援ツールだけが付きます（[第 25 章](#25-便利ホスト登録オフと案内部屋)）。
-- ホストの画面左上（ping 表示）に `PocketRoles v0.5.2 (host) · アジア` のように接続中の地域名と、オンラインのロビーでは `ロビー残り mm:ss` が表示され（`/code on` にすると大きな部屋コード `役職部屋 ABCDEF` も出ます。既定オフ）、ゲーム内の MOD スタンプも表示されます。タイトル画面では右側の大きな窓に **PocketRoles のパネル**（アイコン、`v0.5.2 / Among Us 2026.8.18`、作者名、クリックで開く GitHub の行、「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」）が出ます（[第 9 章](#9-歯車メニューのpocketroles-設定パネル)）。
+- ホストの画面左上（ping 表示）に `PocketRoles v0.5.3 (host) · アジア` のように接続中の地域名と、オンラインのロビーでは `ロビー残り mm:ss` が表示され（`/code on` にすると大きな部屋コード `役職部屋 ABCDEF` も出ます。既定オフ）、ゲーム内の MOD スタンプも表示されます。タイトル画面では右側の大きな窓に **PocketRoles のパネル**（アイコン、`v0.5.3 / Among Us 2026.8.18`、作者名、クリックで開く GitHub の行、「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」）が出ます（[第 9 章](#9-歯車メニューのpocketroles-設定パネル)）。
 - 対応モードは **クラシック** のみです（Hide n Seek / Seek Fools では MOD は何もしません）。
 
 バニラ側で実際に何がどう見えるかは [第 26 章](#26-バニラのプレイヤーにはどう見えるか) にまとめています。
@@ -330,7 +330,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
    3. GitHub の最新リリースから `PocketRoles-<ver>.zip` を取得して配置（ランチャーと同じフォルダに `PocketRoles-<ver>.zip` を置いておけばオフラインでも可）。旧 `HostRoles.dll` があれば削除
    4. デスクトップに「PocketRoles Launcher」ショートカットを作成
 5. **Steam を起動してから「起動」** を押します。初回は BepInEx が interop を生成するため、タイトル画面まで **1〜2 分** かかります（途中で黒いコンソール画面が出る場合がありますが、閉じないでください）。
-6. タイトル画面の右側に PocketRoles のパネル、左上に `PocketRoles v0.5.2` が出れば導入完了です。
+6. タイトル画面の右側に PocketRoles のパネル、左上に `PocketRoles v0.5.3` が出れば導入完了です。
 
 途中の手順が失敗した場合は、原因（ネット接続、Steam の場所など）を直してからもう一度「インストール」を押すと、終わっている手順は飛ばして続きから再開します。ランチャーの右上の「言語」で日本語 / 中文 / English を切り替えられます。同梱の `はじめに.txt` にも同じ手順が 3 言語で書いてあります。
 
@@ -340,7 +340,7 @@ PocketRoles は無償・非営利です。この MOD や MOD 部屋を使った�
 2. 上の BepInEx の zip をそのコピー先に展開します（`Among Us.exe` と同じ階層に `winhttp.dll`、`doorstop_config.ini`、`BepInEx\` フォルダが並ぶ状態）。
 3. **Steam を起動した状態で**、コピー先の `Among Us.exe` を **1 回起動** します。初回は BepInEx が `BepInEx\interop` を生成するため、タイトル画面が出るまで **1〜3 分** かかります。タイトルまで出たら閉じて構いません。
 4. GitHub Releases の `PocketRoles-<ver>.zip` をコピー先に展開します（`BepInEx\plugins\PocketRoles.dll` と `BepInEx\PocketRoles\lang\*.json`、README、LICENSE、NOTICE が入っています）。**旧版の `HostRoles.dll` が残っている場合は削除してください**（同じパッチが二重に当たります）。
-5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.2`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx\LogOutput.log` に `PocketRoles v0.5.2 loaded` と出ていることでも確認できます。
+5. コピー先の `Among Us.exe` を起動します（Steam ライブラリからではなく、コピー先の exe を直接。Steam は起動しておく）。画面左上に `PocketRoles v0.5.3`、タイトル画面の右側の窓に PocketRoles のパネルが出れば MOD が読み込まれています。`BepInEx\LogOutput.log` に `PocketRoles v0.5.3 loaded` と出ていることでも確認できます。
 
 初回起動時に `BepInEx\config\jp.pocketroles.mod.cfg`（設定）、`BepInEx\PocketRoles\lang\`（言語ファイル）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` と `README.txt`（見た目カスタマイズ用）が生成されます。権限ファイル `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` は最初に部屋を作った時に `BepInEx\PocketRoles\` に作られます。DeepL を使う場合の `deepl-key.txt` は自分で作ります（[13 章](#13-言語日本語--中文--english)）。旧 HostRoles の設定 `jp.hostroles.mod.cfg` が同じフォルダにあり、新しい設定ファイルがまだ無い場合は、内容が自動でコピーされます（設定はそのまま引き継がれます）。
 
@@ -531,14 +531,14 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | 行 | 内容 |
 |---|---|
 | アイコンと「PocketRoles」 | MOD に埋め込まれた `PocketRoles-256.png` |
-| `v0.5.2 / Among Us 2026.8.18` | MOD のバージョンと対応するゲームバージョン |
+| `v0.5.3 / Among Us 2026.8.18` | MOD のバージョンと対応するゲームバージョン |
 | `by もみじちゃ` | `[Credits] Author`（空なら出ません） |
 | `GitHub: github.com/wakayamachannel/PocketRoles（クリックで開く）` | `[Credits] RepoUrl`。クリックでブラウザが開きます（空なら出ません） |
 | 「ホストだけ導入で役職が遊べる」「参加者は何も入れずに遊べる」 | 部屋の既定言語で表示 |
 
 - オンライン / アカウント / コード入力 / ゲームモード / 部屋作成 / クレジットの各サブメニューを開いている間は隠れ、メイン画面に戻ると再表示されます。
 - `[Credits] ShowInMenu = false`（設定タブ「クレジット表示」、`/opt credits.show off`）でパネルもクレジット行も消えます。
-- ゲームの UI が変わってパネルが作れなかった時は、v0.2 の右下のクレジット行（`PocketRoles v0.5.2  © 2026 もみじちゃ` と URL）が代わりに出ます（バニラのバージョン表示と重ならないように上へ寄せます）。
+- ゲームの UI が変わってパネルが作れなかった時は、v0.2 の右下のクレジット行（`PocketRoles v0.5.3  © 2026 もみじちゃ` と URL）が代わりに出ます（バニラのバージョン表示と重ならないように上へ寄せます）。
 - 何も送信しません（ホストの画面だけ）。
 
 ---
@@ -686,7 +686,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `admin remove <名前|コード>` / `admin reload` | 削除 / ファイルを読み直す |
 | `mod add|remove|list <…>`, `moderator …` | モデレーター（`Moderator.txt`）の追加・削除・一覧。`/mod on|off` は従来どおり MOD の切り替え |
 | `vip add|remove|list <…>` / `vip <名前>` | VIP（`VIP.txt`）の追加・削除・一覧。`/vip <名前>` だけで追加 |
-| `ac`（`anticheat`） | チート検知（v0.5.3）の記録の一覧。`/ac clear` で消去、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#番号\|名前> [kick]` で判定と通知を試す（`kick` を付けた時だけ本当に退出） |
+| `ac`（`anticheat`、`aegis`） | Aegis アンチチート（v0.5.3）の記録の一覧。`/ac clear` で消去、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#番号\|名前> [kick]` で判定と通知を試す（`kick` を付けた時だけ本当に退出） |
 | `kick <名前|番号>` | その人をキックします（部屋にいる時だけ。ホストと、自分と同等以上の権限の人はキックできません） |
 | `ban <名前|番号>` | キックして `Banlist.txt` に登録（次に参加した時も自動でキック）。サーバー側の一時 BAN も送ります |
 | `ban list` / `ban remove <名前|コード>` / `unban <…>` / `ban reload` | BAN 一覧 / 解除 / 読み直し |
@@ -779,6 +779,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `translate.showhost` | on / off | `[Translate] ShowOnHost` |
 | `translate.broadcast` | on / off | `[Translate] BroadcastToAll` |
 | `translate.players` | on / off | `[Translate] TranslateForPlayers` |
+| `translate.compat` | on / off | `[Translate] ForeignInCompat`（v0.5.3: 登録オフの部屋で、外国語の人がいる間だけ、チャットをその人の言葉に訳して全員に流す。既定 on） |
 | `translate.autodetect` | on / off | `[Translate] AutoDetectLang` |
 | `translate.minchars` | 1〜50 | `[Translate] MinChars` |
 | `translate.maxperminute` | 1〜120 | `[Translate] MaxPerMinute` |
@@ -793,7 +794,7 @@ MOD が読み込まれた後、ゲームのバージョンが対応版と違う�
 | `vanilla.discussmax` | 0〜3600 | `[Vanilla] DiscussionTimeMax` |
 | `vanilla.emergencymax` | 0〜600 | `[Vanilla] EmergencyCooldownMax` |
 | `vanilla.taskmax` | 1〜60 | `[Vanilla] TaskCountMax` |
-| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 チート検知、登録オフの部屋。既定 on） |
+| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 Aegis アンチチート、登録オフの部屋。既定 on） |
 | `anticheat.kick`（`kick`） | on / off | `[AntiCheat] AutoKick`（確実な検知 1 回・会議外チャット 2 回で部屋バン付き退出。既定 on） |
 | `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick`（退出させたことを全員に 1 行。既定 on） |
 | `anticheat.callout`（`callout`） | on / off | `[AntiCheat] Callout`（v0.5.3 言い当て通知: まだ何もしていないインポスターを会議で言い当てた人をホストの画面にだけ出す。退出はさせない。既定 on） |
@@ -869,6 +870,7 @@ TargetLang =                    # ホストが読む言語 ja | zh | en（空 = 
 ShowOnHost = true               # 翻訳をホストの画面に表示（送信なし）
 BroadcastToAll = true           # 外国語のチャットをホストの言語に訳して全員に送る（個別訳が届く人には送らない）
 TranslateForPlayers = true      # /lang で外国語を選んだ参加者に、チャットをその言語に訳して個別に送る（両方 true = 併用、既定）
+ForeignInCompat = true          # v0.5.3 登録オフの部屋で、外国語の人（/lang か自動判定）がいる間だけ、チャットをその人の言葉に訳して全員に流す（1 言語 1 行）
 AutoDetectLang = true           # /lang 未設定の人が中国語・英語で書いたら表示言語を自動で切り替える（1 回だけ）
 MinChars = 3                    # この文字数未満は翻訳しない（1〜50）
 MaxPerMinute = 20               # 1 分あたりの翻訳回数の上限（1〜120。超えた分は翻訳しない）
@@ -891,7 +893,7 @@ TaskCountMax = 30               # コモン / ショート / ロングタスク�
 
 [AntiCheat]
 KickOnForgedRpc = false         # 予約（効果なし）。v0.5.3 からは下の 3 つ
-Detect = true                   # v0.5.3 チート検知（登録オフの部屋の試合中、ありえない操作をホストの画面に出す）
+Detect = true                   # v0.5.3 Aegis アンチチート（登録オフの部屋の試合中、ありえない操作をホストの画面に出す）
 AutoKick = true                 # 確実な検知 1 回・生存中の会議外チャット 2 回で、この部屋へのバン付きで退出させる（VIP 以上は対象外）
 AnnounceKick = true             # 退出させた時に全員のチャットへ 1 行
 Callout = true                  # 言い当て通知（会議でまだ何もしていないインポスターを言い当てた人をホストの画面にだけ出す。ホストが生きたクルーの間は死亡後か試合後に）
@@ -1483,7 +1485,7 @@ v0.4 の機能を試す時:
 
 v0.4b の機能を試す時（PC + スマホの 2 台。所要 10 分ほど）:
 
-1. **タイトル画面のパネル**: PC のメインメニュー右側に PocketRoles のパネル（アイコン、`v0.5.2 / Among Us 2026.8.18`、GitHub の行）が出て、GitHub の行をクリックするとブラウザが開くこと。オンラインメニューを開くと隠れ、戻ると再表示されること。
+1. **タイトル画面のパネル**: PC のメインメニュー右側に PocketRoles のパネル（アイコン、`v0.5.3 / Among Us 2026.8.18`、GitHub の行）が出て、GitHub の行をクリックするとブラウザが開くこと。オンラインメニューを開くと隠れ、戻ると再表示されること。
 2. **設定タブ**: ロビーのノート PC で「PocketRoles」が一番上、「バニラ設定」で 3 つのバニラボタンが展開すること。役職 / ロビー / チャット / 見た目 / ホスト支援 のページ切り替え、「?」にマウスを乗せると左の説明欄に説明が出ること。
 3. **挨拶**: スマホの挨拶が 2 行 × 3 言語（その人の言語 → 残り 2 言語）で届き、最後に「翻訳あり…」の行が 1 回だけ付くこと。設定の羅列が無いこと（`/cmd s` で出ること）。
 4. **翻訳**: スマホから `Hello, can I be sheriff?` のように **英語で** 書く → PC の画面に `[訳] <名前>: …` の日本語訳が出ること。スマホには「Display language switched to English. Type /cmd lang ja to switch back.」が届き、以後スマホ宛ての MOD メッセージが英語になること（言語の自動判定）。その後 PC から日本語で書く → スマホに `[Tr] <ホスト名>: …` の英訳が届くこと（外国語の人へ翻訳）。`/cmd lang ja` で戻せること。
@@ -1574,9 +1576,10 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 - v0.5.1: 登録オフでも `/next impostor` / `/next crew` / `/next <本体の役職名>` で次の 1 試合の自分の役を決められます（設定タブ「ホスト」の「次の自分」ボタンでも）。本体の役職選択の中で役職メッセージの宛先を入れ替えるだけなので、参加者には普通の配役に見え、インポスターの人数も変わりません。
 - v0.5.2: `/next <名前|#番号> impostor` / `crew` で**他の人**の役も指定できます（仕組みは自分の指定と同じ）。自分の指定を入れずに人を指名した場合、本体が自分をインポスターに選ぶとその人に譲って自分はクルーになります（自分もなりたい時は `/next impostor` も一緒に）。本体が指名した人を選ばなかった 3 人部屋などでは、v0.5.1 のインポスター補充がその人を優先します。
 - v0.5.2: チャット翻訳は便利ホストの部屋では**片方向**です。外国語で書いた人の発言は日本語（部屋の言語）に訳されて全員に流れますが、日本語のチャットをその人向けに訳して送ることはできません（参加者個別のメッセージが送れないため）。`/lang` で外国語を選んだ時の返事と `/cmd h` にその旨が出ます。
+- v0.5.3: 外国語の人（`/lang` か自動判定で外国語になった人）が部屋にいる間は、日本語などほかの人の発言もその人の言葉に訳して**全員に**流します（個別には送れないため。1 言語につき 1 行。`[Translate] ForeignInCompat`、`/opt translate.compat`、既定オン）。外国語の人がいない時はチャットは増えません。
 - v0.5.1: タスク数は設定値を本体の範囲内に保ったまま、`/vset common 4` のように範囲を超えた値を指定すると「実際に配る個数」だけがその数になります（`/vset show` の「配る個数（登録オフ）」、設定タブの「配るコモン数(登録オフ)」など）。
 
-- 役職・名前タグ・個別メッセージは一切送りません。挨拶と案内は全員向けの 1 通にまとまり、`/cmd …` を含むコマンドも全員に見えます（挨拶は「ようこそ! この部屋は普通のAmong Us(役職なし)です。何も入れなくてOK、そのまま遊べます。困ったら /cmd h」の 1 通だけです）。
+- 役職・名前タグ・個別メッセージは一切送りません。挨拶と案内は全員向けの 1 通にまとまり、`/cmd …` を含むコマンドも全員に見えます（挨拶は「ようこそ! 普通のAmong Us(役職なし)です。何も入れなくてOK。Aegisアンチチートを導入しています。翻訳あり。説明 /cmd about、困ったら /cmd h」の 1 通だけです）。
 - 画面左上に黄字で `(unregistered)` が付き、送信間隔は 0.3 秒、1 パケットは小さめになります。
 - ホストが死亡中の全体メッセージは、バニラの仕様どおり死者にしか見えません。ゲームマスターモードとは併用しないでください。
 - 便利ホスト部屋でも、サーバーがホストの全体メッセージを不正と見なして切断する可能性は残っています（v0.4.0 の未解決事項。切断されたら `/rehost on` の自動再ホストが使えます）。困ったら [報告 zip](#28-不具合の報告方法) を送ってください。
@@ -1775,7 +1778,7 @@ Harmony のパッチ適用に失敗した場合（ゲームの内部が大きく
 - 公式サーバーには通信量の制限があり、超えるとホストが「hacking」としてキックされます。MOD は送信を分散していますが、大人数（15 人）ほどリスクが高くなります。
 - 登録した部屋は公開一覧に表示されません（第 3 章）。自動公開をオンにしても同じです。登録オフの便利ホスト部屋は一覧に出ますが役職なしで、全体メッセージでホストが切断される可能性が残っています（第 25 章）。
 - ホスト側の簡易アンチチートとして、ホストしか送れないはずの RPC（役職変更、名前変更、キル、追放など）が参加者から届いた場合は無視してログに記録し、ホストの画面に通知します。`KickOnForgedRpc = true` なら 3 回でキックします。
-- v0.5.3 からは登録オフの部屋でもチート検知が動きます。参加者の端末には何も入れられないので、ホストに届く通信から普通の Among Us ではありえない操作（キルできない役職のキル、ベントを使えない役職のベント、持っていない能力、インポスターのタスク完了、生きている人の会議外チャットなど）を見つけ、確実なものは 1 回でこの部屋へのバン付きで退出させます（`/ac` で記録、`/opt anticheat.kick off` で自動退出を止める）。本体（公式サーバー）のアンチチートは通信の形しか見ていないので、こうしたゲームの中身の不正は見逃されます。
+- v0.5.3 からは登録オフの部屋でも **Aegis アンチチート**（チート検知）が動きます。参加者の端末には何も入れられないので、ホストに届く通信から普通の Among Us ではありえない操作（キルできない役職のキル、ベントを使えない役職のベント、持っていない能力、インポスターのタスク完了、生きている人の会議外チャットなど）を見つけ、確実なものは 1 回でこの部屋へのバン付きで退出させます（`/ac` で記録、`/opt anticheat.kick off` で自動退出を止める）。本体（公式サーバー）のアンチチートは通信の形しか見ていないので、こうしたゲームの中身の不正は見逃されます。
 - ゲームのバージョンが対応版と違うと MOD は自動で無効になります（第 24 章）。
 
 ---
@@ -1819,7 +1822,7 @@ build.cmd
 - 別のフォルダのゲームを参照する場合: `build.cmd -p:GameDir="C:\path\to\Among Us"`
 - ターゲット: net6.0、C# latest、Nullable off、ImplicitUsings off。NuGet のゲームライブラリや Reactor は使いません。
 - `lang\*.json` と `assets\PocketRoles-256.png`（タイトル画面のアイコン）は埋め込みリソースとして DLL に含まれ、言語ファイルは初回起動時に `BepInEx\PocketRoles\lang\` へ書き出されます。文言を変えたい時は DLL を作り直さなくても書き出されたファイルを編集すれば済みます。
-- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx\LogOutput.log` に `PocketRoles v0.5.2 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
+- 動作確認: MOD 用コピーの `Among Us.exe` を起動し、`BepInEx\LogOutput.log` に `PocketRoles v0.5.3 loaded` が出ていること、Harmony のパッチエラーが無いことを確認します。
 
 配布用 zip の作成: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` でビルドを省略）。`dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README 3 種、LICENSE、NOTICE）と `dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）、`SHA256SUMS.txt` ができます。バージョンは `PocketRoles.csproj` の `<Version>` から取ります。この 2 つを GitHub Releases に添付すると、ランチャーの「更新を確認」「インストール」が最新版を取得できます（リリースの資産名 `PocketRoles-<ver>.zip` を探します）。
 

@@ -335,9 +335,9 @@ namespace PocketRoles.Chat
             string custom = Options.CompatWelcomeText;
             if (!string.IsNullOrWhiteSpace(custom)) return custom.Replace("\\n", " ").Trim();
             return Lang.T("compat.welcome",
-                "ようこそ! 普通のAmong Us(役職なし)です。何も入れなくてOK。MODで翻訳とチート対策をしています。説明 /cmd about、困ったら /cmd h",
-                "Welcome! Normal Among Us (no roles). Mod: chat translation, anti-cheat. /cmd about",
-                "欢迎! 普通的Among Us(无职业)，无需安装。MOD负责翻译和防作弊，说明 /cmd about，帮助 /cmd h");
+                "ようこそ! 普通のAmong Us(役職なし)です。何も入れなくてOK。Aegisアンチチートを導入しています。翻訳あり。説明 /cmd about、困ったら /cmd h",
+                "Welcome! Normal Among Us (no roles). Aegis anti-cheat is running. Chat is translated. /cmd about",
+                "欢迎! 普通的Among Us(无职业)，无需安装。已启用Aegis反作弊，聊天有翻译。说明 /cmd about，帮助 /cmd h");
         }
 
         /// <summary>
@@ -580,9 +580,9 @@ namespace PocketRoles.Chat
         {
             var sb = new StringBuilder();
             sb.Append(Lang.T("welcome.1",
-                "役職MOD部屋です。何も入れなくてOK、チート対策あり。役職は試合が始まると自分の名前の上に出ます。",
-                "Role-mod lobby: nothing to install, anti-cheat on. Your role shows above your name at game start.",
-                "职业MOD房间。什么都不用装，有防作弊。游戏开始后你的职业会显示在自己名字上方。"));
+                "役職MOD部屋です。何も入れなくてOK。Aegisアンチチートを導入しています。役職は試合が始まると自分の名前の上に出ます。",
+                "Role-mod lobby: nothing to install, Aegis anti-cheat running. Your role shows above your name at game start.",
+                "职业MOD房间。什么都不用装，已启用Aegis反作弊。游戏开始后你的职业会显示在自己名字上方。"));
             string custom = Options.WelcomeText;
             bool includeSettings = Options.WelcomeIncludeSettings;
             string extras = WelcomeExtras(multiLang);

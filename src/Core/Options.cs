@@ -115,6 +115,7 @@ namespace PocketRoles.Core
         private static ConfigEntry<bool> _trShowOnHost;
         private static ConfigEntry<bool> _trBroadcastToAll;
         private static ConfigEntry<bool> _trForPlayers;
+        private static ConfigEntry<bool> _trForeignInCompat;   // v0.5.3
         private static ConfigEntry<bool> _trAutoDetect;
         private static ConfigEntry<int> _trMinChars;
         private static ConfigEntry<int> _trMaxPerMinute;
@@ -341,6 +342,7 @@ namespace PocketRoles.Core
             _trTargetLang = cfg.Bind("Translate", "TargetLang", "", "Language the host reads translations in: ja, zh or en. Empty = same as [General] Language");
             _trShowOnHost = cfg.Bind("Translate", "ShowOnHost", true, "Show translations of foreign-language chat on the host's screen (local, nothing is sent)");
             _trBroadcastToAll = cfg.Bind("Translate", "BroadcastToAll", true, "Send the translation (into the host's language) to every player as a chat message (paced); players who chose another language still get their private translation when TranslateForPlayers is on (併用, the user's chosen default 2026-09-08)");
+            _trForeignInCompat = cfg.Bind("Translate", "ForeignInCompat", true, "v0.5.3: in an unregistered lobby (no private messages), translate the chat into the language of each foreign-language player in the room (/lang or auto-detect) and post it as one public line per language - only while such a player is here");
             _trForPlayers = cfg.Bind("Translate", "TranslateForPlayers", true, "Translate chat into each foreign player's /lang language and send it to them privately (only players who chose a non-Japanese language)");
             _trAutoDetect = cfg.Bind("Translate", "AutoDetectLang", true, "When a player who has not used /lang writes in Chinese or English, switch their display language automatically (once) and tell them");
             _trMinChars = cfg.Bind("Translate", "MinChars", 3, new ConfigDescription("Messages shorter than this are not translated", new AcceptableValueRange<int>(1, 50)));
@@ -628,6 +630,8 @@ namespace PocketRoles.Core
         }
         public static bool TranslateShowOnHost { get => _trShowOnHost == null || _trShowOnHost.Value; set { if (_trShowOnHost != null) _trShowOnHost.Value = value; } }
         public static bool TranslateBroadcastToAll { get => _trBroadcastToAll != null && _trBroadcastToAll.Value; set { if (_trBroadcastToAll != null) _trBroadcastToAll.Value = value; } }
+        /// <summary>[Translate] ForeignInCompat (v0.5.3): unregistered lobbies translate the room's chat into the foreign players' languages, publicly (default true).</summary>
+        public static bool TranslateForeignInCompat { get => _trForeignInCompat == null || _trForeignInCompat.Value; set { if (_trForeignInCompat != null) _trForeignInCompat.Value = value; } }
         public static bool TranslateForPlayers { get => _trForPlayers == null || _trForPlayers.Value; set { if (_trForPlayers != null) _trForPlayers.Value = value; } }
         public static bool TranslateAutoDetectLang { get => _trAutoDetect == null || _trAutoDetect.Value; set { if (_trAutoDetect != null) _trAutoDetect.Value = value; } }
         /// <summary>Messages shorter than this are not translated (1..50).</summary>
@@ -1051,7 +1055,7 @@ namespace PocketRoles.Core
             _descriptors.Add(Bool("roles.revealall", gJa, gEn, "役職表示を全員に(オフ=ホストのみ)", "Reveal to everyone (off = host only)", _revealToAll));
             _descriptors.Add(Bool("roleinfo", gJa, gEn, "会議で役職説明", "Role info at meetings", _roleInfoAtMeeting)
                 .Tip("会議開始時に各自の役職説明を個別に送り直します。", "Re-sends each player's role description privately when a meeting starts.", "会议开始时再次私聊发送各自的职业说明。"));
-            _descriptors.Add(Bool("anticheat", gJa, gEn, "チート検知(登録オフ)", "Cheat detection (unregistered)", _cheatDetect)
+            _descriptors.Add(Bool("anticheat", gJa, gEn, "Aegisアンチチート(登録オフ)", "Aegis anti-cheat (unregistered)", _cheatDetect)
                 .Tip("登録オフの部屋で、普通のAmong Usではありえない操作(キルできない役のキル、ベント、能力、タスク、生存中の会議外チャットなど)を見つけてホストの画面に出します。/ac で一覧。", "In unregistered rooms, spots actions vanilla Among Us never produces (kills, vents, abilities, tasks by roles that cannot, alive chat outside meetings...) and shows them on the host's screen. /ac lists them.", "在未登记房间中，发现原版Among Us不可能出现的操作(不能击杀的职业击杀、通风管、能力、任务、存活时会议外聊天等)并显示在主持画面上。/ac 查看列表。"));
             _descriptors.Add(Bool("anticheat.kick", gJa, gEn, "チートの人を自動で退出", "Remove cheaters automatically", _cheatAutoKick)
                 .Tip("確実な検知(キル・ベント・能力・タスク)は1回、会議外チャットは2回で、この部屋へのバン付きで退出させます。VIP以上は対象外。", "Removes (with a ban for this room) on the first certain detection (kill / vent / ability / task) or the second alive chat outside a meeting. VIP and above are exempt.", "确定的检测(击杀/通风管/能力/任务)1次、会议外聊天2次即移出并禁止再次进入本房间。VIP以上除外。"));
@@ -1169,6 +1173,8 @@ namespace PocketRoles.Core
                 .Tip("翻訳をホストの画面に表示します（送信はしません）。", "Shows translations on the host's screen only.", "仅在房主屏幕上显示翻译。"));
             _descriptors.Add(Bool("translate.broadcast", cJa, cEn, "翻訳を全員に送る", "Broadcast translation", _trBroadcastToAll)
                 .Tip("翻訳をチャットで全員に送ります。", "Sends the translation to everyone as a chat message.", "把翻译作为聊天消息发送给所有人。"));
+            _descriptors.Add(Bool("translate.compat", cJa, cEn, "登録オフでも外国語へ翻訳", "Translate into foreign languages (unregistered)", _trForeignInCompat)
+                .Tip("登録オフの部屋で、外国語の人がいる時だけ、チャットをその人の言葉に訳して全員に流します(個別に送れないため)。", "In unregistered rooms, while a foreign-language player is here, chat is translated into their language and posted for everyone (no private messages there).", "在未登记房间中，只在有外语玩家时，把聊天翻译成其语言并发给所有人(无法私聊)。"));
             _descriptors.Add(Bool("translate.players", cJa, cEn, "外国語の人へ翻訳", "Translate for players", _trForPlayers)
                 .Tip("外国語を選んだプレイヤーに、チャットをその言語に訳して個別に送ります。", "Privately sends chat translated into each foreign player's /lang language.", "把聊天翻译成外语玩家所选语言并私聊发送。"));
             _descriptors.Add(Bool("translate.autodetect", cJa, cEn, "言語の自動判定", "Auto-detect language", _trAutoDetect)
@@ -1372,6 +1378,7 @@ namespace PocketRoles.Core
                     TranslateTargetLang = trLang; message = "translate.target = " + trLang; return true;
                 case "translate.showhost": case "translate.showonhost": case "tr.showhost": return SetBool(_trShowOnHost, value, "translate.showhost", out message);
                 case "translate.broadcast": case "translate.broadcasttoall": case "translate.all": case "tr.broadcast": return SetBool(_trBroadcastToAll, value, "translate.broadcast", out message);
+                case "translate.compat": case "translate.foreignincompat": case "tr.compat": return SetBool(_trForeignInCompat, value, "translate.compat", out message);
                 case "translate.players": case "translate.forplayers": case "tr.players": return SetBool(_trForPlayers, value, "translate.players", out message);
                 case "translate.autodetect": case "translate.autodetectlang": case "tr.autodetect": return SetBool(_trAutoDetect, value, "translate.autodetect", out message);
                 case "translate.minchars": case "tr.minchars": return SetInt(_trMinChars, value, 1, 50, "translate.minchars", out message);

@@ -494,13 +494,13 @@ namespace PocketRoles.Net
                 if (simulated || s.NoticedThisGame.Add(rule))
                 {
                     string text = string.Format(Lang.T("ac.notice",
-                        "チートの疑い: {0} - {1}",
-                        "Cheat suspected: {0} - {1}",
-                        "疑似作弊: {0} - {1}"), s.Name, Text(rule));
+                        "[Aegis] チートの疑い: {0} - {1}",
+                        "[Aegis] Cheat suspected: {0} - {1}",
+                        "[Aegis] 疑似作弊: {0} - {1}"), s.Name, Text(rule));
                     bool callout = rule == Rule.Callout || rule == Rule.CalloutRepeat;
                     if (!string.IsNullOrEmpty(extra)) text += extra;
                     if (callout)
-                        text += Lang.T("ac.notice.callout", "（推理や勘が当たっただけのこともあります。退出させるならホストが /kick）", " (could be a good read; /kick to remove)", "（也可能只是推理或猜中了。需要移出请用 /kick）");
+                        text += Lang.T("ac.notice.callout", "（推理が当たっただけのことも。退出は /kick）", " (could be a good read; /kick to remove)", "（也可能只是猜中了。移出用 /kick）");
                     else if (!autoKicks)
                         text += Lang.T("ac.notice.manual", "（なりすましやラグの可能性もあります。退出させるならホストが /kick）", " (could be spoofing or lag; /kick to remove)", "（也可能是冒充或延迟。需要移出请用 /kick）");
                     text = (simulated ? Lang.T("ac.test.tag", "[テスト] ", "[test] ", "[测试] ") : "") + text;
@@ -578,7 +578,7 @@ namespace PocketRoles.Net
             if (Permissions.LevelOf(pc) != PermLevel.Player)
             {
                 s.Exempt = true;   // no further attempt this lobby; /ac shows it
-                Notice(string.Format(Lang.T("ac.exempt", "{0} はVIP以上なので自動では退出させませんでした（{1}）", "{0} is VIP or above: not removed automatically ({1})", "{0} 是VIP以上，未自动移出（{1}）"), s.Name, reason));
+                Notice(string.Format(Lang.T("ac.exempt", "[Aegis] {0} はVIP以上なので自動では退出させませんでした（{1}）", "[Aegis] {0} is VIP or above: not removed automatically ({1})", "[Aegis] {0} 是VIP以上，未自动移出（{1}）"), s.Name, reason));
                 return;
             }
             try
@@ -586,12 +586,12 @@ namespace PocketRoles.Net
                 s.Kicked = true;
                 PocketRolesPlugin.Logger.LogWarning($"CheatDetector: removing #{s.PlayerId} {s.Name} (client {clientId}) with a room ban: {item.Value}");
                 client.KickPlayer(clientId, true);
-                string local = string.Format(Lang.T("ac.kicked", "{0} を自動で退出させました（{1}）。記録は /ac", "Removed {0} automatically ({1}). Records: /ac", "已自动移出 {0}（{1}）。记录: /ac"), s.Name, reason);
+                string local = string.Format(Lang.T("ac.kicked", "Aegis が {0} を自動で退出させました（{1}）。記録は /ac", "Aegis removed {0} automatically ({1}). Records: /ac", "Aegis 已自动移出 {0}（{1}）。记录: /ac"), s.Name, reason);
                 if (Options.CheatAnnounceKick)
                 {
                     string pub;
                     using (Lang.Scope(Lang.Default))
-                        pub = string.Format(Lang.T("ac.kicked.public", "{0} はありえない操作({1})をしたので退出になりました", "{0} removed: impossible action ({1})", "{0} 因不可能的操作({1})被移出"), s.Name, Text(item.Value));
+                        pub = string.Format(Lang.T("ac.kicked.public", "[Aegis] {0} はありえない操作({1})をしたので退出になりました", "[Aegis] {0} removed: impossible action ({1})", "[Aegis] {0} 因不可能的操作({1})被移出"), s.Name, Text(item.Value));
                     if (Registration.CompatMode && HostDeadInGame())
                     {
                         // a dead sender's chat is hidden from the living: show it when everyone is back in the lobby
@@ -753,7 +753,7 @@ namespace PocketRoles.Net
                 case "": case "list": case "一覧": return ListText();
                 case "clear":
                     Suspects.Clear(); UnknownRpcLogged.Clear(); CalloutWatch.ClearTallies();
-                    return Lang.T("ac.cleared", "チート検知の記録を消しました。", "Anti-cheat records cleared.", "已清除作弊检测记录。");
+                    return Lang.T("ac.cleared", "Aegis: 記録を消しました。", "Aegis: records cleared.", "Aegis: 已清除记录。");
                 case "on": case "off":
                     Options.CheatDetect = a == "on";
                     return "anticheat = " + a;
@@ -810,7 +810,7 @@ namespace PocketRoles.Net
 
         private static string ListText()
         {
-            var sb = new StringBuilder(Lang.T("ac.list.header", "チート検知（この部屋）:", "Anti-cheat (this lobby):", "作弊检测（本房间）:"));
+            var sb = new StringBuilder(Lang.T("ac.list.header", "Aegisアンチチート（この部屋）:", "Aegis anti-cheat (this lobby):", "Aegis反作弊（本房间）:"));
             int rows = 0;
             bool hideCallouts = CalloutWatch.HoldNow();   // a callout names impostors: a spoiler for a living-crewmate host
             foreach (var kv in Suspects)
@@ -833,7 +833,7 @@ namespace PocketRoles.Net
                 else if (s.Exempt) sb.Append(Lang.T("ac.list.exempt", " (VIP以上のため退出させず)", " (VIP+: not removed)", " (VIP以上，未移出)"));
                 else if (s.Left) sb.Append(Lang.T("ac.list.left", " (退出)", " (left)", " (已离开)"));
             }
-            if (rows == 0) return Lang.T("ac.list.none", "チート検知の記録はありません。", "No anti-cheat records.", "没有作弊检测记录。");
+            if (rows == 0) return Lang.T("ac.list.none", "Aegis: 記録はありません。", "Aegis: no records.", "Aegis: 没有记录。");
             return sb.ToString();
         }
     }

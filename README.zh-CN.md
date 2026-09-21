@@ -153,7 +153,7 @@
 - 原版设置范围扩展（v0.4b）同样直接使用原版的设置同步。房主在设置界面选择的数值（例如击杀冷却 5 秒）会原样显示在玩家的房间设置列表中。
 - 聊天翻译（v0.4b）由房主的电脑把文本发送到 Google / DeepL 进行翻译。默认开启，以 **并用模式** 运行（外语聊天翻译成房主的语言发给所有人，房主的话单独翻译给外语玩家）。不想把文本发到外部时，可在设置标签页“聊天”分页的“聊天翻译”或用 `/opt translate off` 关闭（[第 13 章](#13-语言日本語--中文--english)）。
 - 只有 **开启了 MOD 房间注册的房间** 才能分配职业。未注册的房间（便利房）中，只要向单个玩家发送一条消息房主就会被服务器断开，因此那里的职业和私密通知全部停用，只在原版对局之上保留房主工具（[第 25 章](#25-便利房关闭注册与引导房)）。
-- 房主屏幕左上角（ping 显示处）显示 `PocketRoles v0.5.2 (host) · 亚洲` 这样带当前区域名的一行，在线房间中还显示 `房间剩余 mm:ss`（`/code on` 后还会大字显示房间代码 `职业房 ABCDEF`，默认关闭），游戏内的模组标记也会显示。标题画面右侧的大窗口中显示 **PocketRoles 面板**（图标、`v0.5.2 / Among Us 2026.8.18`、作者名、可点击的 GitHub 行、“仅房主安装即可游玩职业”“参与者无需安装即可加入”）（[第 9 章](#9-齿轮菜单的pocketroles-设置面板)）。
+- 房主屏幕左上角（ping 显示处）显示 `PocketRoles v0.5.3 (host) · 亚洲` 这样带当前区域名的一行，在线房间中还显示 `房间剩余 mm:ss`（`/code on` 后还会大字显示房间代码 `职业房 ABCDEF`，默认关闭），游戏内的模组标记也会显示。标题画面右侧的大窗口中显示 **PocketRoles 面板**（图标、`v0.5.3 / Among Us 2026.8.18`、作者名、可点击的 GitHub 行、“仅房主安装即可游玩职业”“参与者无需安装即可加入”）（[第 9 章](#9-齿轮菜单的pocketroles-设置面板)）。
 - 仅支持 **经典模式**（躲猫猫 / Seek Fools 模式下模组不做任何事）。
 
 原版玩家实际看到的效果汇总在 [第 26 章](#26-原版玩家看到的是什么)。
@@ -331,7 +331,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
    3. 从 GitHub 的最新发布获取 `PocketRoles-<ver>.zip` 并放置（把 `PocketRoles-<ver>.zip` 放在启动器同一文件夹中即可离线安装）。如果有旧的 `HostRoles.dll` 会删除
    4. 在桌面创建“PocketRoles Launcher”快捷方式
 5. **先启动 Steam，再点“启动”**。首次启动时 BepInEx 需要生成 interop，到标题画面大约 **1〜2 分钟**（中途可能出现黑色控制台窗口，请不要关闭）。
-6. 标题画面右侧出现 PocketRoles 面板、左上角显示 `PocketRoles v0.5.2` 即安装完成。
+6. 标题画面右侧出现 PocketRoles 面板、左上角显示 `PocketRoles v0.5.3` 即安装完成。
 
 如果某个步骤失败，修正原因（网络连接、Steam 位置等）后再点一次“安装”，已完成的步骤会跳过，从失败处继续。启动器右上角的“语言”可切换 日本語 / 中文 / English。随附的 `はじめに.txt` 用三种语言写了同样的步骤。
 
@@ -341,7 +341,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 2. 把上面的 BepInEx zip 解压到复制的文件夹中（`Among Us.exe` 同级目录下应有 `winhttp.dll`、`doorstop_config.ini` 和 `BepInEx\` 文件夹）。
 3. **在 Steam 已启动的状态下**，把复制出来的 `Among Us.exe` **运行一次**。首次运行时 BepInEx 会生成 `BepInEx\interop`，出现标题画面需要 **1〜3 分钟**。出现标题画面后可以关闭。
 4. 把 GitHub Releases 的 `PocketRoles-<ver>.zip` 解压到复制的文件夹中（包含 `BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README、LICENSE 和 NOTICE）。**如果还留有旧版的 `HostRoles.dll`，请删除**（同样的补丁会被应用两次）。
-5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.2`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx\LogOutput.log` 中的 `PocketRoles v0.5.2 loaded` 来确认。
+5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.3`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx\LogOutput.log` 中的 `PocketRoles v0.5.3 loaded` 来确认。
 
 首次启动时会生成 `BepInEx\config\jp.pocketroles.mod.cfg`（配置）、`BepInEx\PocketRoles\lang\`（语言文件）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` 和 `README.txt`（外观自定义用）。权限文件 `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` 会在第一次创建房间时生成在 `BepInEx\PocketRoles\` 中。使用 DeepL 时的 `deepl-key.txt` 需要自己创建（[第 13 章](#13-语言日本語--中文--english)）。如果同一文件夹中有旧 HostRoles 的配置 `jp.hostroles.mod.cfg` 而新配置文件尚不存在，内容会自动复制过来（设置原样继承）。
 
@@ -532,14 +532,14 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | 行 | 内容 |
 |---|---|
 | 图标和“PocketRoles” | 模组内嵌的 `PocketRoles-256.png` |
-| `v0.5.2 / Among Us 2026.8.18` | 模组版本和对应的游戏版本 |
+| `v0.5.3 / Among Us 2026.8.18` | 模组版本和对应的游戏版本 |
 | `作者：もみじちゃ` | `[Credits] Author`（为空则不显示） |
 | `GitHub: github.com/wakayamachannel/PocketRoles（点击打开）` | `[Credits] RepoUrl`。点击后打开浏览器（为空则不显示） |
 | “仅房主安装即可游玩职业”“参与者无需安装即可加入” | 按房间默认语言显示 |
 
 - 打开在线 / 账户 / 输入代码 / 游戏模式 / 创建房间 / 制作人员等子菜单期间会隐藏，回到主画面后重新显示。
 - `[Credits] ShowInMenu = false`（设置标签页“显示制作信息”，`/opt credits.show off`）会同时隐藏面板和署名行。
-- 如果游戏 UI 变化导致面板无法创建，会改为显示 v0.2 的右下角署名行（`PocketRoles v0.5.2  © 2026 もみじちゃ` 和网址），并上移以免与原版的版本显示重叠。
+- 如果游戏 UI 变化导致面板无法创建，会改为显示 v0.2 的右下角署名行（`PocketRoles v0.5.3  © 2026 もみじちゃ` 和网址），并上移以免与原版的版本显示重叠。
 - 不发送任何数据（仅房主屏幕）。
 
 ---
@@ -687,7 +687,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `admin remove <名字|代码>` / `admin reload` | 删除 / 重新读取文件 |
 | `mod add|remove|list <…>`, `moderator …` | 版主（`Moderator.txt`）的添加、删除、列表。`/mod on|off` 仍是模组开关 |
 | `vip add|remove|list <…>` / `vip <名字>` | VIP（`VIP.txt`）的添加、删除、列表。只写 `/vip <名字>` 即为添加 |
-| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
+| `ac`（`anticheat`、`aegis`） | Aegis 反作弊（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
 | `kick <名字|编号>` | 踢出该玩家（仅在房间中。房主以及权限不低于自己的人不能踢） |
 | `ban <名字|编号>` | 踢出并写入 `Banlist.txt`（下次加入时也会自动踢出）。同时发送服务器端的临时封禁 |
 | `ban list` / `ban remove <名字|代码>` / `unban <…>` / `ban reload` | 封禁列表 / 解除 / 重新读取 |
@@ -780,6 +780,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `translate.showhost` | on / off | `[Translate] ShowOnHost` |
 | `translate.broadcast` | on / off | `[Translate] BroadcastToAll` |
 | `translate.players` | on / off | `[Translate] TranslateForPlayers` |
+| `translate.compat` | on / off | `[Translate] ForeignInCompat`（v0.5.3：未注册房间中，只在有外语玩家时，把聊天翻译成其语言发给所有人；默认 on） |
 | `translate.autodetect` | on / off | `[Translate] AutoDetectLang` |
 | `translate.minchars` | 1〜50 | `[Translate] MinChars` |
 | `translate.maxperminute` | 1〜120 | `[Translate] MaxPerMinute` |
@@ -794,7 +795,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `vanilla.discussmax` | 0〜3600 | `[Vanilla] DiscussionTimeMax` |
 | `vanilla.emergencymax` | 0〜600 | `[Vanilla] EmergencyCooldownMax` |
 | `vanilla.taskmax` | 1〜60 | `[Vanilla] TaskCountMax` |
-| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 作弊检测，未注册房间；默认 on） |
+| `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 Aegis 反作弊，未注册房间；默认 on） |
 | `anticheat.kick`（`kick`） | on / off | `[AntiCheat] AutoKick`（确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间；默认 on） |
 | `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick`（移出时向所有人发一行；默认 on） |
 | `anticheat.callout`（`callout`） | on / off | `[AntiCheat] Callout`（v0.5.3 点中提示：有人在会议中点中尚未行动的内鬼时，只在主持画面上提示；不会移出；默认 on） |
@@ -870,6 +871,7 @@ TargetLang =                    # 房主阅读的语言 ja | zh | en（空 = [Ge
 ShowOnHost = true               # 在房主屏幕显示翻译（不发送）
 BroadcastToAll = true           # 把外语聊天翻译成房主的语言发送给所有人（会收到单独翻译的玩家除外）
 TranslateForPlayers = true      # 把聊天翻译成用 /lang 选择了外语的玩家的语言并单独发送（两者都为 true = 并用，默认）
+ForeignInCompat = true          # v0.5.3 未注册房间：只在有外语玩家（/lang 或自动判定）时，把聊天翻译成其语言发给所有人（每种语言一行）
 AutoDetectLang = true           # 未设置 /lang 的玩家用中文或英文发言时自动切换其显示语言（仅一次）
 MinChars = 3                    # 少于此字数不翻译（1〜50）
 MaxPerMinute = 20               # 每分钟翻译次数上限（1〜120。超出的不翻译）
@@ -892,7 +894,7 @@ TaskCountMax = 30               # 普通 / 短 / 长任务数最大值（1〜60�
 
 [AntiCheat]
 KickOnForgedRpc = false         # 预留（无效果）；v0.5.3 起使用下面三项
-Detect = true                   # v0.5.3 作弊检测（未注册房间的对局中，把不可能的操作显示给房主）
+Detect = true                   # v0.5.3 Aegis 反作弊（未注册房间的对局中，把不可能的操作显示给房主）
 AutoKick = true                 # 确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间（VIP 以上除外）
 AnnounceKick = true             # 移出时在所有人的聊天中发一行
 Callout = true                  # 点中提示（有人在会议中点中尚未行动的内鬼时只提示主持；主持为存活船员时在死亡后或赛后显示）
@@ -1484,7 +1486,7 @@ Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 
 测试 v0.4b 功能时（PC + 手机两台设备，约 10 分钟）：
 
-1. **标题画面面板**：PC 主菜单右侧出现 PocketRoles 面板（图标、`v0.5.2 / Among Us 2026.8.18`、GitHub 行），点击 GitHub 行会打开浏览器。打开在线菜单时隐藏，返回后重新显示。
+1. **标题画面面板**：PC 主菜单右侧出现 PocketRoles 面板（图标、`v0.5.3 / Among Us 2026.8.18`、GitHub 行），点击 GitHub 行会打开浏览器。打开在线菜单时隐藏，返回后重新显示。
 2. **设置标签页**：房间里的笔记本电脑中“PocketRoles”在最上方，点“原版设置”会展开 3 个原版按钮。职业 / 房间 / 聊天 / 外观 / 房主工具 的分页切换，鼠标悬停在“?”上时左侧说明栏显示说明。
 3. **欢迎语**：手机收到的欢迎语为 2 行 × 3 种语言（该玩家的语言 → 其余两种语言），最后只附带一次“自动翻译已开启…”行，并且没有设置的罗列（用 `/cmd s` 显示）。
 4. **翻译**：手机 **用英文** 发送 `Hello, can I be sheriff?` 之类的消息 → PC 屏幕上出现 `[译] <名字>: …` 的中文翻译。手机收到“Display language switched to English. Type /cmd lang zh to switch back.”，此后发给手机的模组消息变为英文（语言自动识别）。然后 PC 用中文发言 → 手机收到 `[Tr] <房主名>: …` 的英文翻译（为外语玩家翻译）。用 `/cmd lang zh` 可以切换回来。
@@ -1575,6 +1577,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 - v0.5.1：未注册房间也可用 `/next impostor` / `/next crew` / `/next <原版职业名>` 指定下一局自己的职业（设置页“房主”的“下局的我”按钮亦可）。只是在原版职业分配过程中交换职业消息的收件人，玩家看到的是普通的分配，内鬼人数不变。
 - v0.5.2：`/next <名字|#编号> impostor` / `crew` 也可以指定**别人**（机制与指定自己相同）。如果没有指定自己而指定了别人，原版选中你当内鬼时会让给那个人，你成为船员（想自己也当就再输入 `/next impostor`）。在原版不分配内鬼的 3 人房间里，v0.5.1 的内鬼补充会优先选被指定的人。
 - v0.5.2：便利房里的聊天翻译是**单向**的：外语玩家的发言会翻译成日语（房间语言）发给大家，但无法把日语聊天翻译给那个人（不能发送个别消息）。`/lang` 的回复和 `/cmd h` 会说明这一点。
+- v0.5.3：外语玩家（通过 `/lang` 或自动判定）在房间里时，其他人的发言也会翻译成其语言并**发给所有人**（无法私聊；每种语言一行；`[Translate] ForeignInCompat`、`/opt translate.compat`，默认 on）。没有外语玩家时聊天不会增加。
 - v0.5.1：任务数量：设置值保持在原版范围内，但用 `/vset common 4` 这样超出范围的值时，只有“实际分发的数量”会变成该值（`/vset show` 的“实际分发数（未注册）”，设置页的“配るコモン数(登録オフ)”等行）。
 
 - 完全不发送职业、名字标签和私密消息。欢迎语和提示合并为一条广播，包括 `/cmd …` 在内的所有命令都对所有人可见（欢迎语第二行会说明这一点）。
@@ -1776,7 +1779,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 - 官方服务器有通信量限制，超出时房主会被判定为“hacking”踢出。模组已把发送分散，但人数越多（15 人）风险越高。
 - 已注册的房间不会出现在公开列表中（第 3 章）。开启自动公开也一样。关闭注册的便利房会出现在列表里但没有职业，而且房主的广播仍有可能导致断开（第 25 章）。
 - 作为房主端的简易反作弊，如果收到了只有房主才能发送的 RPC（职业变更、名字变更、击杀、放逐等）来自玩家，会忽略并记录日志，并在房主画面上提示。`KickOnForgedRpc = true` 时 3 次后踢出。
-- 从 v0.5.3 起，未注册房间也会进行作弊检测。玩家的设备上无法安装任何东西，所以房主从收到的通信中找出原版 Among Us 不可能出现的操作（不能击杀的职业击杀、不能用通风管的职业进通风管、使用自己没有的能力、内鬼完成任务、存活时在会议外聊天等），确定的情况第 1 次就移出并禁止再进本房间（`/ac` 查看记录，`/opt anticheat.kick off` 停止自动移出）。官方服务器的反作弊只检查通信的格式，这类游戏内容上的作弊不会被发现。
+- 从 v0.5.3 起，未注册房间也会运行 **Aegis 反作弊**（作弊检测）。玩家的设备上无法安装任何东西，所以房主从收到的通信中找出原版 Among Us 不可能出现的操作（不能击杀的职业击杀、不能用通风管的职业进通风管、使用自己没有的能力、内鬼完成任务、存活时在会议外聊天等），确定的情况第 1 次就移出并禁止再进本房间（`/ac` 查看记录，`/opt anticheat.kick off` 停止自动移出）。官方服务器的反作弊只检查通信的格式，这类游戏内容上的作弊不会被发现。
 - 游戏版本与支持版本不同时模组自动停用（第 24 章）。
 
 ---
@@ -1820,7 +1823,7 @@ build.cmd
 - 引用其他文件夹中的游戏：`build.cmd -p:GameDir="C:\path\to\Among Us"`
 - 目标：net6.0，C# latest，Nullable off，ImplicitUsings off。不使用 NuGet 的游戏库或 Reactor。
 - `lang\*.json` 和 `assets\PocketRoles-256.png`（标题画面的图标）作为嵌入资源包含在 DLL 中，语言文件在首次启动时写出到 `BepInEx\PocketRoles\lang\`。想修改文本时不必重新构建 DLL，编辑写出的文件即可。
-- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx\LogOutput.log` 中有 `PocketRoles v0.5.2 loaded` 且没有 Harmony 补丁错误。
+- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx\LogOutput.log` 中有 `PocketRoles v0.5.3 loaded` 且没有 Harmony 补丁错误。
 
 生成发布 zip：`powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` 跳过构建）。会生成 `dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、3 种 README、LICENSE、NOTICE）、`dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）和 `SHA256SUMS.txt`。版本取自 `PocketRoles.csproj` 的 `<Version>`。把这两个 zip 附加到 GitHub Releases 后，启动器的“检查更新”“安装”就能获取最新版本（会查找名为 `PocketRoles-<ver>.zip` 的资源）。
 

@@ -200,6 +200,8 @@ namespace PocketRoles.Chat
                     var lp = PlayerControl.LocalPlayer;
                     bool hostDead = lp != null && Core.Game.IsDead(lp.PlayerId);
                     if (fromHost || !hostDead || !Options.TranslateShowOnHost) return;
+                    targets.RemoveAll(l => l != hostTarget);          // no public foreign line for a ghost's chat
+                    if (targets.Count == 0) return;
                 }
 
                 if (Volatile.Read(ref _pending) >= MaxPendingJobs)
@@ -310,7 +312,11 @@ namespace PocketRoles.Chat
                 targets.Add(hostTarget);
             // Per-player translations need client-addressed chat, which an unregistered (compat) lobby has not
             // (findings #21/#28): no foreign-language requests there (broadcast only), which also spares the cap.
-            if (Options.TranslateForPlayers && !Registration.CompatMode)
+            // v0.5.3 (2026-09-21 "外国人がいるときだけ全部に使用"): an unregistered lobby has no private path, so the room's
+            // chat goes into each foreign language a connected player uses as ONE public line per language — only
+            // while such a player is here ([Translate] ForeignInCompat).
+            bool foreign = Registration.CompatMode ? Options.TranslateForeignInCompat : Options.TranslateForPlayers;
+            if (foreign)
             {
                 string def = Lang.Default;
                 foreach (var pc in Core.Game.AllPlayers())
@@ -416,6 +422,17 @@ namespace PocketRoles.Chat
                     if (broadcast) BroadcastHostLanguage(job, line, forPlayers, hostTarget);
                     else if (!job.FromHost && Options.TranslateShowOnHost && hostMayRead) Chat.Local(Title, line);
                 }
+            }
+            if (Registration.CompatMode && r.Target != hostTarget && !ghost && Options.TranslateForeignInCompat)
+            {
+                // v0.5.3: one public line in that language, if a player who reads it is still here
+                if (!PlayerWants(r.Target)) return;
+                using (Lang.Scope(r.Target))
+                {
+                    var chunks = Chat.Split(line);
+                    if (chunks.Count > 0) Chat.SendPublicChunks(Title, chunks);
+                }
+                return;
             }
             if (forPlayers && !broadcast)
             {

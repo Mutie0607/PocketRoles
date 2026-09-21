@@ -218,7 +218,7 @@ namespace PocketRoles.Chat
                         Reply(sender, ToggleMod(arg1));
                         return true;
                     case "kick": Reply(sender, KickCommand(sender, JoinArgs(tokens, 1), false)); return true;
-                    case "ac": case "anticheat": Reply(sender, Net.CheatDetector.Command(tokens), 8); return true;   // v0.5.3 cheat detection
+                    case "ac": case "anticheat": case "aegis": Reply(sender, Net.CheatDetector.Command(tokens), 8); return true;   // v0.5.3 cheat detection
                     case "ban": HandleBan(sender, arg1, JoinArgs(tokens, 1), JoinArgs(tokens, 2)); return true;
                     case "unban": Reply(sender, UnbanText(JoinArgs(tokens, 1))); return true;
                     case "vset": Reply(sender, VanillaSet(arg1, JoinArgs(tokens, 2))); return true;
@@ -331,7 +331,7 @@ namespace PocketRoles.Chat
                 case "diag": case "diagnostics": case "診断":
                 case "admin": case "admins": case "moderator": case "moderators": case "vip": case "vips":
                 case "kick": case "ban": case "unban": case "vset":
-                case "ac": case "anticheat":
+                case "ac": case "anticheat": case "aegis":
                 case "code": case "コード": case "announce": case "guide": case "案内": case "move": case "migrate": case "移動":
                 case "backup": case "restore": case "復元":
                 case "who": case "生存":
@@ -634,7 +634,10 @@ namespace PocketRoles.Chat
                 {
                     sb.Append('\n');
                     // v0.5.2: one-way there (no client-addressed chat): their lines reach the room translated, the room's lines stay as written
-                    sb.Append(Lang.TF("help.translate.compat", "外国語で書くと{0}に訳されて全員に見えます（{1}→外国語の翻訳はありません）。", "Foreign-language chat is translated into {0} for everyone ({1} is not translated back).", Lang.DisplayName(Options.TranslateTargetLang), Lang.DisplayName(Lang.Default)));
+                    if (Options.TranslateForeignInCompat)
+                        sb.Append(Lang.TF("help.translate.compat2", "外国語で書くと{0}に訳されて全員に見えます。外国語の人がいる時は、ほかの発言もその人の言葉に訳して流します。", "Foreign-language chat is translated into {0} for everyone; while a foreign-language player is here, the other chat is translated into their language too.", Lang.DisplayName(Options.TranslateTargetLang)));
+                    else
+                        sb.Append(Lang.TF("help.translate.compat", "外国語で書くと{0}に訳されて全員に見えます（{1}→外国語の翻訳はありません）。", "Foreign-language chat is translated into {0} for everyone ({1} is not translated back).", Lang.DisplayName(Options.TranslateTargetLang), Lang.DisplayName(Lang.Default)));
                 }
                 return sb.ToString();
             }
@@ -759,6 +762,8 @@ namespace PocketRoles.Chat
         /// <summary>v0.5.2: the unregistered lobby's translation is one-way (a foreign player's lines → the lobby language, public; nothing back).</summary>
         internal static string CompatTranslateNote()
         {
+            if (Options.TranslateForeignInCompat)   // v0.5.3: the room's chat reaches them too (public, in their language)
+                return Lang.TF("translate.compat.twoway", "あなたの発言は{0}に訳されて全員に流れます。ほかの人の発言もあなたの言葉に訳して流します。", "Your messages are translated into {0} for everyone, and the others' messages into your language.", Lang.DisplayName(Options.TranslateTargetLang));
             return Lang.TF("translate.compat.oneway", "あなたの発言は{0}に訳されて全員に流れます。{1}のチャットはあなた向けには訳されません。", "Your messages are translated into {0} for everyone; {1} chat is not translated for you.", Lang.DisplayName(Options.TranslateTargetLang), Lang.DisplayName(Lang.Default));
         }
 
@@ -766,9 +771,9 @@ namespace PocketRoles.Chat
         private static string AboutText()
         {
             if (Registration.CompatMode)
-                return Lang.T("about.compat.1", "この部屋(役職なし)でMODがしていること: 入室時の挨拶と案内, 外国語チャットの自動翻訳, 試合後の結果一覧(途中で抜けた人も含む), 部屋の時間切れ防止, チート対策(ありえない操作をした人はすぐ退出)", "What the mod does in this room (no roles): welcome and guide lines, auto-translation of foreign-language chat, the post-game result list (leavers included), keeping the room from timing out, anti-cheat (players doing impossible things are removed at once)", "本房间(无职业)里MOD做的事: 入房问候和指引, 外语聊天自动翻译, 赛后结果一览(包括中途退出的人), 防止房间超时, 防作弊(做出不可能操作的玩家会被立即移出)")
+                return Lang.T("about.compat.1", "この部屋(役職なし)でMODがしていること: 入室時の挨拶と案内, チャットの自動翻訳(外国語の人がいる時はその人の言葉にも), 試合後の結果一覧(途中で抜けた人も含む), 部屋の時間切れ防止, Aegisアンチチート(ありえない操作をした人はすぐ退出)", "What the mod does in this room (no roles): welcome and guide lines, chat auto-translation (into a foreign player's language too), the post-game result list (leavers included), keeping the room from timing out, Aegis anti-cheat (players doing impossible things are removed at once)", "本房间(无职业)里MOD做的事: 入房问候和指引, 聊天自动翻译(有外语玩家时也翻译成其语言), 赛后结果一览(包括中途退出的人), 防止房间超时, Aegis反作弊(做出不可能操作的玩家会被立即移出)")
                        + "\n" + Lang.T("about.compat.2", "ゲームの中身は普通のAmong Usで, 役職や特殊ルールはありません", "The game itself is normal Among Us: no roles, no special rules", "游戏本身就是普通的Among Us, 没有职业和特殊规则");
-            return Lang.T("about.roles", "PocketRoles: ホストだけが入れる役職MOD。参加者は何も入れずに遊べます。チート対策あり。役職の一覧は /cmd r、自分の役職は /cmd n", "PocketRoles: a host-only role mod; players install nothing; anti-cheat on. /cmd r lists the roles, /cmd n shows yours", "PocketRoles: 只需主持安装的职业MOD，玩家无需安装，有防作弊。/cmd r 查看职业列表，/cmd n 查看自己的职业");
+            return Lang.T("about.roles", "PocketRoles: ホストだけが入れる役職MOD。参加者は何も入れずに遊べます。Aegisアンチチートを導入しています。役職の一覧は /cmd r、自分の役職は /cmd n", "PocketRoles: a host-only role mod; players install nothing; Aegis anti-cheat running. /cmd r lists the roles, /cmd n shows yours", "PocketRoles: 只需主持安装的职业MOD，玩家无需安装，已启用Aegis反作弊。/cmd r 查看职业列表，/cmd n 查看自己的职业");
         }
 
         private static string LangStateText(PlayerControl sender, bool isHost)
