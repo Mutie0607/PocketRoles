@@ -29,9 +29,9 @@ Other languages: **[日本語 (README.md)](README.md)** / **[简体中文 (READM
 ## Install in 3 minutes (Windows + Steam)
 
 1. Download the two zips from **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)**: `PocketRoles-Setup-0.5.2.zip` (the launcher) and `PocketRoles-0.5.2.zip` (the mod).
-2. **Extract both into the same folder** (e.g. `Documents|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`, somewhere you will keep. With an internet connection the Setup zip alone works — the launcher fetches the mod).
+2. **Extract both into the same folder** (e.g. `Documents\PocketRoles`, somewhere you will keep. With an internet connection the Setup zip alone works — the launcher fetches the mod).
 3. **Double-click "PocketRoles Launcher.cmd"**. If the blue "Windows protected your PC" screen appears, click "More info" → "Run anyway" (it appears because no code-signing certificate is used; it is not malware).
-4. Press **"Install"**. The launcher copies your Steam Among Us to "Among Us PocketRoles" on the Desktop and installs BepInEx and PocketRoles automatically (a few minutes; your Steam copy is not modified). On a PC whose Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` instead (so 1 GB is not synced to the cloud; the launcher argument `-GameDir` lets you pick any folder).
+4. Press **"Install"**. The launcher copies your Steam Among Us to "Among Us PocketRoles" on the Desktop and installs BepInEx and PocketRoles automatically (a few minutes; your Steam copy is not modified). On a PC whose Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` instead (so 1 GB is not synced to the cloud; the launcher argument `-GameDir` lets you pick any folder).
 5. **Start Steam, then press "Launch"**. The first launch takes 1–2 minutes to reach the title screen (if a black window appears in between, do not close it). When the PocketRoles panel shows in the right-hand window of the title screen you are done. **Online → Create game** and the roles are active.
 
 Details and manual installation: [chapter 5](#5-installation-steam). The launcher: [chapter 6](#6-launcher-and-updates). Playing: [chapter 7](#7-playing).
@@ -80,7 +80,7 @@ No mail client? Webmail such as Gmail in the browser is fine (attach the zip fro
 | No vanilla roles (Scientist, Engineer, Judge, ...) appear | By default only PocketRoles roles are handed out and the vanilla special roles are suppressed. To use both, turn on "Also assign vanilla special roles" in the Roles tab or type `/opt roles.vanilla on` (they then follow the vanilla role settings) |
 | Where do I change settings? | The "PocketRoles" button in the lobby computer; also `/set` `/opt` in chat or the gear menu ([chapter 8](#8-settings-tab-lobby-settings-screen)) |
 | Changing the language | Players: `/cmd lang zh` etc. The lobby default: "Language" in the settings tab. The launcher: "Language" at the top-right ([chapter 13](#13-languages-japanese--chinese--english)) |
-| Chat translation and the DeepL key | On by default ("Chat translation" in the settings tab turns it off). For DeepL put the key on one line in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt` ([chapter 13](#13-languages-japanese--chinese--english)) |
+| Chat translation and the DeepL key | On by default ("Chat translation" in the settings tab turns it off). For DeepL put the key on one line in `BepInEx\PocketRoles\deepl-key.txt` ([chapter 13](#13-languages-japanese--chinese--english)) |
 | The game updated and the mod stopped working | "Check for updates" in the launcher. Until a compatible release exists the mod disables itself ([chapter 24](#24-game-version-check)) |
 | How do I report a bug? | "Create report zip" in the launcher → attach it to a mail to `pocketroles.report@gmail.com` ([chapter 28](#28-reporting-bugs)) |
 | Is it against the rules? Can I get banned? | Mod-lobby registration (official rule, required for roles) is done automatically when you create the lobby, exactly as Innersloth's policy requires. Registered use alone does not get you banned ([chapter 3](#3-innersloths-mod-policy-and-public-lobbies-read-this)) |
@@ -93,7 +93,7 @@ No mail client? Webmail such as Gmail in the browser is fine (attach the zip fro
 - 26 extra roles: Sheriff, Mayor, Snitch, Lighter, Speed Booster, Bait, Madmate, Mad Mayor, Mad Stuntman, Mad Hawk, Worshipper, Vampire, Mafia, Witch, Assassin, Evil Hawk, Evil Nekomata, Serial Killer, Samurai, Jester, Opportunist, Terrorist, Jackal, Jackal Friends, Lovers, Arsonist
 - Roles are shown to each player privately through their **name tag** and **chat**
 - Settings live in the **"PocketRoles" tab of the lobby settings screen** (pages Roles / Lobby / Chat / Looks / Host with "?" help; the three vanilla buttons are folded into "▶ Vanilla settings (game · presets · roles)") and the **"PocketRoles settings" panel of the gear menu** (chat commands `/set` `/opt` and the config file work too)
-- Languages: **Japanese / Simplified Chinese / English**. Each player can pick their own with `/lang` (the language they write in is detected as well); every text is editable in `lang|distance|rpc|taskburst|report|teleport|killphase>*.json`
+- Languages: **Japanese / Simplified Chinese / English**. Each player can pick their own with `/lang` (the language they write in is detected as well); every text is editable in `lang\*.json`
 - **Chat translation** (on by default, combined mode): foreign-language chat is translated into the host's language for everyone, and the host's words reach foreign players privately in their language (Google, or DeepL with your API key)
 - **Player-recruiting helpers**: copy the room code and show the guide-room steps (`/announce`; the copied code pastes straight into Discord etc.), big room-code display (`/code on`, off by default), send players from a vanilla room to the role room (`/move`)
 - Host tools: lobby time left, auto start, haison (lobby refresh), a cancel button for the start countdown, force-ending meetings, hotkeys (F7 / F8 / F9), an action-button row on the Host page, Game Master (spectator) mode, mirrored Skeld (Dleks), a confirmation to re-create a high-ping lobby
@@ -164,12 +164,12 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 
 - **Guide-room helpers** ([chapter 25](#25-vanilla-room-registration-off-and-the-guide-room)): the room code in big letters at the top-left of the lobby (`Role room ABCDEF`; off by default, `/code on` turns it on, `/code` toggles, "Big room-code overlay" in the settings tab). `/announce` (`/guide`) copies the code to the clipboard (paste it into Discord etc.) and prints the four steps for the spare-phone guide room. `/move [code]` sends everyone in a vanilla room the way to the role room in three languages (`/opt guide.autoreg on` re-creates the lobby as registered 30 s later). A guide-room hint in the gear menu.
 - **Vanilla room (registration off) clarified**: live testing showed that in an unregistered lobby the server disconnects the host ("DC because Hacking") as soon as one message is addressed to a single player. Unregistered lobbies therefore run **vanilla, without roles** (host tools and broadcast notices only). Roles need a registered lobby (the default).
-- **Combined translation by default** (`BroadcastToAll = true` + `TranslateForPlayers = true`): foreign-language chat is translated into the host's language for everyone; the host's words reach players who chose another language privately in that language; nobody gets the same line twice. Translation itself (`Enabled`) is on by default too (chat text is sent to Google, or to DeepL when you put a key into `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`); turn it off with "Chat translation" in the settings tab or `/opt translate off`.
+- **Combined translation by default** (`BroadcastToAll = true` + `TranslateForPlayers = true`): foreign-language chat is translated into the host's language for everyone; the host's words reach players who chose another language privately in that language; nobody gets the same line twice. Translation itself (`Enabled`) is on by default too (chat text is sent to Google, or to DeepL when you put a key into `BepInEx\PocketRoles\deepl-key.txt`); turn it off with "Chat translation" in the settings tab or `/opt translate off`.
 - **High-ping re-creation asks first**: when the ping is high right after the lobby is created, the host sees "Ping is high (N ms). Re-create the lobby?" (Yes / No, or `/rehost yes|no`). Off by default (`MaxHostPing = 0`), because repeated re-creations add ban points ([3.4](#34-bans-and-kicks)).
 - **Settings tab**: the page buttons read Roles / Lobby / Chat / Looks / Host in one row. The three vanilla buttons start folded under "▶ Vanilla settings (game · presets · roles)" and unfold to "▼ Vanilla settings". A button row above the Host page: Start now / Cancel / Haison / End meeting / Test mode / Show settings / Next game, me.
 - **Role delivery fixed**: the black screen without an intro when starting with two or more players is gone (the vanilla role broadcast passes untouched and every client's view is overwritten right after, in one batch). Sheriff and Jackal still see the "Impostor" intro (since v0.4.1 their role notice adds the line "Note: the game shows you as Impostor (intro, kill button), but your real role is …").
 - **Test mode**: the start button reads "Start" immediately after `/test on`, and the vanilla "4 players can play, but …" popup is confirmed automatically.
-- **Language files**: keys added by an update are appended to `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` at start-up (your edited lines are kept).
+- **Language files**: keys added by an update are appended to `lang\*.json` at start-up (your edited lines are kept).
 - **Logging**: quiet by default. `/diag on` enables the detailed start trace, `/diag` prints a state snapshot.
 
 ### v0.4c (fixes to v0.4.0 from the live test session)
@@ -187,10 +187,10 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 |---|---|---|
 | Launcher (installer for friends) | Extract `PocketRoles-Setup-<ver>.zip`, double-click "PocketRoles Launcher.cmd", press "Install": the Steam copy, BepInEx and PocketRoles are set up automatically. "Check for updates" fetches a new release from GitHub, "Launch" starts the modded game, "Create report zip" prepares a bug report. Japanese / Chinese / English | [5](#5-installation-steam), [6](#6-launcher-and-updates) |
 | Title-screen panel | The PocketRoles icon, version, author, GitHub line and description in the right-hand window of the main menu (the small credit line at the bottom right remains as the fallback) | [9](#9-pocketroles-settings-panel-in-the-gear-menu) |
-| Chat translation | Foreign-language chat is translated on the host's screen; optionally broadcast to everyone or delivered privately to players who chose a foreign language. Google (no key) or DeepL (put the key into `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`) | [13](#13-languages-japanese--chinese--english) |
+| Chat translation | Foreign-language chat is translated on the host's screen; optionally broadcast to everyone or delivered privately to players who chose a foreign language. Google (no key) or DeepL (put the key into `BepInEx\PocketRoles\deepl-key.txt`) | [13](#13-languages-japanese--chinese--english) |
 | Language auto-detect / trilingual hint | A player who never used `/lang` and writes in Chinese or English gets that display language automatically and is told so. The short welcome (2 lines) arrives by default in the player's language and then in the two others (`WelcomeAllLanguages`; off = one language plus the line "English: /cmd lang en ｜ 中文: … ｜ 日本語: …") | [13](#13-languages-japanese--chinese--english), [14](#14-welcome-message-and-rules-line) |
 | Settings-tab polish | The PocketRoles button sits at the top of the left column; the three vanilla buttons are collapsed under one "Vanilla settings" button. Inside the tab a row of page buttons: Roles / Lobby / Chat / Looks / Host tools. "?" buttons next to role headers and option rows show help in the left info box | [8](#8-settings-tab-lobby-settings-screen) |
-| Permissions (co-hosting) | `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` (one player per line, friend code or Puid). `/admin` `/mod` `/vip` add / remove / list, `/kick`, `/ban`. Admins use the settings commands, moderators kick / ban, VIPs get a ★ and a personal greeting | [11](#11-commands) |
+| Permissions (co-hosting) | `BepInEx\PocketRoles\Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` (one player per line, friend code or Puid). `/admin` `/mod` `/vip` add / remove / list, `/kick`, `/ban`. Admins use the settings commands, moderators kick / ban, VIPs get a ★ and a personal greeting | [11](#11-commands) |
 | Extended vanilla ranges | Kill cooldown 0–120 s (arrows step by 2.5 s by default; 0.5-s values via `/vset` or by lowering `[Vanilla] KillCooldownStep`), voting 0–600 s, discussion 0–600 s, emergency cooldown 0–120 s, task counts 0–30 … from the settings screen arrows and `/vset`. Player speed and vision via `/vset` too. Vanilla players receive the same numbers | [8](#8-settings-tab-lobby-settings-screen), [11](#11-commands) |
 | `/h` shows the level | The help ends with "Your level: player / VIP / moderator / admin / host" | [11](#11-commands) |
 | Bug-report tooling | The launcher's report zip (log, config, environment; never the DeepL key), report mailboxes, GitHub issue templates, a support address | [28](#28-reporting-bugs) |
@@ -199,7 +199,7 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 
 | Feature | Description | Chapter |
 |---|---|---|
-| Rename | HostRoles → **PocketRoles**. Plugin id `jp.pocketroles.mod`, config `jp.pocketroles.mod.cfg` (an old `jp.hostroles.mod.cfg` is copied automatically on first start), folder `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>`, launcher "PocketRoles Launcher" | [5](#5-installation-steam) |
+| Rename | HostRoles → **PocketRoles**. Plugin id `jp.pocketroles.mod`, config `jp.pocketroles.mod.cfg` (an old `jp.hostroles.mod.cfg` is copied automatically on first start), folder `BepInEx\PocketRoles\`, launcher "PocketRoles Launcher" | [5](#5-installation-steam) |
 | Lobby time left | `Lobby mm:ss left` in the top-left corner, the vanilla timer widget from the start, `/time` for everyone, notices at 120 s / 60 s | [16](#16-lobby-time-left-auto-start-and-haison) |
 | Auto start | Countdown and start automatically once the configured number of players is in; aborted when someone leaves. `/autostart <n>`, `/start` (start now) | [16](#16-lobby-time-left-auto-start-and-haison) |
 | Timer expiry handling (extend / haison) | When time runs low, accept the server's extension or run **haison** (start a game and end it at once so everyone stays in the same lobby with the same code and a fresh timer). `/haison` runs it by hand | [16](#16-lobby-time-left-auto-start-and-haison) |
@@ -218,8 +218,8 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 
 | Feature | Description | Chapter |
 |---|---|---|
-| Hat / visor / nameplate replacement | Put `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png` etc. in place and that cosmetic is replaced on the host's screen (whoever wears it). `/cos ids` lists the ids | [22](#22-cosmetics-host-screen-only) |
-| Lobby music | Plays `music|distance|rpc|taskburst|report|teleport|killphase>*.wav` / `*.ogg` in the lobby (`custom` / `vanilla` / `mute`, with a volume setting) | [22](#22-cosmetics-host-screen-only) |
+| Hat / visor / nameplate replacement | Put `BepInEx\PocketRoles\hats\<ProductId>.png` etc. in place and that cosmetic is replaced on the host's screen (whoever wears it). `/cos ids` lists the ids | [22](#22-cosmetics-host-screen-only) |
+| Lobby music | Plays `music\*.wav` / `*.ogg` in the lobby (`custom` / `vanilla` / `mute`, with a volume setting) | [22](#22-cosmetics-host-screen-only) |
 | Decorations | Lobby wall paint, dropship decoration, main-menu background, mouse cursor | [22](#22-cosmetics-host-screen-only) |
 
 Nothing here is **transmitted**; players keep the vanilla look.
@@ -229,7 +229,7 @@ Nothing here is **transmitted**; players keep the vanilla look.
 | Feature | Description | Chapter |
 |---|---|---|
 | Settings tab | A "PocketRoles" tab in the lobby laptop (settings screen) | [8](#8-settings-tab-lobby-settings-screen) |
-| 3 languages | Japanese / Simplified Chinese / English. A lobby default plus per-player `/lang`. Texts editable in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json` | [13](#13-languages-japanese--chinese--english) |
+| 3 languages | Japanese / Simplified Chinese / English. A lobby default plus per-player `/lang`. Texts editable in `BepInEx\PocketRoles\lang\*.json` | [13](#13-languages-japanese--chinese--english) |
 | Welcome text editing | `/welcome` with placeholders such as `{roles}` | [14](#14-welcome-message-and-rules-line) |
 | Auto re-host / auto public | Recreate the lobby after a disconnect; make it public a few seconds after creation; `/public now` | [15](#15-auto-re-host-and-auto-public) |
 | Test mode | `/test on` starts with 1 player and stops the win checks; `/assign` forces a role, `/end` ends the game | [23](#23-test-mode-checking-with-one-phone) |
@@ -319,10 +319,10 @@ Either way the layout is a **copy of the Steam game folder** with BepInEx and th
 ### 5.1 Recommended: install with the launcher (PocketRoles-Setup zip)
 
 1. Download **`PocketRoles-Setup-<version>.zip`** from GitHub Releases (<https://github.com/wakayamachannel/PocketRoles/releases>).
-2. Extract it into a folder you will keep (e.g. `Documents|distance|rpc|taskburst|report|teleport|killphase>PocketRoles`). **Put `PocketRoles-<version>.zip` (the mod) into the same folder (extracted or not)** and the installation works offline too. The desktop shortcut will point at this folder, so do not move or delete it later.
+2. Extract it into a folder you will keep (e.g. `Documents\PocketRoles`). **Put `PocketRoles-<version>.zip` (the mod) into the same folder (extracted or not)** and the installation works offline too. The desktop shortcut will point at this folder, so do not move or delete it later.
 3. **Double-click "PocketRoles Launcher.cmd"**. If Windows shows "Windows protected your PC" (SmartScreen) on the first run, click **"More info" → "Run anyway"**. It appears because no code-signing certificate is used; it is not malware.
 4. Press **"Install"** in the launcher. It does the following automatically (a few minutes; progress is shown in the box at the bottom):
-   1. Finds your Steam Among Us (a folder picker appears when it cannot) and copies it to `Desktop|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` (about 1 GB). When the Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` instead (the argument `-GameDir` lets you pick any folder)
+   1. Finds your Steam Among Us (a folder picker appears when it cannot) and copies it to `Desktop\Among Us PocketRoles` (about 1 GB). When the Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` instead (the argument `-GameDir` lets you pick any folder)
    2. Downloads BepInEx 6.0.0-be.735 (win-x86) from builds.bepinex.dev and extracts it
    3. Fetches `PocketRoles-<ver>.zip` from the latest GitHub release and puts it in place (a `PocketRoles-<ver>.zip` next to the launcher is used instead, so offline installs work). An old `HostRoles.dll` is deleted
    4. Creates the "PocketRoles Launcher" shortcut on the Desktop
@@ -333,24 +333,24 @@ If a step fails, fix the cause (internet connection, Steam location …) and pre
 
 ### 5.2 Manual installation
 
-1. Copy `C:|distance|rpc|taskburst|report|teleport|killphase>Program Files (x86)|distance|rpc|taskburst|report|teleport|killphase>Steam|distance|rpc|taskburst|report|teleport|killphase>steamapps|distance|rpc|taskburst|report|teleport|killphase>common|distance|rpc|taskburst|report|teleport|killphase>Among Us` to another folder (e.g. `Desktop|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`).
-2. Extract the BepInEx zip above into the copy (`winhttp.dll`, `doorstop_config.ini` and the `BepInEx|distance|rpc|taskburst|report|teleport|killphase>` folder end up next to `Among Us.exe`).
-3. **With Steam running**, start the copied `Among Us.exe` **once**. The first start generates `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop`, so the title screen takes **1–3 minutes** to appear. Close the game once you see it.
-4. Extract `PocketRoles-<ver>.zip` from GitHub Releases into the copy (it contains `BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`, `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`, the READMEs, LICENSE and NOTICE). **Delete an old `HostRoles.dll` if one is still there** (the same patches would be applied twice).
-5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.2` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` contains `PocketRoles v0.5.2 loaded`.
+1. Copy `C:\Program Files (x86)\Steam\steamapps\common\Among Us` to another folder (e.g. `Desktop\Among Us PocketRoles`).
+2. Extract the BepInEx zip above into the copy (`winhttp.dll`, `doorstop_config.ini` and the `BepInEx\` folder end up next to `Among Us.exe`).
+3. **With Steam running**, start the copied `Among Us.exe` **once**. The first start generates `BepInEx\interop`, so the title screen takes **1–3 minutes** to appear. Close the game once you see it.
+4. Extract `PocketRoles-<ver>.zip` from GitHub Releases into the copy (it contains `BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the READMEs, LICENSE and NOTICE). **Delete an old `HostRoles.dll` if one is still there** (the same patches would be applied twice).
+5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.2` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx\LogOutput.log` contains `PocketRoles v0.5.2 loaded`.
 
-The first start creates `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` (settings), `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` (language files) and `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>{hats,visors,nameplates,music,images}|distance|rpc|taskburst|report|teleport|killphase>` plus a `README.txt` (cosmetics). The permission files `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` are created in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` when you first host a lobby. `deepl-key.txt` (only for DeepL) is a file you create yourself ([chapter 13](#13-languages-japanese--chinese--english)). If an old HostRoles config `jp.hostroles.mod.cfg` exists in the same folder and the new file does not, its contents are copied over automatically (your settings carry over).
+The first start creates `BepInEx\config\jp.pocketroles.mod.cfg` (settings), `BepInEx\PocketRoles\lang\` (language files) and `BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` plus a `README.txt` (cosmetics). The permission files `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` are created in `BepInEx\PocketRoles\` when you first host a lobby. `deepl-key.txt` (only for DeepL) is a file you create yourself ([chapter 13](#13-languages-japanese--chinese--english)). If an old HostRoles config `jp.hostroles.mod.cfg` exists in the same folder and the new file does not, its contents are copied over automatically (your settings carry over).
 
 ### Layout on the developer's PC (for reference)
 
-- Modded copy: `Desktop|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles`
-- Source: `Desktop|distance|rpc|taskburst|report|teleport|killphase>PocketRoles` (starting the launcher inside the source tree gives developer mode)
-- Launcher: the desktop shortcut **"PocketRoles Launcher"** (`PocketRoles|distance|rpc|taskburst|report|teleport|killphase>PocketRoles Launcher.cmd`)
-- `build.cmd` copies the built `PocketRoles.dll` to `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` automatically.
-- Config: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` (created on first start)
-- Language files: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>ja.json` / `zh-CN.json` / `en.json`
-- Cosmetics folder: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` (`hats` `visors` `nameplates` `music` `images`)
-- Log: `Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log`
+- Modded copy: `Desktop\Among Us PocketRoles`
+- Source: `Desktop\PocketRoles` (starting the launcher inside the source tree gives developer mode)
+- Launcher: the desktop shortcut **"PocketRoles Launcher"** (`PocketRoles\PocketRoles Launcher.cmd`)
+- `build.cmd` copies the built `PocketRoles.dll` to `..\Among Us PocketRoles\BepInEx\plugins` automatically.
+- Config: `Among Us PocketRoles\BepInEx\config\jp.pocketroles.mod.cfg` (created on first start)
+- Language files: `Among Us PocketRoles\BepInEx\PocketRoles\lang\ja.json` / `zh-CN.json` / `en.json`
+- Cosmetics folder: `Among Us PocketRoles\BepInEx\PocketRoles\` (`hats` `visors` `nameplates` `music` `images`)
+- Log: `Among Us PocketRoles\BepInEx\LogOutput.log`
 
 ---
 
@@ -365,7 +365,7 @@ A small GUI started from the desktop shortcut **"PocketRoles Launcher"** (`Pocke
 | **Friend mode (installer)** | No `PocketRoles.csproj` next to the launcher (i.e. you extracted `PocketRoles-Setup-<ver>.zip`) | Install / Check for updates / Launch / Create report zip / Open config / Open log / Manual (README) / Open mod folder |
 | **Developer mode** | Started inside the source tree (`PocketRoles.csproj` next to it) | Launch with mod / Check / update game (copy → interop → rebuild) / Rebuild only / Check GitHub release / Launch vanilla (Steam) / Open config / Open log / Manual (README) / Open mod folder / Create report zip |
 
-Both modes: **"Language"** at the top right switches between 日本語 / 中文 (简体) / English (detected from the Windows display language the first time, then stored in `launcher-state.json`). The state is at the top, the buttons in the middle and a progress log at the bottom; buttons are disabled while something runs. The modded copy lives in `Desktop|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` (developer mode prefers `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles` next to the source); the environment variables `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` or the arguments `-GameDir` / `-SteamDir` override it.
+Both modes: **"Language"** at the top right switches between 日本語 / 中文 (简体) / English (detected from the Windows display language the first time, then stored in `launcher-state.json`). The state is at the top, the buttons in the middle and a progress log at the bottom; buttons are disabled while something runs. The modded copy lives in `Desktop\Among Us PocketRoles` (developer mode prefers `..\Among Us PocketRoles` next to the source); the environment variables `POCKETROLES_GAMEDIR` / `POCKETROLES_STEAMDIR` or the arguments `-GameDir` / `-SteamDir` override it.
 
 State lines:
 
@@ -374,8 +374,8 @@ State lines:
 | Steam Among Us / modded copy | Versions read from both game folders. When they differ, **the Steam version was updated** (orange / red) |
 | BepInEx | Installed version (be.735 = OK, anything else needs an update). Developer mode shows "BepInEx / interop" presence instead |
 | PocketRoles.dll | Installed version and date (developer mode adds the game version it was built for; a mismatch means **a rebuild is needed**) |
-| interop (generated on first launch) | Whether `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` exists |
-| .NET SDK (for rebuilds) | Developer mode only: whether `%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe` exists |
+| interop (generated on first launch) | Whether `BepInEx\interop` exists |
+| .NET SDK (for rebuilds) | Developer mode only: whether `%USERPROFILE%\.dotnet\dotnet.exe` exists |
 | Steam client | Running or not (needed for playing and for interop generation) |
 
 A green "Ready" line ("Up to date" in developer mode) means you can play.
@@ -385,15 +385,15 @@ A green "Ready" line ("Up to date" in developer mode) means you can play.
 | Button | Action |
 |---|---|
 | **Install** | Runs the steps of [5.1](#51-recommended-install-with-the-launcher-pocketroles-setup-zip). If a step failed, fix the cause and press it again: finished steps are skipped and it resumes. Not possible while the game runs |
-| **Check for updates** | Compares the latest GitHub release with the installed `PocketRoles.dll` and asks "update now?" when a newer one exists → downloads and installs it (`BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>` is never overwritten, so your settings and cosmetic files stay). Then, if the Steam version was updated, asks "refresh the modded copy?" (see "After an Among Us update" below) |
+| **Check for updates** | Compares the latest GitHub release with the installed `PocketRoles.dll` and asks "update now?" when a newer one exists → downloads and installs it (`BepInEx\config\` is never overwritten, so your settings and cosmetic files stay). Then, if the Steam version was updated, asks "refresh the modded copy?" (see "After an Among Us update" below) |
 | **Launch** | Starts `Among Us.exe` from the modded copy. Only shows a hint when nothing is installed / Among Us is running / Steam is not running. When the Steam version was updated it offers to refresh the copy first (required to play online) |
 | **Create report zip** | Writes `PocketRoles-report-YYYYMMDD-HHMM.zip` to the Desktop and shows a dialog with the addresses and "open mail" buttons ([chapter 28](#28-reporting-bugs)) |
-| **Open config** | Opens `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` in Notepad |
-| **Open log** | Opens `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` in Notepad |
+| **Open config** | Opens `BepInEx\config\jp.pocketroles.mod.cfg` in Notepad |
+| **Open log** | Opens `BepInEx\LogOutput.log` in Notepad |
 | **Manual (README)** | Opens the README in the selected language (the copy extracted into the game folder) |
 | **Open mod folder** | Opens the modded copy in Explorer |
 
-**After an Among Us update (friend mode)**: once the Steam version is newer, "Launch" and "Check for updates" ask "refresh the modded copy?". "Yes" copies the Steam game files again and deletes the old `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` and `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache` (`BepInEx`, `dotnet`, `winhttp.dll`, `doorstop_config.ini`, `steam_appid.txt` are not overwritten, so config, plugins, language files and cosmetics stay). The next launch regenerates interop (1–2 minutes). If PocketRoles does not support the new game version yet, the [version check](#24-game-version-check) keeps the mod inactive; press "Check for updates" once a compatible release is out.
+**After an Among Us update (friend mode)**: once the Steam version is newer, "Launch" and "Check for updates" ask "refresh the modded copy?". "Yes" copies the Steam game files again and deletes the old `BepInEx\interop` and `BepInEx\cache` (`BepInEx`, `dotnet`, `winhttp.dll`, `doorstop_config.ini`, `steam_appid.txt` are not overwritten, so config, plugins, language files and cosmetics stay). The next launch regenerates interop (1–2 minutes). If PocketRoles does not support the new game version yet, the [version check](#24-game-version-check) keeps the mod inactive; press "Check for updates" once a compatible release is out.
 
 Auto launch: append ` -AutoLaunch` to the shortcut's target and the launcher presses "Launch" for you as soon as it opens (both modes). For tests and automation there are also the headless `-Action Install|Check|Report|Status`, `-Language ja|zh-CN|en` and `-Friend` (force friend mode).
 
@@ -403,7 +403,7 @@ Auto launch: append ` -AutoLaunch` to the shortcut's target and the launcher pre
 |---|---|
 | **Launch with mod** | Starts `Among Us.exe` from the modded copy. Warns when Steam is not running; offers to update first when an update was detected (without the update you cannot play online) and to build when a rebuild is needed |
 | **Check / update game** | Compares the versions and runs the update flow below when they differ; otherwise only rebuilds when needed |
-| **Rebuild only** | Runs `dotnet build -c Release` and puts `PocketRoles.dll` into `BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` (1–2 minutes) |
+| **Rebuild only** | Runs `dotnet build -c Release` and puts `PocketRoles.dll` into `BepInEx\plugins` (1–2 minutes) |
 | **Check GitHub release** | Checks the latest GitHub release and installs it when newer (a locally built DLL is overwritten) |
 | **Launch vanilla (Steam)** | Starts the Steam version (no mod) — use this to join other people's lobbies |
 | **Open config** / **Open log** / **Manual (README)** / **Open mod folder** / **Create report zip** | Same as friend mode |
@@ -411,7 +411,7 @@ Auto launch: append ` -AutoLaunch` to the shortcut's target and the launcher pre
 **Update flow (after an Among Us update, developer mode)**: "Check / update game" in the launcher (or the command-line `update-game.cmd`) does the following. **Close the game and keep Steam running.**
 
 1. Copy the Steam game files into the modded copy (`BepInEx`, `dotnet`, `winhttp.dll`, `doorstop_config.ini`, `steam_appid.txt` are not overwritten, so config, plugins, language files and cosmetics stay)
-2. Delete the old `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` and `BepInEx|distance|rpc|taskburst|report|teleport|killphase>cache`
+2. Delete the old `BepInEx\interop` and `BepInEx\cache`
 3. Start the game to regenerate interop (1–3 minutes; the launcher closes the game automatically once the log says `Chainloader startup complete` — with `update-game.cmd` close it yourself once the title screen appears)
 4. Rebuild `PocketRoles` (same as `build.cmd`)
 
@@ -457,7 +457,7 @@ When the host opens the laptop (settings) in the lobby, a **blue "PocketRoles" b
 
 - A **horizontal row of page buttons** at the top of the panel: **Roles / Lobby / Chat / Looks / Host** (short labels; Host = host tools). The selected page is remembered while the menu is closed.
 - Small **"?" buttons** sit next to each role header and at the right end of every option row that has a description. Hovering shows the help in the left info box; clicking pins it (a second click restores the default text). A role's "?" shows its description, team and a "Kill / Vent / Sabotage / Tasks" ○× line; an option's "?" explains the setting.
-- Headers, names and help follow the lobby language (`opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` in `lang|distance|rpc|taskburst|report|teleport|killphase>*.json`).
+- Headers, names and help follow the lobby language (`opt.section.*` / `opt.name.*` / `opt.tip.*` / `ui.page.*` in `lang\*.json`).
 
 ### What is on the pages
 
@@ -641,18 +641,18 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `reload` | Re-read the config file (lobby only) |
 | `mod on` / `mod off` | Enable / disable the mod (lobby only; not during a game) |
 | `lang default ja|zh|en` | Lobby default language (same as `/opt lang`) |
-| `lang reload` | Re-read `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` |
+| `lang reload` | Re-read `lang\*.json` |
 | `welcome` | State and usage of the welcome text |
-| `welcome <text>` | Set the welcome text (max 320 characters; `|distance|rpc|taskburst|report|teleport|killphase>n` = line break; placeholders `{rules}` `{roles}` `{settings}` `{help}` `{version}`) |
+| `welcome <text>` | Set the welcome text (max 320 characters; `\n` = line break; placeholders `{rules}` `{roles}` `{settings}` `{help}` `{version}`) |
 | `welcome show` | Preview the welcome on the host's screen |
 | `welcome reset` | Back to the built-in welcome |
 | `welcome settings on|off` | Append the current settings to the welcome or not (default off; players read them with `/cmd s`) |
 | `rules` / `rules show` | State of the welcome rules line |
-| `rules <text>` | Set the rules line (max 200 characters, `|distance|rpc|taskburst|report|teleport|killphase>n` = line break; `RulesMode` becomes `custom`) |
+| `rules <text>` | Set the rules line (max 200 characters, `\n` = line break; `RulesMode` becomes `custom`) |
 | `rules none` | Back to the built-in "no special rules" line |
 | `test` / `test on|off` | Show / toggle test mode (lobby only) |
-| `next [impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto |distance|rpc|taskburst|report|teleport|killphase>| <vanilla role>]` | Your own role for the next game (v0.5.1): no test mode needed, works in unregistered lobbies too; also the Host page button. E.g. `/next impostor`, `/next shapeshifter`; `/next` alone shows the current wish (and the other players' designations) |
-| `next <name|distance|rpc|taskburst|report|teleport|killphase>|#id> impostor |distance|rpc|taskburst|report|teleport|killphase>| crew |distance|rpc|taskburst|report|teleport|killphase>| auto`, `next reset` | **Another player's** side for the next game (v0.5.2). Part of the name or `#id` (`/next Taro impostor`; `/next impostor #3` works too). Up to the impostor count (your own `/next impostor` takes one slot); with more designations the earlier ones win. Dropped when the player leaves, consumed by the next game, cleared when you leave the lobby. `/next Taro auto` clears one, `/next reset` clears everything (yours too), `/next Taro` shows that player's entry. The Host page button "Next imp" cycles through the players one at a time. Works in unregistered lobbies. The result is shown to the host only: "This game: Taro = Impostor (swapped with Hanako)" |
+| `next [impostor \| crew \| auto \| <vanilla role>]` | Your own role for the next game (v0.5.1): no test mode needed, works in unregistered lobbies too; also the Host page button. E.g. `/next impostor`, `/next shapeshifter`; `/next` alone shows the current wish (and the other players' designations) |
+| `next <name\|#id> impostor \| crew \| auto`, `next reset` | **Another player's** side for the next game (v0.5.2). Part of the name or `#id` (`/next Taro impostor`; `/next impostor #3` works too). Up to the impostor count (your own `/next impostor` takes one slot); with more designations the earlier ones win. Dropped when the player leaves, consumed by the next game, cleared when you leave the lobby. `/next Taro auto` clears one, `/next reset` clears everything (yours too), `/next Taro` shows that player's entry. The Host page button "Next imp" cycles through the players one at a time. Works in unregistered lobbies. The result is shown to the host only: "This game: Taro = Impostor (swapped with Hanako)" |
 | `assign <name|id> <role>` | Force a role on that player next game. E.g. `/assign Taro sheriff`, `/assign 2 jackal`; `/assign <name> none` clears one |
 | `assign show` / `assign clear` | List / clear the forced roles |
 | `end` | End the game now (counted as a crew win; ends a test-mode game) |
@@ -683,7 +683,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `admin remove <name|code>` / `admin reload` | Remove / re-read the file |
 | `mod add|remove|list <…>`, `moderator …` | Add / remove / list moderators (`Moderator.txt`). `/mod on|off` still toggles the mod |
 | `vip add|remove|list <…>` / `vip <name>` | Add / remove / list VIPs (`VIP.txt`). `/vip <name>` alone adds |
-| `ac` (`anticheat`) | Cheat-detection records (v0.5.3). `/ac clear`, `/ac on|distance|rpc|taskburst|report|teleport|killphase>|off`, `/ac kick on|distance|rpc|taskburst|report|teleport|killphase>|off`, `/ac test <kill|distance|rpc|taskburst|report|teleport|killphase>|vent|distance|rpc|taskburst|report|teleport|killphase>|ability|distance|rpc|taskburst|report|teleport|killphase>|task|distance|rpc|taskburst|report|teleport|killphase>|chat|distance|rpc|taskburst|report|teleport|killphase>|sabotage|distance|rpc|taskburst|report|teleport|killphase>|killcd|distance|rpc|taskburst|report|teleport|killphase>|protect|distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase>||distance|rpc|taskburst|report|teleport|killphase> <#id|distance|rpc|taskburst|report|teleport|killphase>|name> [kick]` simulates a detection (only `kick` really removes the player) |
+| `ac` (`anticheat`) | Cheat-detection records (v0.5.3). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
 | `kick <name|id>` | Kicks that player (only while in a lobby or game; the host and anyone of the same or a higher level cannot be kicked) |
 | `ban <name|id>` | Kick plus an entry in `Banlist.txt` (kicked again automatically on the next join); a server-side temporary ban is sent as well |
 | `ban list` / `ban remove <name|code>` / `unban <…>` / `ban reload` | List / lift / re-read bans |
@@ -692,7 +692,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 
 ### Permissions (co-hosting): admins / moderators / VIPs / bans (v0.4b)
 
-A way to run the lobby together with friends, managed through four text files in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` (created with a header when you first host).
+A way to run the lobby together with friends, managed through four text files in `BepInEx\PocketRoles\` (created with a header when you first host).
 
 | File | Level | Allows |
 |---|---|---|
@@ -826,13 +826,13 @@ A way to run the lobby together with friends, managed through four text files in
 | `credits.url` | URL | `[Credits] RepoUrl` |
 | `credits.show` | on / off | `[Credits] ShowInMenu` |
 
-Out-of-range values are clamped. on / off also accept `1`/`0`, `true`/`false`, `yes`/`no`, `オン`/`オフ`. The DeepL API key cannot be set with `/opt` (it lives in the file `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`, [chapter 13](#13-languages-japanese--chinese--english)).
+Out-of-range values are clamped. on / off also accept `1`/`0`, `true`/`false`, `yes`/`no`, `オン`/`オフ`. The DeepL API key cannot be set with `/opt` (it lives in the file `BepInEx\PocketRoles\deepl-key.txt`, [chapter 13](#13-languages-japanese--chinese--english)).
 
 ---
 
 ## 12. Config file
 
-`BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` (created on first start; the settings tab, the gear panel and `/set` `/opt` save here immediately). Edit it with a text editor while the game is closed, or `/reload` in the lobby afterwards. In the real file the sections are sorted alphabetically.
+`BepInEx\config\jp.pocketroles.mod.cfg` (created on first start; the settings tab, the gear panel and `/set` `/opt` save here immediately). Edit it with a text editor while the game is closed, or `/reload` in the lobby afterwards. In the real file the sections are sorted alphabetically.
 
 ```ini
 [General]
@@ -845,22 +845,22 @@ GameMaster = false              # Game Master: the host gets no role, dies right
 [Chat]
 WelcomeMessage = true           # send the modded-lobby notice to joining players
 RoleInfoAtMeeting = true        # re-send the role description at every meeting
-WelcomeText =                   # custom welcome text (empty = built-in). |distance|rpc|taskburst|report|teleport|killphase>n = line break; {rules} {roles} {settings} {help} {version}
+WelcomeText =                   # custom welcome text (empty = built-in). \n = line break; {rules} {roles} {settings} {help} {version}
 WelcomeIncludeSettings = false  # append the current role settings to the welcome (off by default; /cmd s shows them any time)
 PlayerCommands = true           # allow players' chat commands (false = ignored with one notice)
 AllCommands = true              # allow chat commands at all (false = the host can only use /mod)
 RulesMode = none                # welcome rules line: none (built-in "no special rules") | custom (RulesText)
-RulesText =                     # the custom rules text (|distance|rpc|taskburst|report|teleport|killphase>n = line break; /rules <text>)
+RulesText =                     # the custom rules text (\n = line break; /rules <text>)
 WelcomeAllLanguages = true      # send the short welcome (2 lines) in the player's language, then the two others (false = the player's language plus one trilingual /lang line)
 
 [Discord]                       # post the lobby to Discord (v0.4.5). No bot needed
 WebhookUrl =                    # URL from the channel's "Integrations → Webhooks → Copy URL". Empty = off. Keep it private (config file only)
 Announce = true                 # post "🔑 Lobby code ABCDEF — 3/15 players, open (with roles)" when a lobby is created and edit it on join / leave / start / end (at most once per 5 s)
-Text =                          # your own line (empty = built-in). {code} {count} {max} {state} {kind}, |distance|rpc|taskburst|report|teleport|killphase>n = line break, **bold** and @here work
+Text =                          # your own line (empty = built-in). {code} {count} {max} {state} {kind}, \n = line break, **bold** and @here work
 
 [Translate]                     # chat translation (v0.4b). Chat text is sent to Google / DeepL. The DeepL key is never stored here
 Enabled = true                  # translate foreign-language chat (on by default; text is sent to Google / DeepL. "Chat translation" in the settings tab or /opt translate off turns it off)
-Provider = auto                 # auto (DeepL when BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt holds a key, else Google) | google | deepl
+Provider = auto                 # auto (DeepL when BepInEx\PocketRoles\deepl-key.txt holds a key, else Google) | google | deepl
 TargetLang =                    # language the host reads: ja | zh | en (empty = [General] Language)
 ShowOnHost = true               # show translations on the host's screen (nothing is sent)
 BroadcastToAll = true           # translate foreign-language chat into the host's language and send it to everyone (not to players who get a private translation)
@@ -869,7 +869,7 @@ AutoDetectLang = true           # switch a player's language automatically (once
 MinChars = 3                    # shorter messages are not translated (1-50)
 MaxPerMinute = 20               # translations per minute (1-120); extra messages are skipped
 
-[Permissions]                   # permissions (v0.4b). Lists: BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
+[Permissions]                   # permissions (v0.4b). Lists: BepInEx\PocketRoles\Admin.txt / Moderator.txt / VIP.txt / Banlist.txt
 AdminsCanChangeSettings = true  # players in Admin.txt may use the host commands (/set /opt /show /start /cancel /autostart /welcome /rules /kick /ban /vset ...)
 ModeratorsCanKick = true        # players in Moderator.txt may /kick and /ban
 VipMarker = true                # star marker next to VIP.txt players' names and a personal welcome line
@@ -928,10 +928,10 @@ Enabled = true                  # master switch of the cosmetics
 LobbyMusic = custom             # custom (file in the music folder, vanilla when none) | vanilla | mute
 LobbyMusicFile =                # file name inside the music folder (WAV / OGG; empty = the first file found)
 LobbyMusicVolume = 0.07         # gain of the custom track (0-1; the vanilla theme is about 0.07)
-LobbyPaint = true               # show images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png on the lobby wall
-Dropship = true                 # show images|distance|rpc|taskburst|report|teleport|killphase>dropship.png as a dropship decoration
-MenuBackground = true           # use images|distance|rpc|taskburst|report|teleport|killphase>menu.png as the main-menu background
-Cursor = true                   # use images|distance|rpc|taskburst|report|teleport|killphase>cursor.png as the mouse cursor
+LobbyPaint = true               # show images\lobbypaint.png on the lobby wall
+Dropship = true                 # show images\dropship.png as a dropship decoration
+MenuBackground = true           # use images\menu.png as the main-menu background
+Cursor = true                   # use images\cursor.png as the mouse cursor
 
 [Roles]                         # per role: Count (0-15) and Chance (0-100)
 Sheriff.Count = 1
@@ -1069,7 +1069,7 @@ KnownToJackal = false           # the Jackal can tell who the Jackal Friends are
 SheriffCanKill = true           # shooting a Jackal Friends does not kill the Sheriff
 ```
 
-Test mode, `/assign` and the Dleks selection are not saved (they reset per lobby). The DeepL API key (`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`) and the permission lists (`Admin.txt` …) are separate files, not part of the config.
+Test mode, `/assign` and the Dleks selection are not saved (they reset per lobby). The DeepL API key (`BepInEx\PocketRoles\deepl-key.txt`) and the permission lists (`Admin.txt` …) are separate files, not part of the config.
 
 ---
 
@@ -1094,7 +1094,7 @@ Players use `/cmd lang en` (private in a registered lobby) or `/lang en` to chan
 
 ### Text files (editable)
 
-Texts are read from `ja.json` / `zh-CN.json` / `en.json` in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` (the built-in defaults are written out on first start).
+Texts are read from `ja.json` / `zh-CN.json` / `en.json` in `BepInEx\PocketRoles\lang\` (the built-in defaults are written out on first start).
 
 ```json
 {
@@ -1136,7 +1136,7 @@ Translates chat written in a foreign language. **On by default**, in the **combi
 **Using DeepL (key setup)**
 
 1. Create a DeepL API account (the free DeepL API Free plan works) and get the API key (`xxxxxxxx-xxxx-…:fx`; free keys end with `:fx`).
-2. Create **`BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>deepl-key.txt`** in Notepad and put **only the key on the first line** (UTF-8; blank lines and lines starting with `#` are ignored).
+2. Create **`BepInEx\PocketRoles\deepl-key.txt`** in Notepad and put **only the key on the first line** (UTF-8; blank lines and lines starting with `#` are ignored).
 3. Leave `Provider` on `auto` (DeepL is used automatically once a key exists). A file created while the game runs is picked up within a minute.
 
 **Never write the key into the config file (`jp.pocketroles.mod.cfg`)** — `/opt` has no key setting on purpose. The key is read from this file, sent to DeepL only, never logged and never included in the launcher's report zip (should it ever leak into a log, the report zip replaces it with `<api-key-masked>`). When DeepL fails (invalid key, quota exceeded …) Google is used instead and a warning is logged once.
@@ -1184,26 +1184,26 @@ Auto-translation is on: write in your own language / 翻訳あり / 自动翻译
 | Command | Meaning |
 |---|---|
 | `/rules` / `/rules show` | Current rules line and usage |
-| `/rules <text>` | Set the rules (max 200 characters, `|distance|rpc|taskburst|report|teleport|killphase>n` = line break). Saved as `[Chat] RulesMode = custom` and `RulesText` |
+| `/rules <text>` | Set the rules (max 200 characters, `\n` = line break). Saved as `[Chat] RulesMode = custom` and `RulesText` |
 | `/rules none` | Back to the built-in line (`RulesMode = none`) |
 
-Example: `/rules Beginners welcome!|distance|rpc|taskburst|report|teleport|killphase>nNo insults, no spoilers.` → becomes line 3 of the welcome (`/welcome show` previews it). The built-in line is translated per player; your own text is sent as typed.
+Example: `/rules Beginners welcome!\nNo insults, no spoilers.` → becomes line 3 of the welcome (`/welcome show` previews it). The built-in line is translated per player; your own text is sent as typed.
 
 ### Your own welcome (`/welcome`)
 
 `/welcome <text>` replaces the body (everything after line 1; max 320 characters). The first line ("Role-mod lobby. Nothing to install. …") is the modded-lobby notice (mod policy) and **is always prepended; it cannot be removed**.
 
-- `|distance|rpc|taskburst|report|teleport|killphase>n` (backslash + n, two characters) = line break.
+- `\n` (backslash + n, two characters) = line break.
 - Placeholders: `{rules}` = rules line, `{roles}` = enabled roles, `{settings}` = current settings (same as `/show`), `{help}` = the help / language hint line, `{version}` = mod version.
 - The settings are appended even without `{settings}` while "Welcome includes settings" is on (off by default). A custom rules line (`/rules`) is appended even without `{rules}`; the built-in "no special rules" line only appears where you put `{rules}`.
 
 Example:
 
 ```
-/welcome Welcome! Beginners are welcome.|distance|rpc|taskburst|report|teleport|killphase>nToday's roles: {roles}|distance|rpc|taskburst|report|teleport|killphase>n{rules}|distance|rpc|taskburst|report|teleport|killphase>n{help}
+/welcome Welcome! Beginners are welcome.\nToday's roles: {roles}\n{rules}\n{help}
 ```
 
-`/welcome show` previews on the host's screen, `/welcome reset` restores the built-in text, `/welcome` alone shows the state and usage. The config stores the same text (with `|distance|rpc|taskburst|report|teleport|killphase>n`) in `[Chat] WelcomeText`.
+`/welcome show` previews on the host's screen, `/welcome reset` restores the built-in text, `/welcome` alone shows the state and usage. The config stores the same text (with `\n`) in `[Chat] WelcomeText`.
 
 The welcome is built in the recipient's language (built-in texts and placeholders are translated; your own text is not).
 
@@ -1386,20 +1386,20 @@ Every Among Us client ships the mirrored Skeld "Dleks" (dlekS ehT, the April Foo
 
 ## 22. Cosmetics (host screen only)
 
-A v0.3 feature. Images and music placed under `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>` change the look **on the host's (your) screen only**. **Nothing is transmitted; players keep the vanilla look** (a replaced hat is still the original hat for everyone else). The `README.txt` the mod writes into that folder (Japanese) says the same.
+A v0.3 feature. Images and music placed under `BepInEx\PocketRoles\` change the look **on the host's (your) screen only**. **Nothing is transmitted; players keep the vanilla look** (a replaced hat is still the original hat for everyone else). The `README.txt` the mod writes into that folder (Japanese) says the same.
 
 ### Folder layout (created on first start)
 
 ```
-<game>|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>
-  hats|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png            main hat image. Optional: <ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
-  visors|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png          visor. Optional: _left.png / _climb.png / _floor.png
-  nameplates|distance|rpc|taskburst|report|teleport|killphase><ProductId>.png      meeting nameplate
-  music|distance|rpc|taskburst|report|teleport|killphase>*.wav | *.ogg             lobby BGM (the first file found, or the one named in LobbyMusicFile)
-  images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png           lobby wall paint (optional)
-  images|distance|rpc|taskburst|report|teleport|killphase>dropship.png             dropship decoration (optional)
-  images|distance|rpc|taskburst|report|teleport|killphase>menu.png                 main-menu background (optional)
-  images|distance|rpc|taskburst|report|teleport|killphase>cursor.png               mouse cursor (optional, ≤ 64×64 recommended)
+<game>\BepInEx\PocketRoles\
+  hats\<ProductId>.png            main hat image. Optional: <ProductId>_back.png / _left.png / _left_back.png / _climb.png / _floor.png
+  visors\<ProductId>.png          visor. Optional: _left.png / _climb.png / _floor.png
+  nameplates\<ProductId>.png      meeting nameplate
+  music\*.wav | *.ogg             lobby BGM (the first file found, or the one named in LobbyMusicFile)
+  images\lobbypaint.png           lobby wall paint (optional)
+  images\dropship.png             dropship decoration (optional)
+  images\menu.png                 main-menu background (optional)
+  images\cursor.png               mouse cursor (optional, ≤ 64×64 recommended)
   README.txt                      written by the mod (overwritten on the next start)
 ```
 
@@ -1411,7 +1411,7 @@ In the lobby the host types `/cos ids`: every player's hat / visor / nameplate /
 Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 ```
 
-E.g. `hat_pk05_Cheese` → `hats|distance|rpc|taskburst|report|teleport|killphase>hat_pk05_Cheese.png`, `visor_Cat` → `visors|distance|rpc|taskburst|report|teleport|killphase>visor_Cat.png`, `nameplate_Bavarian` → `nameplates|distance|rpc|taskburst|report|teleport|killphase>nameplate_Bavarian.png`.
+E.g. `hat_pk05_Cheese` → `hats\hat_pk05_Cheese.png`, `visor_Cat` → `visors\visor_Cat.png`, `nameplate_Bavarian` → `nameplates\nameplate_Bavarian.png`.
 
 - The replacement applies to that id on the host's screen **whoever wears it** (lobby, in game, meeting screen, shop previews).
 - Skins and pets are animated and cannot be replaced (only listed).
@@ -1421,7 +1421,7 @@ E.g. `hat_pk05_Cheese` → `hats|distance|rpc|taskburst|report|teleport|killphas
 - Draw at **the same pixel size as the original** and the placement matches exactly. Otherwise hats / visors use the default pivot (as SNR / TOR do).
 - For hats that follow the player colour (adaptive), **pure red (255,0,0) becomes the body colour, green (0,255,0) the shadow and blue (0,0,255) the visor colour** (a convention inferred from other mods — test one hat first). Draw non-adaptive hats in their real colours.
 - Transparent PNG recommended.
-- `images|distance|rpc|taskburst|report|teleport|killphase>lobbypaint.png` is shown at 290 px/unit, `dropship.png` at 60 px/unit, `menu.png` at 150 px/unit (about 1920×1080). The cursor hotspot is the top-left corner.
+- `images\lobbypaint.png` is shown at 290 px/unit, `dropship.png` at 60 px/unit, `menu.png` at 150 px/unit (about 1920×1080). The cursor hotspot is the top-left corner.
 
 ### Lobby BGM
 
@@ -1482,7 +1482,7 @@ Trying the v0.4b features (PC + phone, about 10 minutes):
 2. **Settings tab**: in the lobby laptop "PocketRoles" is the top button and "Vanilla settings" expands the three vanilla buttons. Switch the Roles / Lobby / Chat / Looks / Host tools pages; hovering a "?" writes help into the left info box.
 3. **Welcome**: the phone's welcome arrives as 2 lines × 3 languages (the player's language first, then the two others) with the "Auto-translation is on …" line once at the end, and without the settings dump (`/cmd s` shows it).
 4. **Translation**: from the phone write something **in English** such as `Hello, can I be sheriff?` (with a Japanese or Chinese lobby language) → the PC shows `[訳] <name>: …` / `[译] …` with the translation. The phone receives "Display language switched to English. Type /cmd lang ja to switch back." and mod messages to the phone are in English from then on (auto-detect). Then write in the lobby language on the PC → the phone receives `[Tr] <host name>: …` in English (translate for players). `/cmd lang ja` switches back.
-5. **VIP**: `/vip add <phone name>` on the PC → a new line in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>VIP.txt`. Leave and rejoin with the phone: the welcome gains "★ Welcome back, VIP …", and once a game starts the phone's name carries a ★ (everyone sees it).
+5. **VIP**: `/vip add <phone name>` on the PC → a new line in `BepInEx\PocketRoles\VIP.txt`. Leave and rejoin with the phone: the welcome gains "★ Welcome back, VIP …", and once a game starts the phone's name carries a ★ (everyone sees it).
 6. **Admin**: `/admin add <phone name>` on the PC → `/cmd h` on the phone ends with "Your level: admin", and `/cmd set sheriff 2` or `/cmd show` work (the PC chat echoes the change). `/cmd test on` answers "Host only.". `/admin remove <name>` undoes it.
 7. **Moderator / kick**: `/mod add <phone name>` → `/cmd kick <PC name>` from the phone answers "The host cannot be kicked."; `/kick <phone name>` from the PC removes the phone (`/ban` kicks it again on rejoin; `/ban remove <name>` lifts it).
 8. **Extended vanilla ranges**: in the PC's "Game Settings" move the kill-cooldown arrow below 10 seconds (e.g. 5) → the phone's lobby settings list shows "5 s" too. `/vset vote 0` and `/vset short 12` propagate the same way. Start a game and check the shorter cooldown; restore normal values afterwards.
@@ -1727,7 +1727,7 @@ Names are sent per client by the host. Right after a death / leave or after the 
 - Sending mod messages while the host is dead marks the host as alive for a moment (not in an unregistered lobby, where a dead host's messages reach ghosts only).
 - For a few seconds after an ejection some players' views (role, alive / dead) may be temporarily off because of the blackout workaround.
 - Players with a custom role and a Game Master host never become Guardian Angels (plain ghosts instead).
-- Settings-tab and gear-panel labels follow the lobby language (`opt.section.*` / `opt.name.*` / `ui.gear.*` in `lang|distance|rpc|taskburst|report|teleport|killphase>*.json`).
+- Settings-tab and gear-panel labels follow the lobby language (`opt.section.*` / `opt.name.*` / `ui.gear.*` in `lang\*.json`).
 - The lobby time left is an **estimate** (597 s minus elapsed until the server reports it); it can be off by a few to a dozen seconds.
 - Cosmetics affect the host's screen only; skins and pets cannot be replaced.
 - The name-tag symbols ♥ (Lovers), † (Witch), ♨ (Arsonist) and Ⓦ (Worshipper) may show as □ depending on the client's font (they are the constants `Lovers.Heart` / `Witch.Mark` / `Arsonist.Mark` / `Worshipper.ImpostorViewMark` in the source).
@@ -1794,7 +1794,7 @@ Send bugs, requests and questions any of these ways (Japanese, Chinese or Englis
 
 Contents of the zip: `LogOutput.log` (the mod's log), `jp.pocketroles.mod.cfg` (settings), `launcher-state.json`, `launcher.log`, `system.txt` (Windows version, game / mod / BepInEx versions, the plugins list, Steam state). Paths containing your user name are replaced by `%USERPROFILE%` and anything shaped like an API key by `<api-key-masked>`. **`deepl-key.txt` (the DeepL API key) is never included.** Player names stay in the log — edit the log inside the zip if you want to hide them.
 
-The log is overwritten on every start, so make the zip **right after** the problem. Without the launcher, zip `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log` and `BepInEx|distance|rpc|taskburst|report|teleport|killphase>config|distance|rpc|taskburst|report|teleport|killphase>jp.pocketroles.mod.cfg` yourself.
+The log is overwritten on every start, so make the zip **right after** the problem. Without the launcher, zip `BepInEx\LogOutput.log` and `BepInEx\config\jp.pocketroles.mod.cfg` yourself.
 
 For a request, say which feature or role you would like, why / in which situation, and name a similar feature in another mod if you know one.
 
@@ -1802,38 +1802,38 @@ For a request, say which feature or role you would like, why / in which situatio
 
 ## 29. Building
 
-Needs the **.NET 8 SDK**. `build.cmd` (and the launcher) use `%USERPROFILE%|distance|rpc|taskburst|report|teleport|killphase>.dotnet|distance|rpc|taskburst|report|teleport|killphase>dotnet.exe` (the user-local install) when present, else `dotnet` on the PATH.
+Needs the **.NET 8 SDK**. `build.cmd` (and the launcher) use `%USERPROFILE%\.dotnet\dotnet.exe` (the user-local install) when present, else `dotnet` on the PATH.
 
 ```
 build.cmd
 ```
 
-(= `dotnet build -c Release`; the launcher's "rebuild only" is the same.) The output is `bin|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`, copied to `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins` when that folder exists.
+(= `dotnet build -c Release`; the launcher's "rebuild only" is the same.) The output is `bin\PocketRoles.dll`, copied to `..\Among Us PocketRoles\BepInEx\plugins` when that folder exists.
 
-- References: `..|distance|rpc|taskburst|report|teleport|killphase>Among Us PocketRoles|distance|rpc|taskburst|report|teleport|killphase>BepInEx|distance|rpc|taskburst|report|teleport|killphase>core` and `BepInEx|distance|rpc|taskburst|report|teleport|killphase>interop` (interop is generated by the first start of chapter 5 — run the game once first).
-- Another game folder: `build.cmd -p:GameDir="C:|distance|rpc|taskburst|report|teleport|killphase>path|distance|rpc|taskburst|report|teleport|killphase>to|distance|rpc|taskburst|report|teleport|killphase>Among Us"`
+- References: `..\Among Us PocketRoles\BepInEx\core` and `BepInEx\interop` (interop is generated by the first start of chapter 5 — run the game once first).
+- Another game folder: `build.cmd -p:GameDir="C:\path\to\Among Us"`
 - Target net6.0, C# latest, Nullable off, ImplicitUsings off; no NuGet game libraries, no Reactor.
-- `lang|distance|rpc|taskburst|report|teleport|killphase>*.json` and `assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-256.png` (the title-screen icon) are embedded resources; the language files are written to `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>` on first start — edit the written files instead of rebuilding to change texts.
-- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.2 loaded` and the absence of Harmony patch errors in `BepInEx|distance|rpc|taskburst|report|teleport|killphase>LogOutput.log`.
+- `lang\*.json` and `assets\PocketRoles-256.png` (the title-screen icon) are embedded resources; the language files are written to `BepInEx\PocketRoles\lang\` on first start — edit the written files instead of rebuilding to change texts.
+- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.2 loaded` and the absence of Harmony patch errors in `BepInEx\LogOutput.log`.
 
-Release zips: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1` (`-SkipBuild` skips the build). It produces `dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-<ver>.zip` (`BepInEx|distance|rpc|taskburst|report|teleport|killphase>plugins|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.dll`, `BepInEx|distance|rpc|taskburst|report|teleport|killphase>PocketRoles|distance|rpc|taskburst|report|teleport|killphase>lang|distance|rpc|taskburst|report|teleport|killphase>*.json`, the three READMEs, LICENSE, NOTICE), `dist|distance|rpc|taskburst|report|teleport|killphase>PocketRoles-Setup-<ver>.zip` (`PocketRolesLauncher.ps1`, `PocketRoles Launcher.cmd`, `assets|distance|rpc|taskburst|report|teleport|killphase>PocketRoles.ico`, `はじめに.txt`) and `SHA256SUMS.txt`. The version comes from `<Version>` in `PocketRoles.csproj`. Attach both zips to a GitHub release and the launcher's "Check for updates" / "Install" find the latest version (they look for an asset named `PocketRoles-<ver>.zip`).
+Release zips: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1` (`-SkipBuild` skips the build). It produces `dist\PocketRoles-<ver>.zip` (`BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the three READMEs, LICENSE, NOTICE), `dist\PocketRoles-Setup-<ver>.zip` (`PocketRolesLauncher.ps1`, `PocketRoles Launcher.cmd`, `assets\PocketRoles.ico`, `はじめに.txt`) and `SHA256SUMS.txt`. The version comes from `<Version>` in `PocketRoles.csproj`. Attach both zips to a GitHub release and the launcher's "Check for updates" / "Install" find the latest version (they look for an asset named `PocketRoles-<ver>.zip`).
 
-Source layout (`src|distance|rpc|taskburst|report|teleport|killphase>`):
+Source layout (`src\`):
 
 | Folder | Contents |
 |---|---|
 | `PocketRolesPlugin.cs` | Plugin entry, version check, the top-left stamp, the per-frame tick |
-| `Core|distance|rpc|taskburst|report|teleport|killphase>` | Roles, Lang, Options (settings and the settings-tab descriptors), GameState, Scheduler, Hotkeys, Permissions (Admin / Moderator / VIP / Banlist.txt, kick / ban) |
-| `Net|distance|rpc|taskburst|report|teleport|killphase>` | Per-client sends and safe mode (Rpc), per-client game options (OptionsDesync), +25 registration (Registration), simple anti-cheat (AntiCheat) |
-| `Game|distance|rpc|taskburst|report|teleport|killphase>` | RoleAssignment, Diagnostics (`/diag`), NameTags, Kills (kills / vents / sabotage), Meetings, MeetingTools (force-end), AntiBlackout, WinConditions, TestMode, GameMaster, VanillaRanges (extended settings rows and `/vset`) |
-| `Chat|distance|rpc|taskburst|report|teleport|killphase>` | Chat (sending, welcome, rules line), Commands, Translator (Google / DeepL chat translation, language auto-detect) |
-| `Lobby|distance|rpc|taskburst|report|teleport|killphase>` | Rehost (auto re-host / auto public / the `/move` re-creation), RehostPrompt (high-ping dialog), LobbyTimer, AutoStart (auto start / haison / cancel button), HaisonReturn (back to the lobby after haison), AutoRegion, DleksMap |
-| `UI|distance|rpc|taskburst|report|teleport|killphase>` | SettingsTab (page buttons, "?" help, the vanilla-settings button, the Host-page button row), ClientOptions (gear-menu panel), MenuPanel (title-screen panel) and Credits (fallback credit line), CodeOverlay (big room code), LobbyBanner (vanilla lobby banner control) |
-| `Cosmetics|distance|rpc|taskburst|report|teleport|killphase>` | Cosmetics (folders and `/cos`), SpriteLoader, CosmeticOverrides (hats / visors / nameplates), LobbyMusic, LobbyDecor (paint / dropship / menu background / cursor) |
-| `lang|distance|rpc|taskburst|report|teleport|killphase>` (root) | Default language tables (`ja.json` / `zh-CN.json` / `en.json`) |
-| `assets|distance|rpc|taskburst|report|teleport|killphase>` (root) | Icons (`PocketRoles-256.png` / `-512.png` / `.ico`) |
+| `Core\` | Roles, Lang, Options (settings and the settings-tab descriptors), GameState, Scheduler, Hotkeys, Permissions (Admin / Moderator / VIP / Banlist.txt, kick / ban) |
+| `Net\` | Per-client sends and safe mode (Rpc), per-client game options (OptionsDesync), +25 registration (Registration), simple anti-cheat (AntiCheat) |
+| `Game\` | RoleAssignment, Diagnostics (`/diag`), NameTags, Kills (kills / vents / sabotage), Meetings, MeetingTools (force-end), AntiBlackout, WinConditions, TestMode, GameMaster, VanillaRanges (extended settings rows and `/vset`) |
+| `Chat\` | Chat (sending, welcome, rules line), Commands, Translator (Google / DeepL chat translation, language auto-detect) |
+| `Lobby\` | Rehost (auto re-host / auto public / the `/move` re-creation), RehostPrompt (high-ping dialog), LobbyTimer, AutoStart (auto start / haison / cancel button), HaisonReturn (back to the lobby after haison), AutoRegion, DleksMap |
+| `UI\` | SettingsTab (page buttons, "?" help, the vanilla-settings button, the Host-page button row), ClientOptions (gear-menu panel), MenuPanel (title-screen panel) and Credits (fallback credit line), CodeOverlay (big room code), LobbyBanner (vanilla lobby banner control) |
+| `Cosmetics\` | Cosmetics (folders and `/cos`), SpriteLoader, CosmeticOverrides (hats / visors / nameplates), LobbyMusic, LobbyDecor (paint / dropship / menu background / cursor) |
+| `lang\` (root) | Default language tables (`ja.json` / `zh-CN.json` / `en.json`) |
+| `assets\` (root) | Icons (`PocketRoles-256.png` / `-512.png` / `.ico`) |
 
-Other root files: `PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd` (the launcher, [chapter 6](#6-launcher-and-updates)), `update-game.cmd` (command-line update), `build-release.ps1` (release zips), `.github|distance|rpc|taskburst|report|teleport|killphase>ISSUE_TEMPLATE|distance|rpc|taskburst|report|teleport|killphase>` (issue templates in three languages). `stubs|distance|rpc|taskburst|report|teleport|killphase>` holds contract stubs for isolated single-module builds and is not part of the normal build. `tools|distance|rpc|taskburst|report|teleport|killphase>ReportFetcher` (downloads report-mail attachments), `fetch-reports.cmd`, `analyze-reports.ps1` (summarises report zips and issues) and `reply-mail.cmd` are the author's helpers and not part of the plugin build.
+Other root files: `PocketRolesLauncher.ps1` / `PocketRoles Launcher.cmd` (the launcher, [chapter 6](#6-launcher-and-updates)), `update-game.cmd` (command-line update), `build-release.ps1` (release zips), `.github\ISSUE_TEMPLATE\` (issue templates in three languages). `stubs\` holds contract stubs for isolated single-module builds and is not part of the normal build. `tools\ReportFetcher` (downloads report-mail attachments), `fetch-reports.cmd`, `analyze-reports.ps1` (summarises report zips and issues) and `reply-mail.cmd` are the author's helpers and not part of the plugin build.
 
 ---
 
