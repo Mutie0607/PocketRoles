@@ -24,8 +24,11 @@ namespace PocketRoles.Lobby
         private const float PollInterval = 0.5f;
         /// <summary>Horizontal distance of the Yes / No buttons from the Back button's original spot (its parent's units).</summary>
         private const float ButtonOffset = 1.1f;
+        /// <summary>v0.5.4: no answer for this long (still alone, no start) = Yes, so an unattended host still leaves a far server.</summary>
+        internal const float AutoYesAfter = 15f;
 
         private static int _askedGameId = int.MinValue;
+        private static float _askedAt;
         private static DialogueBox _box;
         private static PassiveButton _yes, _no;
         private static Action _onYes;
@@ -113,7 +116,8 @@ namespace PocketRoles.Lobby
                         "无法显示确认对话框，将保留此房间。"));
                     return false;
                 }
-                PocketRolesPlugin.Logger.LogInfo($"RehostPrompt: asking the host (ping {pingMs} ms, lobby {gameId})");
+                PocketRolesPlugin.Logger.LogInfo($"RehostPrompt: asking the host (ping {pingMs} ms, lobby {gameId}, Yes by itself after {AutoYesAfter:0} s)");
+                _askedAt = Time.time;
                 Scheduler.Cancel(PollTag);
                 Scheduler.After(PollInterval, Poll, PollTag);
                 return true;
@@ -180,10 +184,10 @@ namespace PocketRoles.Lobby
 
         private static string Question(int pingMs)
         {
-            return TF("rehost.prompt",
-                "PING が {0} ms と高いです。部屋を作り直しますか？（誰も入っていない間だけ）",
-                "Ping is high ({0} ms). Re-create the lobby? (only while nobody has joined)",
-                "延迟较高（{0} ms）。要重新创建房间吗？（仅在无人加入时）", pingMs);
+            return TF("rehost.prompt2",
+                "PING が {0} ms と高いです（遠いサーバー）。部屋を作り直しますか？（誰も入っていない間だけ。{1} 秒答えがなければ作り直します）",
+                "Ping is high ({0} ms, a far server). Re-create the lobby? (only while nobody has joined; re-created after {1} s without an answer)",
+                "延迟较高（{0} ms，较远的服务器）。要重新创建房间吗？（仅在无人加入时；{1} 秒内未回答则自动重建）", pingMs, (int)AutoYesAfter);
         }
 
         private static string TF(string key, string ja, string en, string zh, params object[] args)
@@ -250,6 +254,16 @@ namespace PocketRoles.Lobby
                         "誰かが入った（または開始中）ので、部屋はそのままにします。",
                         "Somebody joined (or a start began): the lobby is kept.",
                         "有人加入（或正在开始），将保留此房间。"));
+                    return;
+                }
+                if (Time.time - _askedAt >= AutoYesAfter)
+                {
+                    PocketRolesPlugin.Logger.LogInfo($"RehostPrompt: no answer for {AutoYesAfter:0} s (ping {_pingMs} ms) → Yes");
+                    Chat.Chat.Local(Chat.Chat.Title, TF("rehost.prompt.auto",
+                        "{0} 秒たっても答えがなかったので、部屋を作り直します。",
+                        "No answer for {0} s: re-creating the lobby.",
+                        "{0} 秒内没有回答，将重新创建房间。", (int)AutoYesAfter));
+                    Answer(true);
                     return;
                 }
                 Scheduler.After(PollInterval, Poll, PollTag);

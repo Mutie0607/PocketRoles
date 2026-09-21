@@ -30,7 +30,7 @@
 
 ## 3 分钟安装（Windows + Steam 版）
 
-1. 从 **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** 下载两个 zip：`PocketRoles-Setup-0.5.2.zip`（启动器）和 `PocketRoles-0.5.2.zip`（模组本体）。
+1. 从 **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)** 下载两个 zip：`PocketRoles-Setup-0.5.4.zip`（启动器）和 `PocketRoles-0.5.4.zip`（模组本体）。
 2. **把两个 zip 解压到同一个文件夹**（例如 `文档\PocketRoles`，放在不会删除的地方。有网络时只用 Setup zip 也可以 — 启动器会自动下载本体）。
 3. **双击“PocketRoles Launcher.cmd”**。出现蓝色的“Windows 已保护你的电脑”时，点“更多信息”→“仍要运行”（这是因为没有使用代码签名证书，不是病毒）。
 4. 点击 **“安装”**。启动器会把 Steam 版 Among Us 复制到桌面的“Among Us PocketRoles”，并自动安装 BepInEx 和 PocketRoles（需要几分钟。Steam 版本身不会被修改）。如果桌面由 OneDrive 备份，则改为复制到 `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles`（避免把 1 GB 同步到云端；启动器参数 `-GameDir` 可以选择任意文件夹）。
@@ -98,11 +98,12 @@
 - 显示语言：**日本語 / 简体中文 / English**。每位玩家可用 `/lang` 单独切换（也会根据发言语言自动识别），文本可在 `lang\*.json` 中编辑
 - **聊天自动翻译**（默认开启，**并用模式**）：把外语聊天翻译成房主的语言发给所有人，把房主的话按各自的语言单独发给外语玩家（使用 Google，或 DeepL 的 API 密钥）
 - **招人辅助**：复制房间代码并显示引导步骤（`/announce`，复制的代码可直接贴到 Discord 等）、房间代码大字显示（`/code on`，默认关闭）、从便利房引导到职业房（`/move`）
-- 房主工具：房间剩余时间显示、自动开始、废村（刷新房间）、开始取消按钮、强制结束会议、快捷键（F7 / F8 / F9）、房主分页的操作按钮、游戏主持（观战）模式、镜像 Skeld（Dleks）、延迟过高时询问是否重建
+- 房主工具：房间剩余时间显示、自动开始、废村（刷新房间）、开始取消按钮、强制结束会议、快捷键（F7 / F8 / F9）、房主分页的操作按钮、游戏主持（观战）模式、镜像 Skeld（Dleks）、延迟过高时自动重建房间（v0.5.4 起默认开启）
 - **协作管理（权限）**：管理员 / 版主 / VIP / 封禁，通过 `Admin.txt` 等文件和 `/admin` `/kick` `/ban` 管理。管理员可使用设置命令，版主可踢人
 - **原版设置范围扩展**：击杀冷却、投票 / 讨论时间、紧急会议冷却、任务数可以超出原版上下限（设置界面的箭头和 `/vset`。原版玩家也会收到同样的数值）
 - 仅房主屏幕可见的外观自定义（替换帽子、面罩、名牌，大厅 BGM、墙画、菜单背景、鼠标光标），标题画面的 PocketRoles 面板
 - 自动重建房间、自动公开、欢迎语与规则行编辑、测试模式（1 人即可开始）、游戏版本检查、`/diag` 诊断
+- **Aegis 反作弊**（v0.5.3 起）：在未注册房间的对局中找出不可能的操作（不能击杀的职业击杀、加速外挂、刷屏等）并移出该玩家。v0.5.4 起还会随启动器运行 **Aegis 托盘程序**（扫描画面、通知区域图标、启动前检查、从 GitHub 更新的定义文件）
 - **启动器**（PocketRoles Launcher）：给朋友用的安装器（复制 Steam 版 → BepInEx → PocketRoles 全自动）、检查更新、启动、生成问题报告 zip。日本語 / 中文 / English
 - BepInEx 6（IL2CPP）插件，C# / .NET 6，Harmony
 
@@ -153,7 +154,7 @@
 - 原版设置范围扩展（v0.4b）同样直接使用原版的设置同步。房主在设置界面选择的数值（例如击杀冷却 5 秒）会原样显示在玩家的房间设置列表中。
 - 聊天翻译（v0.4b）由房主的电脑把文本发送到 Google / DeepL 进行翻译。默认开启，以 **并用模式** 运行（外语聊天翻译成房主的语言发给所有人，房主的话单独翻译给外语玩家）。不想把文本发到外部时，可在设置标签页“聊天”分页的“聊天翻译”或用 `/opt translate off` 关闭（[第 13 章](#13-语言日本語--中文--english)）。
 - 只有 **开启了 MOD 房间注册的房间** 才能分配职业。未注册的房间（便利房）中，只要向单个玩家发送一条消息房主就会被服务器断开，因此那里的职业和私密通知全部停用，只在原版对局之上保留房主工具（[第 25 章](#25-便利房关闭注册与引导房)）。
-- 房主屏幕左上角（ping 显示处）显示 `PocketRoles v0.5.3 (host) · 亚洲` 这样带当前区域名的一行，在线房间中还显示 `房间剩余 mm:ss`（`/code on` 后还会大字显示房间代码 `职业房 ABCDEF`，默认关闭），游戏内的模组标记也会显示。标题画面右侧的大窗口中显示 **PocketRoles 面板**（图标、`v0.5.3 / Among Us 2026.8.18`、作者名、可点击的 GitHub 行、“仅房主安装即可游玩职业”“参与者无需安装即可加入”）（[第 9 章](#9-齿轮菜单的pocketroles-设置面板)）。
+- 房主屏幕左上角（ping 显示处）显示 `PocketRoles v0.5.4 (host) · 亚洲` 这样带当前区域名的一行，在线房间中还显示 `房间剩余 mm:ss`（`/code on` 后还会大字显示房间代码 `职业房 ABCDEF`，默认关闭），游戏内的模组标记也会显示。标题画面右侧的大窗口中显示 **PocketRoles 面板**（图标、`v0.5.4 / Among Us 2026.8.18`、作者名、可点击的 GitHub 行、“仅房主安装即可游玩职业”“参与者无需安装即可加入”）（[第 9 章](#9-齿轮菜单的pocketroles-设置面板)）。
 - 仅支持 **经典模式**（躲猫猫 / Seek Fools 模式下模组不做任何事）。
 
 原版玩家实际看到的效果汇总在 [第 26 章](#26-原版玩家看到的是什么)。
@@ -167,7 +168,7 @@
 - **引导房辅助**（[第 25 章](#25-便利房关闭注册与引导房)）：房间左上角大字显示房间代码（`职业房 ABCDEF`。默认关闭，`/code on` 开启，`/code` 切换，设置标签页“大字显示房间代码”）。`/announce`（`/guide`）把代码复制到剪贴板（可直接贴到 Discord 等），并显示用副手机做引导房的 4 个步骤。`/move [代码]` 在便利房里用三种语言向所有人发送职业房的引导（`/opt guide.autoreg on` 时 30 秒后重建为注册房间）。齿轮菜单里也有引导房提示。
 - **便利房（关闭注册）的整理**：实机测试发现，未注册的房间中只要向单个玩家发送一条消息，房主就会被服务器断开（"DC because Hacking"）。因此未注册的房间 **不分配职业，按原版进行**（只有房主工具和面向所有人的提示）。要玩职业请用注册开启（默认）的房间。
 - **翻译并用为默认**（`BroadcastToAll = true` + `TranslateForPlayers = true`）：外语聊天翻译成房主的语言发给所有人；房主的话按各自的语言单独发给选择了其他语言的玩家；同一个人不会收到两份。翻译本身（`Enabled`）也默认开启（聊天文本会发送到 Google；如果在 `BepInEx\PocketRoles\deepl-key.txt` 放了密钥则发送到 DeepL）。可在设置标签页的“聊天翻译”或用 `/opt translate off` 关闭。
-- **延迟过高时先询问**：创建房间后延迟过高时，房主屏幕会弹出“延迟较高（N ms）。要重新创建房间吗？”（是 / 否，也可用 `/rehost yes|no`）。默认关闭（`MaxHostPing = 0`），因为短时间内反复重建会累加 ban points（[3.4](#34-关于封禁与踢出)）。
+- **延迟过高时先询问**：创建房间后延迟过高时，房主屏幕会弹出“延迟较高（N ms）。要重新创建房间吗？”（是 / 否，也可用 `/rehost yes|no`）。默认关闭（`MaxHostPing = 0`），因为短时间内反复重建会累加 ban points（[3.4](#34-关于封禁与踢出)）。**v0.5.4 起默认开启（80 ms），15 秒内未回答则自动重建。**
 - **设置标签页**：分页按钮改为“职业 / 房间 / 聊天 / 外观 / 房主”的短标签横向一排。原版的 3 个按钮初始折叠为“▶ 原版设置（游戏・预设・职业）”，点击展开为“▼ 原版设置”。“房主”分页上方有操作按钮行（立即开始 / 取消 / 废村 / 结束会议 / 测试模式 / 显示设置 / 下局的我）。
 - **修正职业分配**：修复了 2 人以上开局时没有开场动画、画面全黑的问题（原样放行游戏本体的职业广播，随后一次性覆盖所有客户端的显示）。警长、豺狼的开场动画仍显示为“内鬼”（从 v0.4.1 起职业通知会多一行“※游戏本体显示你是“内鬼”（开场、击杀键），但你的真正职业是○○。”）。
 - **测试模式**：`/test on` 后开始按钮立即变为“开始”，游戏本体的“4 人可以游玩，但…”弹窗也会自动确认。
@@ -331,7 +332,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
    3. 从 GitHub 的最新发布获取 `PocketRoles-<ver>.zip` 并放置（把 `PocketRoles-<ver>.zip` 放在启动器同一文件夹中即可离线安装）。如果有旧的 `HostRoles.dll` 会删除
    4. 在桌面创建“PocketRoles Launcher”快捷方式
 5. **先启动 Steam，再点“启动”**。首次启动时 BepInEx 需要生成 interop，到标题画面大约 **1〜2 分钟**（中途可能出现黑色控制台窗口，请不要关闭）。
-6. 标题画面右侧出现 PocketRoles 面板、左上角显示 `PocketRoles v0.5.3` 即安装完成。
+6. 标题画面右侧出现 PocketRoles 面板、左上角显示 `PocketRoles v0.5.4` 即安装完成。
 
 如果某个步骤失败，修正原因（网络连接、Steam 位置等）后再点一次“安装”，已完成的步骤会跳过，从失败处继续。启动器右上角的“语言”可切换 日本語 / 中文 / English。随附的 `はじめに.txt` 用三种语言写了同样的步骤。
 
@@ -341,7 +342,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 2. 把上面的 BepInEx zip 解压到复制的文件夹中（`Among Us.exe` 同级目录下应有 `winhttp.dll`、`doorstop_config.ini` 和 `BepInEx\` 文件夹）。
 3. **在 Steam 已启动的状态下**，把复制出来的 `Among Us.exe` **运行一次**。首次运行时 BepInEx 会生成 `BepInEx\interop`，出现标题画面需要 **1〜3 分钟**。出现标题画面后可以关闭。
 4. 把 GitHub Releases 的 `PocketRoles-<ver>.zip` 解压到复制的文件夹中（包含 `BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、README、LICENSE 和 NOTICE）。**如果还留有旧版的 `HostRoles.dll`，请删除**（同样的补丁会被应用两次）。
-5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.3`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx\LogOutput.log` 中的 `PocketRoles v0.5.3 loaded` 来确认。
+5. 运行复制出来的 `Among Us.exe`（不要从 Steam 库启动，而是直接运行复制目录中的 exe，同时保持 Steam 运行）。屏幕左上角出现 `PocketRoles v0.5.4`、标题画面右侧窗口出现 PocketRoles 面板即表示模组已加载。也可以通过 `BepInEx\LogOutput.log` 中的 `PocketRoles v0.5.4 loaded` 来确认。
 
 首次启动时会生成 `BepInEx\config\jp.pocketroles.mod.cfg`（配置）、`BepInEx\PocketRoles\lang\`（语言文件）、`BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` 和 `README.txt`（外观自定义用）。权限文件 `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` 会在第一次创建房间时生成在 `BepInEx\PocketRoles\` 中。使用 DeepL 时的 `deepl-key.txt` 需要自己创建（[第 13 章](#13-语言日本語--中文--english)）。如果同一文件夹中有旧 HostRoles 的配置 `jp.hostroles.mod.cfg` 而新配置文件尚不存在，内容会自动复制过来（设置原样继承）。
 
@@ -532,14 +533,14 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | 行 | 内容 |
 |---|---|
 | 图标和“PocketRoles” | 模组内嵌的 `PocketRoles-256.png` |
-| `v0.5.3 / Among Us 2026.8.18` | 模组版本和对应的游戏版本 |
+| `v0.5.4 / Among Us 2026.8.18` | 模组版本和对应的游戏版本 |
 | `作者：もみじちゃ` | `[Credits] Author`（为空则不显示） |
 | `GitHub: github.com/wakayamachannel/PocketRoles（点击打开）` | `[Credits] RepoUrl`。点击后打开浏览器（为空则不显示） |
 | “仅房主安装即可游玩职业”“参与者无需安装即可加入” | 按房间默认语言显示 |
 
 - 打开在线 / 账户 / 输入代码 / 游戏模式 / 创建房间 / 制作人员等子菜单期间会隐藏，回到主画面后重新显示。
 - `[Credits] ShowInMenu = false`（设置标签页“显示制作信息”，`/opt credits.show off`）会同时隐藏面板和署名行。
-- 如果游戏 UI 变化导致面板无法创建，会改为显示 v0.2 的右下角署名行（`PocketRoles v0.5.3  © 2026 もみじちゃ` 和网址），并上移以免与原版的版本显示重叠。
+- 如果游戏 UI 变化导致面板无法创建，会改为显示 v0.2 的右下角署名行（`PocketRoles v0.5.4  © 2026 もみじちゃ` 和网址），并上移以免与原版的版本显示重叠。
 - 不发送任何数据（仅房主屏幕）。
 
 ---
@@ -687,7 +688,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `admin remove <名字|代码>` / `admin reload` | 删除 / 重新读取文件 |
 | `mod add|remove|list <…>`, `moderator …` | 版主（`Moderator.txt`）的添加、删除、列表。`/mod on|off` 仍是模组开关 |
 | `vip add|remove|list <…>` / `vip <名字>` | VIP（`VIP.txt`）的添加、删除、列表。只写 `/vip <名字>` 即为添加 |
-| `ac`（`anticheat`、`aegis`） | Aegis 反作弊（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
+| `ac`（`anticheat`、`aegis`） | Aegis 反作弊（v0.5.3，v0.5.4 加强）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout\|chatflood\|name\|color\|speed\|ventfar> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
 | `kick <名字|编号>` | 踢出该玩家（仅在房间中。房主以及权限不低于自己的人不能踢） |
 | `ban <名字|编号>` | 踢出并写入 `Banlist.txt`（下次加入时也会自动踢出）。同时发送服务器端的临时封禁 |
 | `ban list` / `ban remove <名字|代码>` / `unban <…>` / `ban reload` | 封禁列表 / 解除 / 重新读取 |
@@ -803,7 +804,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0〜60 | `[Lobby] AutoPublicDelay` |
 | `lobby.rehostmax` | 1〜10 | `[Lobby] RehostMaxAttempts` |
-| `lobby.maxping`（`maxping`） | 0〜300（0 = 关闭） | `[Lobby] MaxHostPing`（延迟高于此值时 **询问** 是否重建房间） |
+| `lobby.maxping`（`maxping`） | 0〜300（0 = 关闭） | `[Lobby] HostPingLimit`（v0.5.4，原 `MaxHostPing`：创建房间后延迟高于此值时询问是否重建，15 秒内未回答则自动重建；默认 80） |
 | `guide.overlay` | on / off | `[Guide] ShowCodeOverlay`（房间代码大字显示。默认关闭。与 `/code` 相同） |
 | `guide.code` | 房间代码（4 / 6 个字母） | `[Guide] RoleRoomCode`（与 `/move <代码>` 相同。留空则清除） |
 | `guide.autoreg` | on / off | `[Guide] AutoRecreateRegistered`（`/move` 30 秒后重建为注册房间） |
@@ -904,7 +905,7 @@ AutoRehost = false              # 被服务器断开后自动重新创建房间
 AutoPublic = false              # 创建（重建）房间几秒后自动设为公开
 AutoPublicDelay = 3             # 设为公开前等待的秒数（0〜60）
 RehostMaxAttempts = 3           # 连续尝试重建房间的次数（1〜10）
-MaxHostPing = 0                 # 创建房间后 5 秒内延迟一直高于此值(ms)且只有自己时询问“要重新创建房间吗？”（0〜300，0 = 不询问，最多连续 3 次）
+HostPingLimit = 80              # v0.5.4（原 MaxHostPing）创建房间后 5 秒内延迟一直高于此值(ms)且只有自己时询问“要重新创建房间吗？”，15 秒内未回答则自动重建（0〜300，0 = 关闭，最多连续 3 次）
 AutoStart = false               # 凑齐 AutoStartPlayers 人后自动开始（/autostart on|off|<人数>）
 AutoStartPlayers = 10           # 自动开始的人数（4〜15）
 AfkKickMinutes = 0              # 大厅中这么多分钟既不移动也不发言的玩家，提前 30 秒警告后移出（不是封禁）（0〜30，0 = 关闭。房主・VIP・版主・管理员除外。便利房也可用）
@@ -1231,12 +1232,12 @@ PocketRoles 发给玩家的文字（欢迎语、职业名和说明、命令回�
 - 新房间创建后，房主的聊天中会显示“断线后已自动重新创建房间。新房间代码：XXXXXX”。**房间代码会改变**，请重新告诉参与者（用 `/announce` 复制后重新贴到 Discord 等；用引导房的话也改一下它的名字，[第 25 章](#25-便利房关闭注册与引导房)）。应对房间超时请使用废村（[第 16 章](#16-房间剩余时间自动开始与废村)），这样代码不会变。
 - 登录状态（EOS）失效时不会重建，交由游戏的登录界面处理。
 
-### 延迟过高时询问是否重建房间（`[Lobby] MaxHostPing`，`/opt maxping <ms>`）
+### 延迟过高时重建房间（`[Lobby] HostPingLimit`，`/opt maxping <ms>`）
 
-即使在官方亚洲区域，分配到的服务器也可能是 8〜10 ms（东京）或 70 ms 以上（远处的服务器）。把 `MaxHostPing` 设为大于 0（例如 `/opt maxping 40`）后，创建房间后的 5 秒内延迟一直高于该值且还没有人加入时，房主屏幕会弹出 **“延迟较高（N ms）。要重新创建房间吗？（仅在无人加入时）”** 对话框（是 / 否）。也可以在聊天里用 `/rehost yes` / `/rehost no` 回答。
+即使在官方亚洲区域，每次创建房间分配到的服务器也会变化，可能是 8〜10 ms（东京），也可能是 70 ms、100 ms 以上（远处的服务器；9/21 为 112〜179 ms，手机上超过 500 ms）。v0.5.4 起默认开启（`HostPingLimit = 80`）：创建房间后的 5 秒内延迟一直高于上限且还没有人加入时，房主屏幕会弹出 **“延迟较高（N ms，较远的服务器）。要重新创建房间吗？（仅在无人加入时；15 秒内未回答则自动重建）”** 对话框（是 / 否）。也可以在聊天里用 `/rehost yes` / `/rehost no` 回答。
 
-- “是”会用相同设置重新创建房间（代码会变；最多连续 3 次）。“否”则本房间不再询问。有人加入后就不会询问。
-- **默认关闭（0）**：短时间内反复重建房间会被视为故意断线（ban points），暂时无法创建房间（[3.4](#34-关于封禁与踢出)）。只在必要时使用，每次询问最多重建一次。
+- 选“是”或 **15 秒内未回答**，会用相同设置重新创建房间（代码会变；最多连续 3 次）。“否”则本房间不再询问。有人加入后就不会询问。
+- 只在刚创建、无人加入时，且最多连续 3 次：短时间内反复重建房间可能被视为故意断线（ban points），暂时无法创建房间（[3.4](#34-关于封禁与踢出)）。`/opt maxping 0` 关闭，`/opt maxping 100` 提高上限。
 
 ### 自动公开（`/public on`，`[Lobby] AutoPublic`，齿轮面板“自动公开”）
 
@@ -1486,7 +1487,7 @@ Taro: hat=hat_pk05_Cheese visor=visor_Cat plate=nameplate_Bavarian skin=- pet=-
 
 测试 v0.4b 功能时（PC + 手机两台设备，约 10 分钟）：
 
-1. **标题画面面板**：PC 主菜单右侧出现 PocketRoles 面板（图标、`v0.5.3 / Among Us 2026.8.18`、GitHub 行），点击 GitHub 行会打开浏览器。打开在线菜单时隐藏，返回后重新显示。
+1. **标题画面面板**：PC 主菜单右侧出现 PocketRoles 面板（图标、`v0.5.4 / Among Us 2026.8.18`、GitHub 行），点击 GitHub 行会打开浏览器。打开在线菜单时隐藏，返回后重新显示。
 2. **设置标签页**：房间里的笔记本电脑中“PocketRoles”在最上方，点“原版设置”会展开 3 个原版按钮。职业 / 房间 / 聊天 / 外观 / 房主工具 的分页切换，鼠标悬停在“?”上时左侧说明栏显示说明。
 3. **欢迎语**：手机收到的欢迎语为 2 行 × 3 种语言（该玩家的语言 → 其余两种语言），最后只附带一次“自动翻译已开启…”行，并且没有设置的罗列（用 `/cmd s` 显示）。
 4. **翻译**：手机 **用英文** 发送 `Hello, can I be sheriff?` 之类的消息 → PC 屏幕上出现 `[译] <名字>: …` 的中文翻译。手机收到“Display language switched to English. Type /cmd lang zh to switch back.”，此后发给手机的模组消息变为英文（语言自动识别）。然后 PC 用中文发言 → 手机收到 `[Tr] <房主名>: …` 的英文翻译（为外语玩家翻译）。用 `/cmd lang zh` 可以切换回来。
@@ -1780,6 +1781,7 @@ Harmony 补丁应用失败时（游戏内部变化较大时）模组也会自动
 - 已注册的房间不会出现在公开列表中（第 3 章）。开启自动公开也一样。关闭注册的便利房会出现在列表里但没有职业，而且房主的广播仍有可能导致断开（第 25 章）。
 - 作为房主端的简易反作弊，如果收到了只有房主才能发送的 RPC（职业变更、名字变更、击杀、放逐等）来自玩家，会忽略并记录日志，并在房主画面上提示。`KickOnForgedRpc = true` 时 3 次后踢出。
 - 从 v0.5.3 起，未注册房间也会运行 **Aegis 反作弊**（作弊检测）。玩家的设备上无法安装任何东西，所以房主从收到的通信中找出原版 Among Us 不可能出现的操作（不能击杀的职业击杀、不能用通风管的职业进通风管、使用自己没有的能力、内鬼完成任务、存活时在会议外聊天等），确定的情况第 1 次就移出并禁止再进本房间（`/ac` 查看记录，`/opt anticheat.kick off` 停止自动移出）。官方服务器的反作弊只检查通信的格式，这类游戏内容上的作弊不会被发现。
+- v0.5.4 起还会运行 **Aegis 托盘程序**（与模组本体分开的程序，随启动器启动）。启动时在扫描画面检查 12 项（游戏版本、BepInEx、模组本体的指纹、其他插件、注入的 DLL、安全启动、TPM 2.0、测试签名/调试模式、正在运行的作弊工具等），之后常驻 Windows 通知区域，对局中 Aegis 移出或检测到玩家时在屏幕右下角通知。启动器按“启动”前会再检查一次，发现与作弊相关的异常（陌生插件、注入 DLL、正在运行的作弊工具、测试签名/调试模式、模组本体被改动）就不启动，并逐项显示原因和解决方法（安全启动和 TPM 只提示）。作弊工具名单（定义文件 `aegis/definitions.txt`）每次打开启动器时从 GitHub 获取最新版。它只读取本机的文件和进程列表，不接触其他游戏或应用，也不安装常驻驱动。游戏内检测也加强了：刷屏和加速外挂第 2 次移出；重新设置名字/颜色、离通风管太远进入、伪造的通信会通知房主。
 - 游戏版本与支持版本不同时模组自动停用（第 24 章）。
 
 ---
@@ -1823,7 +1825,7 @@ build.cmd
 - 引用其他文件夹中的游戏：`build.cmd -p:GameDir="C:\path\to\Among Us"`
 - 目标：net6.0，C# latest，Nullable off，ImplicitUsings off。不使用 NuGet 的游戏库或 Reactor。
 - `lang\*.json` 和 `assets\PocketRoles-256.png`（标题画面的图标）作为嵌入资源包含在 DLL 中，语言文件在首次启动时写出到 `BepInEx\PocketRoles\lang\`。想修改文本时不必重新构建 DLL，编辑写出的文件即可。
-- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx\LogOutput.log` 中有 `PocketRoles v0.5.3 loaded` 且没有 Harmony 补丁错误。
+- 运行确认：启动模组副本中的 `Among Us.exe`，确认 `BepInEx\LogOutput.log` 中有 `PocketRoles v0.5.4 loaded` 且没有 Harmony 补丁错误。
 
 生成发布 zip：`powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1`（`-SkipBuild` 跳过构建）。会生成 `dist\PocketRoles-<ver>.zip`（`BepInEx\plugins\PocketRoles.dll`、`BepInEx\PocketRoles\lang\*.json`、3 种 README、LICENSE、NOTICE）、`dist\PocketRoles-Setup-<ver>.zip`（`PocketRolesLauncher.ps1`、`PocketRoles Launcher.cmd`、`assets\PocketRoles.ico`、`はじめに.txt`）和 `SHA256SUMS.txt`。版本取自 `PocketRoles.csproj` 的 `<Version>`。把这两个 zip 附加到 GitHub Releases 后，启动器的“检查更新”“安装”就能获取最新版本（会查找名为 `PocketRoles-<ver>.zip` 的资源）。
 

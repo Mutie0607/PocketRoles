@@ -52,7 +52,7 @@ namespace PocketRoles.Lobby
         private static float _lobbyJoinedAt = -1f;
         private static DisconnectReasons _lastReason;
 
-        // ---- high-ping re-creation (finding #7): [Lobby] MaxHostPing
+        // ---- high-ping re-creation (finding #7): [Lobby] HostPingLimit (v0.5.4; was MaxHostPing)
         /// <summary>Automatic high-ping re-creations in a row (stops at <see cref="MaxPingAttempts"/>).</summary>
         public static int PingAttempts;
         public const int MaxPingAttempts = 3;

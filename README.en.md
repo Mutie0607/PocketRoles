@@ -28,7 +28,7 @@ Other languages: **[日本語 (README.md)](README.md)** / **[简体中文 (READM
 
 ## Install in 3 minutes (Windows + Steam)
 
-1. Download the two zips from **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)**: `PocketRoles-Setup-0.5.2.zip` (the launcher) and `PocketRoles-0.5.2.zip` (the mod).
+1. Download the two zips from **[GitHub Releases](https://github.com/wakayamachannel/PocketRoles/releases)**: `PocketRoles-Setup-0.5.4.zip` (the launcher) and `PocketRoles-0.5.4.zip` (the mod).
 2. **Extract both into the same folder** (e.g. `Documents\PocketRoles`, somewhere you will keep. With an internet connection the Setup zip alone works — the launcher fetches the mod).
 3. **Double-click "PocketRoles Launcher.cmd"**. If the blue "Windows protected your PC" screen appears, click "More info" → "Run anyway" (it appears because no code-signing certificate is used; it is not malware).
 4. Press **"Install"**. The launcher copies your Steam Among Us to "Among Us PocketRoles" on the Desktop and installs BepInEx and PocketRoles automatically (a few minutes; your Steam copy is not modified). On a PC whose Desktop is backed up by OneDrive the copy goes to `%LOCALAPPDATA%\PocketRoles\Among Us PocketRoles` instead (so 1 GB is not synced to the cloud; the launcher argument `-GameDir` lets you pick any folder).
@@ -96,11 +96,12 @@ No mail client? Webmail such as Gmail in the browser is fine (attach the zip fro
 - Languages: **Japanese / Simplified Chinese / English**. Each player can pick their own with `/lang` (the language they write in is detected as well); every text is editable in `lang\*.json`
 - **Chat translation** (on by default, combined mode): foreign-language chat is translated into the host's language for everyone, and the host's words reach foreign players privately in their language (Google, or DeepL with your API key)
 - **Player-recruiting helpers**: copy the room code and show the guide-room steps (`/announce`; the copied code pastes straight into Discord etc.), big room-code display (`/code on`, off by default), send players from a vanilla room to the role room (`/move`)
-- Host tools: lobby time left, auto start, haison (lobby refresh), a cancel button for the start countdown, force-ending meetings, hotkeys (F7 / F8 / F9), an action-button row on the Host page, Game Master (spectator) mode, mirrored Skeld (Dleks), a confirmation to re-create a high-ping lobby
+- Host tools: lobby time left, auto start, haison (lobby refresh), a cancel button for the start countdown, force-ending meetings, hotkeys (F7 / F8 / F9), an action-button row on the Host page, Game Master (spectator) mode, mirrored Skeld (Dleks), automatic re-creation of a high-ping lobby (on by default from v0.5.4)
 - **Permissions (co-hosting)**: admins / moderators / VIPs / bans managed through `Admin.txt` etc. and `/admin` `/kick` `/ban`. Admins may use the settings commands, moderators may kick
 - **Extended vanilla ranges**: kill cooldown, voting / discussion time, emergency cooldown and task counts beyond the vanilla limits (the arrows of the settings screen and `/vset`; vanilla players receive the same numbers)
 - Host-screen-only cosmetics (custom hats / visors / nameplates, lobby music, lobby paint, menu background, cursor) and a PocketRoles panel on the title screen
 - Auto re-host / auto public, editable welcome text and rules line, test mode (start with 1 player), game version check, `/diag` diagnostics
+- **Aegis anti-cheat** (v0.5.3+): during games in unregistered rooms, impossible actions (kills by roles that cannot kill, speed hacks, chat flooding …) are found and the player is removed. From v0.5.4 the **Aegis tray app** runs with the launcher as well (scan screen, notification-area icon, pre-launch check, definitions file updated from GitHub)
 - **Launcher** (PocketRoles Launcher): installer for friends (copies the Steam game, installs BepInEx and PocketRoles automatically), update check, launch, bug-report zip. Japanese / Chinese / English
 - BepInEx 6 (IL2CPP) plugin, C# / .NET 6, Harmony
 
@@ -151,7 +152,7 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 - The extended vanilla ranges (v0.4b) use the normal vanilla settings sync too: the value the host picks in the settings screen (say a 5-second kill cooldown) shows up unchanged in every player's lobby settings list.
 - Chat translation (v0.4b) sends chat text from the host's PC to Google / DeepL. It is on by default and runs in **combined mode** (foreign-language chat translated into the host's language for everyone, the host's words translated privately for foreign players). If you do not want text sent out, turn it off with "Chat translation" on the Chat page of the settings tab or `/opt translate off` ([chapter 13](#13-languages-japanese--chinese--english)).
 - Roles can only be handed out in a **lobby with mod-lobby registration on**. In an unregistered lobby (the "vanilla room") a single private message gets the host disconnected by the server, so roles and private notices are disabled there and only the host tools remain on top of a vanilla game ([chapter 25](#25-vanilla-room-registration-off-and-the-guide-room)).
-- The host's ping display (top left) shows `PocketRoles v0.5.3 (host)` and, in an online lobby, `Lobby mm:ss left`; the in-game mod stamp is shown as well. The title screen shows a **PocketRoles panel** in the big right-hand window (icon, `v0.5.3 / Among Us 2026.8.18`, author, a clickable GitHub line, "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us") ([chapter 9](#9-pocketroles-settings-panel-in-the-gear-menu)).
+- The host's ping display (top left) shows `PocketRoles v0.5.4 (host)` and, in an online lobby, `Lobby mm:ss left`; the in-game mod stamp is shown as well. The title screen shows a **PocketRoles panel** in the big right-hand window (icon, `v0.5.4 / Among Us 2026.8.18`, author, a clickable GitHub line, "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us") ([chapter 9](#9-pocketroles-settings-panel-in-the-gear-menu)).
 - Only **Classic** mode is supported (the mod does nothing in Hide n Seek / Seek Fools).
 
 [Chapter 26](#26-what-vanilla-players-see) lists exactly what vanilla players see.
@@ -165,7 +166,7 @@ Only the host's Among Us is modified. Vanilla clients simply display whatever th
 - **Guide-room helpers** ([chapter 25](#25-vanilla-room-registration-off-and-the-guide-room)): the room code in big letters at the top-left of the lobby (`Role room ABCDEF`; off by default, `/code on` turns it on, `/code` toggles, "Big room-code overlay" in the settings tab). `/announce` (`/guide`) copies the code to the clipboard (paste it into Discord etc.) and prints the four steps for the spare-phone guide room. `/move [code]` sends everyone in a vanilla room the way to the role room in three languages (`/opt guide.autoreg on` re-creates the lobby as registered 30 s later). A guide-room hint in the gear menu.
 - **Vanilla room (registration off) clarified**: live testing showed that in an unregistered lobby the server disconnects the host ("DC because Hacking") as soon as one message is addressed to a single player. Unregistered lobbies therefore run **vanilla, without roles** (host tools and broadcast notices only). Roles need a registered lobby (the default).
 - **Combined translation by default** (`BroadcastToAll = true` + `TranslateForPlayers = true`): foreign-language chat is translated into the host's language for everyone; the host's words reach players who chose another language privately in that language; nobody gets the same line twice. Translation itself (`Enabled`) is on by default too (chat text is sent to Google, or to DeepL when you put a key into `BepInEx\PocketRoles\deepl-key.txt`); turn it off with "Chat translation" in the settings tab or `/opt translate off`.
-- **High-ping re-creation asks first**: when the ping is high right after the lobby is created, the host sees "Ping is high (N ms). Re-create the lobby?" (Yes / No, or `/rehost yes|no`). Off by default (`MaxHostPing = 0`), because repeated re-creations add ban points ([3.4](#34-bans-and-kicks)).
+- **High-ping re-creation asks first**: when the ping is high right after the lobby is created, the host sees "Ping is high (N ms). Re-create the lobby?" (Yes / No, or `/rehost yes|no`). Off by default (`MaxHostPing = 0`), because repeated re-creations add ban points ([3.4](#34-bans-and-kicks)). **From v0.5.4 it is on by default (80 ms) and re-creates the lobby by itself after 15 s without an answer.**
 - **Settings tab**: the page buttons read Roles / Lobby / Chat / Looks / Host in one row. The three vanilla buttons start folded under "▶ Vanilla settings (game · presets · roles)" and unfold to "▼ Vanilla settings". A button row above the Host page: Start now / Cancel / Haison / End meeting / Test mode / Show settings / Next game, me.
 - **Role delivery fixed**: the black screen without an intro when starting with two or more players is gone (the vanilla role broadcast passes untouched and every client's view is overwritten right after, in one batch). Sheriff and Jackal still see the "Impostor" intro (since v0.4.1 their role notice adds the line "Note: the game shows you as Impostor (intro, kill button), but your real role is …").
 - **Test mode**: the start button reads "Start" immediately after `/test on`, and the vanilla "4 players can play, but …" popup is confirmed automatically.
@@ -327,7 +328,7 @@ Either way the layout is a **copy of the Steam game folder** with BepInEx and th
    3. Fetches `PocketRoles-<ver>.zip` from the latest GitHub release and puts it in place (a `PocketRoles-<ver>.zip` next to the launcher is used instead, so offline installs work). An old `HostRoles.dll` is deleted
    4. Creates the "PocketRoles Launcher" shortcut on the Desktop
 5. **Start Steam, then press "Launch"**. The first launch takes **1–2 minutes** to reach the title screen while BepInEx generates interop (if a black console window appears in between, do not close it).
-6. The PocketRoles panel on the right of the title screen and `PocketRoles v0.5.3` in the top-left corner mean you are done.
+6. The PocketRoles panel on the right of the title screen and `PocketRoles v0.5.4` in the top-left corner mean you are done.
 
 If a step fails, fix the cause (internet connection, Steam location …) and press "Install" again: finished steps are skipped and it resumes where it stopped. "Language" at the top right switches the launcher between Japanese / Chinese / English. The bundled `はじめに.txt` repeats these steps in the three languages.
 
@@ -337,7 +338,7 @@ If a step fails, fix the cause (internet connection, Steam location …) and pre
 2. Extract the BepInEx zip above into the copy (`winhttp.dll`, `doorstop_config.ini` and the `BepInEx\` folder end up next to `Among Us.exe`).
 3. **With Steam running**, start the copied `Among Us.exe` **once**. The first start generates `BepInEx\interop`, so the title screen takes **1–3 minutes** to appear. Close the game once you see it.
 4. Extract `PocketRoles-<ver>.zip` from GitHub Releases into the copy (it contains `BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the READMEs, LICENSE and NOTICE). **Delete an old `HostRoles.dll` if one is still there** (the same patches would be applied twice).
-5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.3` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx\LogOutput.log` contains `PocketRoles v0.5.3 loaded`.
+5. Start `Among Us.exe` from the copy (not from the Steam library; keep Steam running). `PocketRoles v0.5.4` in the top-left corner and the PocketRoles panel in the right-hand window of the title screen mean the mod is loaded. `BepInEx\LogOutput.log` contains `PocketRoles v0.5.4 loaded`.
 
 The first start creates `BepInEx\config\jp.pocketroles.mod.cfg` (settings), `BepInEx\PocketRoles\lang\` (language files) and `BepInEx\PocketRoles\{hats,visors,nameplates,music,images}\` plus a `README.txt` (cosmetics). The permission files `Admin.txt` / `Moderator.txt` / `VIP.txt` / `Banlist.txt` are created in `BepInEx\PocketRoles\` when you first host a lobby. `deepl-key.txt` (only for DeepL) is a file you create yourself ([chapter 13](#13-languages-japanese--chinese--english)). If an old HostRoles config `jp.hostroles.mod.cfg` exists in the same folder and the new file does not, its contents are copied over automatically (your settings carry over).
 
@@ -528,14 +529,14 @@ The big right-hand window of the main menu (where vanilla shows the Among Us log
 | Line | Content |
 |---|---|
 | Icon and "PocketRoles" | The embedded `PocketRoles-256.png` |
-| `v0.5.3 / Among Us 2026.8.18` | Mod version and supported game version |
+| `v0.5.4 / Among Us 2026.8.18` | Mod version and supported game version |
 | `by もみじちゃ` | `[Credits] Author` (omitted when empty) |
 | `GitHub: github.com/wakayamachannel/PocketRoles (click to open)` | `[Credits] RepoUrl`; clicking opens the browser (omitted when empty) |
 | "Roles for everyone; only the host installs it" / "Players can join with vanilla Among Us" | In the lobby language |
 
 - Hidden while the Online / Account / Enter code / Game mode / Create game / Credits sub-menus are open; shown again on the main screen.
 - `[Credits] ShowInMenu = false` ("Show credits" in the settings tab, `/opt credits.show off`) removes the panel and the credit line.
-- If the panel cannot be built after a game UI change, the v0.2 credit line at the bottom right (`PocketRoles v0.5.3  © 2026 もみじちゃ` plus the URL) is shown instead, moved up so it never overlaps the vanilla version text.
+- If the panel cannot be built after a game UI change, the v0.2 credit line at the bottom right (`PocketRoles v0.5.4  © 2026 もみじちゃ` plus the URL) is shown instead, moved up so it never overlaps the vanilla version text.
 - Nothing is transmitted (host screen only).
 
 ---
@@ -683,7 +684,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `admin remove <name|code>` / `admin reload` | Remove / re-read the file |
 | `mod add|remove|list <…>`, `moderator …` | Add / remove / list moderators (`Moderator.txt`). `/mod on|off` still toggles the mod |
 | `vip add|remove|list <…>` / `vip <name>` | Add / remove / list VIPs (`VIP.txt`). `/vip <name>` alone adds |
-| `ac` (`anticheat`, `aegis`) | Aegis anti-cheat records (v0.5.3). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
+| `ac` (`anticheat`, `aegis`) | Aegis anti-cheat records (v0.5.3, extended in v0.5.4). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout\|chatflood\|name\|color\|speed\|ventfar> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
 | `kick <name|id>` | Kicks that player (only while in a lobby or game; the host and anyone of the same or a higher level cannot be kicked) |
 | `ban <name|id>` | Kick plus an entry in `Banlist.txt` (kicked again automatically on the next join); a server-side temporary ban is sent as well |
 | `ban list` / `ban remove <name|code>` / `unban <…>` / `ban reload` | List / lift / re-read bans |
@@ -799,7 +800,7 @@ A way to run the lobby together with friends, managed through four text files in
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0–60 | `[Lobby] AutoPublicDelay` |
 | `lobby.rehostmax` | 1–10 | `[Lobby] RehostMaxAttempts` |
-| `lobby.maxping` (`maxping`) | 0–300 (0 = off) | `[Lobby] MaxHostPing` (ping above which the host is **asked** whether to re-create the lobby) |
+| `lobby.maxping` (`maxping`) | 0–300 (0 = off) | `[Lobby] HostPingLimit` (v0.5.4, was `MaxHostPing`: when the ping right after creation stays above it, the host is asked whether to re-create the lobby, and it is re-created after 15 s without an answer; default 80) |
 | `guide.overlay` | on / off | `[Guide] ShowCodeOverlay` (big room-code overlay; default off; same as `/code`) |
 | `guide.code` | room code (4 / 6 letters) | `[Guide] RoleRoomCode` (same as `/move <code>`; empty clears it) |
 | `guide.autoreg` | on / off | `[Guide] AutoRecreateRegistered` (re-create as registered 30 s after `/move`) |
@@ -900,7 +901,7 @@ AutoRehost = false              # recreate the lobby after an unexpected server 
 AutoPublic = false              # make the lobby public a few seconds after it is created / re-hosted
 AutoPublicDelay = 3             # seconds before going public (0-60)
 RehostMaxAttempts = 3           # consecutive re-host attempts before giving up (1-10)
-MaxHostPing = 0                 # ask "Re-create the lobby?" when the ping stays above this (ms) for 5 s right after creation while the lobby is empty (0-300, 0 = never ask, 3 times max)
+HostPingLimit = 80              # v0.5.4 (was MaxHostPing) ask "Re-create the lobby?" when the ping stays above this (ms) for 5 s right after creation while the lobby is empty; re-created after 15 s without an answer (0-300, 0 = off, 3 times in a row max)
 AutoStart = false               # start automatically once AutoStartPlayers players are in (/autostart on|off|<n>)
 AutoStartPlayers = 10           # players needed for the automatic start (4-15)
 AfkKickMinutes = 0              # kick (not ban) a lobby player who neither moves nor chats for this many minutes, after a warning 30 s before (0-30, 0 = off; host / VIP / moderator / admin exempt; vanilla rooms too)
@@ -1227,12 +1228,12 @@ When the host is **disconnected unexpectedly** (server error, timeout, an anti-c
 - The host's chat shows "Auto re-hosted after the disconnect. New room code: XXXXXX". **The room code changes** — tell your players (`/announce` copies it; paste it into Discord etc. again, and fix the guide room's name if you use one, [chapter 25](#25-vanilla-room-registration-off-and-the-guide-room)). For lobby-timer expiry use haison instead ([chapter 16](#16-lobby-time-left-auto-start-and-haison)); it keeps the code.
 - When the login (EOS) session is gone nothing is re-hosted; the game's login screen takes over.
 
-### Ask before re-creating a high-ping lobby (`[Lobby] MaxHostPing`, `/opt maxping <ms>`)
+### Re-create a high-ping lobby (`[Lobby] HostPingLimit`, `/opt maxping <ms>`)
 
-Even in the official Asia region the assigned server may answer in 8–10 ms (Tokyo) or in 70 ms and more (a far server). With `MaxHostPing` above 0 (e.g. `/opt maxping 40`), when the ping stays above that value for the first 5 seconds after the lobby is created and nobody has joined yet, the host sees the dialog **"Ping is high (N ms). Re-create the lobby? (only while nobody has joined)"** (Yes / No). `/rehost yes` / `/rehost no` in chat answer it as well.
+Even in the official Asia region the server changes with every new lobby: it may answer in 8–10 ms (Tokyo) or in 70 ms, 100 ms and more (a far server; on 9/21 112–179 ms, over 500 ms on a phone). From v0.5.4 this is on by default (`HostPingLimit = 80`): when the ping stays above the limit for the first 5 seconds after the lobby is created and nobody has joined yet, the host sees the dialog **"Ping is high (N ms, a far server). Re-create the lobby? (only while nobody has joined; re-created after 15 s without an answer)"** (Yes / No). `/rehost yes` / `/rehost no` in chat answer it as well.
 
-- "Yes" re-creates the lobby with the same settings (the code changes; at most 3 times in a row). "No" means no further question in this lobby. Once somebody joins, nothing is asked.
-- **Off by default (0)**: re-creating lobbies again and again in a short time counts as deliberate disconnects (ban points) and temporarily blocks lobby creation ([3.4](#34-bans-and-kicks)). Use it only when needed; each question leads to at most one re-creation.
+- "Yes", or **no answer for 15 s**, re-creates the lobby with the same settings (the code changes; at most 3 times in a row). "No" means no further question in this lobby. Once somebody joins, nothing is asked.
+- Only right after creation, only while nobody is in, at most 3 times in a row: re-creating lobbies again and again in a short time can count as deliberate disconnects (ban points) and temporarily block lobby creation ([3.4](#34-bans-and-kicks)). `/opt maxping 0` turns it off, `/opt maxping 100` raises the limit.
 
 ### Auto public (`/public on`, `[Lobby] AutoPublic`, gear panel "Auto public")
 
@@ -1482,7 +1483,7 @@ Trying the v0.4 tools:
 
 Trying the v0.4b features (PC + phone, about 10 minutes):
 
-1. **Title-screen panel**: the PC's main menu shows the PocketRoles panel on the right (icon, `v0.5.3 / Among Us 2026.8.18`, GitHub line); clicking the GitHub line opens the browser. It hides while the online menu is open and returns afterwards.
+1. **Title-screen panel**: the PC's main menu shows the PocketRoles panel on the right (icon, `v0.5.4 / Among Us 2026.8.18`, GitHub line); clicking the GitHub line opens the browser. It hides while the online menu is open and returns afterwards.
 2. **Settings tab**: in the lobby laptop "PocketRoles" is the top button and "Vanilla settings" expands the three vanilla buttons. Switch the Roles / Lobby / Chat / Looks / Host tools pages; hovering a "?" writes help into the left info box.
 3. **Welcome**: the phone's welcome arrives as 2 lines × 3 languages (the player's language first, then the two others) with the "Auto-translation is on …" line once at the end, and without the settings dump (`/cmd s` shows it).
 4. **Translation**: from the phone write something **in English** such as `Hello, can I be sheriff?` (with a Japanese or Chinese lobby language) → the PC shows `[訳] <name>: …` / `[译] …` with the translation. The phone receives "Display language switched to English. Type /cmd lang ja to switch back." and mod messages to the phone are in English from then on (auto-detect). Then write in the lobby language on the PC → the phone receives `[Tr] <host name>: …` in English (translate for players). `/cmd lang ja` switches back.
@@ -1776,6 +1777,7 @@ Names are sent per client by the host. Right after a death / leave or after the 
 - Registered lobbies do not appear in the public list (chapter 3), auto public or not. An unregistered vanilla room is listed but has no roles, and a host broadcast may still get the host disconnected there (chapter 25).
 - A simple host-side anti-cheat drops and logs host-only RPCs (role / name changes, kills, exiles …) that arrive from players and notifies the host; `KickOnForgedRpc = true` kicks after 3.
 - From v0.5.3 the **Aegis anti-cheat** (cheat detection) also runs in unregistered rooms. Nothing can be installed on the players' devices, so the host looks at what reaches it for actions vanilla Among Us never produces (kills or vents by roles that cannot, abilities a role lacks, impostor task completions, alive chat outside meetings …); certain ones remove the player with a room ban on the first hit (`/ac` shows the records, `/opt anticheat.kick off` stops the automatic removal). The official server's own anti-cheat only checks the shape of the traffic, so this kind of in-game cheating goes unnoticed there.
+- From v0.5.4 the **Aegis tray app** runs too (a separate app from the mod, started with the launcher). At start a scan screen checks 12 items (game version, BepInEx, the mod's fingerprint, other plugins, injected DLLs, Secure Boot, TPM 2.0, test signing / debug mode, running cheat tools …); then it stays in the Windows notification area and shows a notification at the bottom right when Aegis removes or flags someone during a game. Right before "Launch" the launcher checks again and refuses to start when something cheat-related is found (unknown plugins, injected DLLs, a running cheat tool, test signing / debug mode, a modified mod DLL), with the cause and the fix for each item (Secure Boot and TPM only warn). The list of cheat-tool names (definitions file `aegis/definitions.txt`) is fetched from GitHub every time the launcher opens. It only reads this PC's files and process list, never touches other games or apps and installs no driver. In-game detection grew too: chat flooding and speed hacks remove the player the second time; name / colour re-sets, vents from too far away and forged messages are reported to the host.
 - A game version other than the supported one disables the mod (chapter 24).
 
 ---
@@ -1819,7 +1821,7 @@ build.cmd
 - Another game folder: `build.cmd -p:GameDir="C:\path\to\Among Us"`
 - Target net6.0, C# latest, Nullable off, ImplicitUsings off; no NuGet game libraries, no Reactor.
 - `lang\*.json` and `assets\PocketRoles-256.png` (the title-screen icon) are embedded resources; the language files are written to `BepInEx\PocketRoles\lang\` on first start — edit the written files instead of rebuilding to change texts.
-- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.3 loaded` and the absence of Harmony patch errors in `BepInEx\LogOutput.log`.
+- Verification: start `Among Us.exe` from the modded copy and check `PocketRoles v0.5.4 loaded` and the absence of Harmony patch errors in `BepInEx\LogOutput.log`.
 
 Release zips: `powershell -NoProfile -ExecutionPolicy Bypass -File build-release.ps1` (`-SkipBuild` skips the build). It produces `dist\PocketRoles-<ver>.zip` (`BepInEx\plugins\PocketRoles.dll`, `BepInEx\PocketRoles\lang\*.json`, the three READMEs, LICENSE, NOTICE), `dist\PocketRoles-Setup-<ver>.zip` (`PocketRolesLauncher.ps1`, `PocketRoles Launcher.cmd`, `assets\PocketRoles.ico`, `はじめに.txt`) and `SHA256SUMS.txt`. The version comes from `<Version>` in `PocketRoles.csproj`. Attach both zips to a GitHub release and the launcher's "Check for updates" / "Install" find the latest version (they look for an asset named `PocketRoles-<ver>.zip`).
 

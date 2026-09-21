@@ -201,6 +201,27 @@ namespace PocketRoles.Core
         /// jp.pocketroles.mod.cfg does not, the old file is copied to the new name and re-read so every value carries over.
         /// Runs before any Bind(); BepInEx creates the new file on the first save otherwise.
         /// </summary>
+        /// <summary>
+        /// v0.5.4: [Lobby] MaxHostPing (default 0 = off) became [Lobby] HostPingLimit (default 80 ms = on, request 9/21
+        /// "pingの改善も頼んだ"). A limit a host had set carries over; the old key is dropped from the file.
+        /// </summary>
+        private static void MigrateMaxHostPing(ConfigFile cfg)
+        {
+            try
+            {
+                var legacyDef = new ConfigDefinition("Lobby", "MaxHostPing");
+                int old = cfg.Bind(legacyDef, 0).Value;
+                cfg.Remove(legacyDef);
+                if (old > 0) _maxHostPing.Value = Math.Min(300, old);
+                cfg.Save();
+                if (old > 0) PocketRolesPlugin.Logger?.LogInfo($"Config migration: [Lobby] MaxHostPing {old} → HostPingLimit");
+            }
+            catch (Exception e)
+            {
+                PocketRolesPlugin.Logger?.LogWarning($"Config migration: [Lobby] MaxHostPing not carried over: {e.Message}");
+            }
+        }
+
         private static bool MigrateLegacyConfig(ConfigFile cfg)
         {
             try
@@ -266,7 +287,8 @@ namespace PocketRoles.Core
             _autoPublicDelay = cfg.Bind("Lobby", "AutoPublicDelay", 3, new ConfigDescription("Seconds to wait before making the lobby public", new AcceptableValueRange<int>(0, 60)));
             _rehostMaxAttempts = cfg.Bind("Lobby", "RehostMaxAttempts", 3, new ConfigDescription("Give up auto re-hosting after this many consecutive attempts", new AcceptableValueRange<int>(1, 10)));
             _afkKickMinutes = cfg.Bind("Lobby", "AfkKickMinutes", 0, new ConfigDescription("Kick (not ban) a lobby player who neither moves nor chats for this many minutes; one warning 30 s before. Host, VIPs, moderators and admins are exempt; nothing happens during the start countdown or a game. Works in unregistered lobbies too. 0 = off", new AcceptableValueRange<int>(0, 30)));
-            _maxHostPing = cfg.Bind("Lobby", "MaxHostPing", 0, new ConfigDescription("Offer to re-create the lobby (same settings) while it is still empty when the host's ping to the game server stays above this many ms for 5 s right after the lobby is created (official regions mix near and far servers). The host is ASKED on screen first (Yes/No, once per lobby, or /rehost yes|no) because short-lived lobbies count as deliberate disconnects (ban points). 0 = off; at most 3 re-creations in a row, then the lobby is kept (/opt maxping <ms>)", new AcceptableValueRange<int>(0, 300)));
+            _maxHostPing = cfg.Bind("Lobby", "HostPingLimit", 80, new ConfigDescription("v0.5.4 (was MaxHostPing, off by default): re-create the lobby (same settings) while it is still empty when the host's ping to the game server stays above this many ms for 5 s right after the lobby is created (official regions mix near and far servers). The host is asked on screen first (Yes/No, once per lobby, or /rehost yes|no); with no answer for 15 s the lobby is re-created. At most 3 re-creations in a row, then the lobby is kept (short-lived lobbies can count as deliberate disconnects). 0 = off (/opt maxping <ms>)", new AcceptableValueRange<int>(0, 300)));
+            MigrateMaxHostPing(cfg);
             _compatCommonTasks = cfg.Bind("Compat", "CommonTasks", 0, new ConfigDescription("Unregistered lobby: common tasks actually handed out per player (0 = the lobby setting; the synced setting stays inside the vanilla range)", new AcceptableValueRange<int>(0, 60)));
             _compatShortTasks = cfg.Bind("Compat", "ShortTasks", 0, new ConfigDescription("Unregistered lobby: short tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
             _compatLongTasks = cfg.Bind("Compat", "LongTasks", 0, new ConfigDescription("Unregistered lobby: long tasks actually handed out per player (0 = the lobby setting)", new AcceptableValueRange<int>(0, 60)));
@@ -1078,7 +1100,7 @@ namespace PocketRoles.Core
             _descriptors.Add(Int("lobby.rehostmax", lJa, lEn, "再ホスト最大回数", "Re-host max attempts", _rehostMaxAttempts, 1, 10, 1)
                 .Tip("自動再ホストを連続で試す最大回数。", "Maximum consecutive automatic re-host attempts.", "自动重建房间的最大连续尝试次数。"));
             _descriptors.Add(Int("lobby.maxping", lJa, lEn, "高PINGなら部屋を作り直す(ms)", "Re-host when ping above (ms)", _maxHostPing, 0, 300, 10)
-                .Tip("部屋を作った直後5秒間PINGがこの値(ms)を超え、まだ自分しかいなければ自動で部屋を作り直します（最大3回、0 = しない）。", "Right after creating the lobby, if the ping stays above this (ms) for 5 s while you are alone, the lobby is re-created automatically (up to 3 times; 0 = off).", "创建房间后 5 秒内延迟一直高于此值(ms)且房间里只有自己时，自动重新创建房间（最多 3 次，0 = 关闭）。"));
+                .Tip("部屋を作った直後5秒間PINGがこの値(ms)を超え、まだ自分しかいなければ「作り直しますか？」と聞きます。15秒答えがなければ作り直します（続けて最大3回、0 = しない。既定 80）。", "Right after creating the lobby, if the ping stays above this (ms) for 5 s while you are alone, you are asked whether to re-create it; with no answer for 15 s it is re-created (up to 3 times in a row; 0 = off; default 80).", "创建房间后 5 秒内延迟一直高于此值(ms)且房间里只有自己时，会询问是否重建；15 秒内未回答则自动重建（连续最多 3 次，0 = 关闭，默认 80）。"));
             _descriptors.Add(Int("lobby.afkkick", lJa, lEn, "AFKキック(分, 0=なし)", "AFK kick (min, 0 = off)", _afkKickMinutes, 0, 30, 1)
                 .Tip("ロビーでこの分数だけ動きも発言もない人に30秒前に警告し、退出させます（BANではありません）。ホスト・VIP・モデレーター・管理者は対象外。未登録の部屋でも動きます。0 = しない。", "A lobby player who neither moves nor chats for this many minutes is warned 30 s ahead and then kicked (not banned). Host, VIPs, moderators and admins are exempt. Works in unregistered lobbies too. 0 = off.", "在大厅中这段分钟数内既不移动也不发言的玩家会在 30 秒前收到警告，然后被移出（不是封禁）。房主、VIP、管理员除外。未注册房间也可用。0 = 关闭。"));
             _descriptors.Add(Bool("lobby.autostart", lJa, lEn, "自動開始", "Auto start", _autoStart)
