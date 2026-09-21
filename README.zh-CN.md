@@ -687,7 +687,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `admin remove <名字|代码>` / `admin reload` | 删除 / 重新读取文件 |
 | `mod add|remove|list <…>`, `moderator …` | 版主（`Moderator.txt`）的添加、删除、列表。`/mod on|off` 仍是模组开关 |
 | `vip add|remove|list <…>` / `vip <名字>` | VIP（`VIP.txt`）的添加、删除、列表。只写 `/vip <名字>` 即为添加 |
-| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
+| `ac`（`anticheat`） | 作弊检测（v0.5.3）的记录一览。`/ac clear`、`/ac on\|off`、`/ac kick on\|off`、`/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#编号\|名字> [kick]` 模拟一次检测（加 `kick` 时才真正移出） |
 | `kick <名字|编号>` | 踢出该玩家（仅在房间中。房主以及权限不低于自己的人不能踢） |
 | `ban <名字|编号>` | 踢出并写入 `Banlist.txt`（下次加入时也会自动踢出）。同时发送服务器端的临时封禁 |
 | `ban list` / `ban remove <名字|代码>` / `unban <…>` / `ban reload` | 封禁列表 / 解除 / 重新读取 |
@@ -797,6 +797,7 @@ PocketRoles 免费、非营利。请不要利用本模组或模组房间盈利�
 | `anticheat` | on / off | `[AntiCheat] Detect`（v0.5.3 作弊检测，未注册房间；默认 on） |
 | `anticheat.kick`（`kick`） | on / off | `[AntiCheat] AutoKick`（确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间；默认 on） |
 | `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick`（移出时向所有人发一行；默认 on） |
+| `anticheat.callout`（`callout`） | on / off | `[AntiCheat] Callout`（v0.5.3 点中提示：有人在会议中点中尚未行动的内鬼时，只在主持画面上提示；不会移出；默认 on） |
 | `lobby.autorehost` | on / off | `[Lobby] AutoRehost` |
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0〜60 | `[Lobby] AutoPublicDelay` |
@@ -894,6 +895,7 @@ KickOnForgedRpc = false         # 预留（无效果）；v0.5.3 起使用下面
 Detect = true                   # v0.5.3 作弊检测（未注册房间的对局中，把不可能的操作显示给房主）
 AutoKick = true                 # 确定的检测 1 次、存活时会议外聊天 2 次即移出并禁止再进本房间（VIP 以上除外）
 AnnounceKick = true             # 移出时在所有人的聊天中发一行
+Callout = true                  # 点中提示（有人在会议中点中尚未行动的内鬼时只提示主持；主持为存活船员时在死亡后或赛后显示）
 
 [Lobby]
 AutoRehost = false              # 被服务器断开后自动重新创建房间

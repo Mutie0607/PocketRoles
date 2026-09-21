@@ -58,6 +58,7 @@ namespace PocketRoles.Core
         private static ConfigEntry<string> _discordText;
         private static ConfigEntry<bool> _antiCheatKick;
         private static ConfigEntry<bool> _cheatDetect, _cheatAutoKick, _cheatAnnounceKick;   // v0.5.3 CheatDetector
+        private static ConfigEntry<bool> _cheatCallout;   // v0.5.3 CalloutWatch
         private static ConfigEntry<bool> _wireLog;
 
         private static ConfigEntry<bool> _autoRehost;
@@ -257,6 +258,7 @@ namespace PocketRoles.Core
 
             _cheatDetect = cfg.Bind("AntiCheat", "Detect", true, "v0.5.3: in unregistered lobbies, detect actions a vanilla client never produces (kill / vent / ability / task by a role that cannot, alive chat outside meetings, crew sabotage, kills faster than the cooldown or from too far, unknown RPC ids) and show them on the host's screen (/ac lists them)");
             _cheatAutoKick = cfg.Bind("AntiCheat", "AutoKick", true, "v0.5.3: remove (with a ban for this room) a player on the first CERTAIN detection (kill / vent / ability / task by a role that cannot) or on the second alive chat outside a meeting. VIP and above are never removed automatically. Note: the sender of a relayed message cannot be proven, so a spoofing cheater could in theory frame someone");
+            _cheatCallout = cfg.Bind("AntiCheat", "Callout", true, "v0.5.3: in unregistered lobbies, tell the host (screen only, never a kick) when a living crewmate names in a meeting impostors nobody could know yet (not the host, no kill / vent / shapeshift / vanish yet, not named first by someone else) - the one trace of a role-seeing cheat. Held until the host is dead or the game is over while the host is a living crewmate (it names impostors)");
             _cheatAnnounceKick = cfg.Bind("AntiCheat", "AnnounceKick", true, "v0.5.3: when the anti-cheat removes a player, tell everyone in one public line (who and why)");
             _autoRehost = cfg.Bind("Lobby", "AutoRehost", false, "Automatically create a new lobby after an unexpected disconnect (server error, timeout) while hosting");
             _autoPublic = cfg.Bind("Lobby", "AutoPublic", false, "Automatically make the lobby public a few seconds after it is created / re-hosted");
@@ -448,6 +450,8 @@ namespace PocketRoles.Core
         /// <summary>[AntiCheat] AutoKick (v0.5.3): remove on the first certain detection (default true).</summary>
         public static bool CheatAutoKick { get => _cheatAutoKick == null || _cheatAutoKick.Value; set { if (_cheatAutoKick != null) _cheatAutoKick.Value = value; } }
         /// <summary>[AntiCheat] AnnounceKick (v0.5.3): one public line when the anti-cheat removes a player (default true).</summary>
+        /// <summary>[AntiCheat] Callout (v0.5.3): CalloutWatch host notice (default true).</summary>
+        public static bool CheatCallout { get => _cheatCallout == null || _cheatCallout.Value; set { if (_cheatCallout != null) _cheatCallout.Value = value; } }
         public static bool CheatAnnounceKick { get => _cheatAnnounceKick == null || _cheatAnnounceKick.Value; set { if (_cheatAnnounceKick != null) _cheatAnnounceKick.Value = value; } }
         /// <summary>[Diagnostics] WireLog: packet-level send/receive trace (Net.WireLog), off by default.</summary>
         public static bool WireLog { get => _wireLog != null && _wireLog.Value; set { if (_wireLog != null) _wireLog.Value = value; } }
@@ -1053,6 +1057,8 @@ namespace PocketRoles.Core
                 .Tip("確実な検知(キル・ベント・能力・タスク)は1回、会議外チャットは2回で、この部屋へのバン付きで退出させます。VIP以上は対象外。", "Removes (with a ban for this room) on the first certain detection (kill / vent / ability / task) or the second alive chat outside a meeting. VIP and above are exempt.", "确定的检测(击杀/通风管/能力/任务)1次、会议外聊天2次即移出并禁止再次进入本房间。VIP以上除外。"));
             _descriptors.Add(Bool("anticheat.announce", gJa, gEn, "退出させたことを全員に知らせる", "Announce removals to everyone", _cheatAnnounceKick)
                 .Tip("チート検知で退出させた時、誰をなぜ退出させたかを全員のチャットに1行出します。", "When the anti-cheat removes someone, one public chat line says who and why.", "因作弊检测移出玩家时，在所有人的聊天中显示一行：谁以及原因。"));
+            _descriptors.Add(Bool("anticheat.callout", gJa, gEn, "インポを言い当てた人を知らせる", "Tell me about impostor callouts", _cheatCallout)
+                .Tip("登録オフの部屋で、生きているクルーがまだ何もしていないインポスターを会議で言い当てたら、ホストの画面にだけ出します(インポスターが見えるチートの目印。退出はさせません)。ホストが生きたクルーの間はネタバレになるので、死亡後か試合後に出します。", "In unregistered rooms: when a living crewmate names, in a meeting, impostors that have done nothing yet, the host alone is told (a sign of a role-seeing cheat; nobody is removed). While the host is a living crewmate it waits until the host dies or the game ends.", "在未登记房间中，存活的船员在会议中点中尚未行动的内鬼时，只在主持画面上提示(能看到内鬼的作弊的迹象，不会移出)。主持作为存活船员时为避免剧透，会在死亡后或赛后显示。"));
             _descriptors.Add(Bool("general.ignoreversion", gJa, gEn, "バージョン不一致を無視", "Ignore version mismatch", _ignoreVersion)
                 .Tip("ゲームのバージョンが対応版と違ってもMODを動かします（自己責任）。", "Keeps the mod active on an unsupported game version (at your own risk).", "游戏版本不匹配时仍启用模组（风险自负）。"));
             _descriptors.Add(Bool("credits.show", gJa, gEn, "クレジット表示", "Show credits", _showCredits)
@@ -1304,6 +1310,7 @@ namespace PocketRoles.Core
                 case "register": case "modded": case "+25": return SetBool(_register, value, "register", out message);
                 case "anticheat": case "cheat": return SetBool(_cheatDetect, value, "anticheat", out message);
                 case "anticheat.kick": case "kick": case "anticheatkick": return SetBool(_cheatAutoKick, value, "anticheat.kick", out message);   // v0.5.3: the old reserved toggle now means the real auto-kick
+                case "anticheat.callout": case "callout": return SetBool(_cheatCallout, value, "anticheat.callout", out message);
                 case "anticheat.announce": case "anticheatannounce": return SetBool(_cheatAnnounceKick, value, "anticheat.announce", out message);
                 case "general.ignoreversion": case "ignoreversion": return SetBool(_ignoreVersion, value, "general.ignoreversion", out message);
                 case "lobby.autorehost": case "autorehost": case "rehost": return SetBool(_autoRehost, value, "lobby.autorehost", out message);

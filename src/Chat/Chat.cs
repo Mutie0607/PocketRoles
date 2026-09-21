@@ -1234,6 +1234,9 @@ namespace PocketRoles.Chat
                 var me = PlayerControl.LocalPlayer;
                 if (!trimmed.StartsWith("/"))
                 {
+                    // v0.5.3 CalloutWatch: impostors the host names in a meeting are public from now on
+                    try { Net.CalloutWatch.OnHostChat(trimmed); }
+                    catch (Exception ce) { PocketRolesPlugin.Logger.LogWarning($"Chat_SendChatPatch callout: {ce.Message}"); }
                     // A dead host (Game Master, or simply killed) typing: vanilla clients hide chat from dead senders
                     // for alive viewers, so open the same temporary "alive" window the mod messages use; the vanilla
                     // RpcSendChat that follows this prefix leaves inside it and the restore runs as usual.

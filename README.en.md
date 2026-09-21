@@ -683,7 +683,7 @@ Typed in chat as `/cmd <command> …` or `/<command> …`. Settings can also be 
 | `admin remove <name|code>` / `admin reload` | Remove / re-read the file |
 | `mod add|remove|list <…>`, `moderator …` | Add / remove / list moderators (`Moderator.txt`). `/mod on|off` still toggles the mod |
 | `vip add|remove|list <…>` / `vip <name>` | Add / remove / list VIPs (`VIP.txt`). `/vip <name>` alone adds |
-| `ac` (`anticheat`) | Cheat-detection records (v0.5.3). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
+| `ac` (`anticheat`) | Cheat-detection records (v0.5.3). `/ac clear`, `/ac on\|off`, `/ac kick on\|off`, `/ac test <kill\|vent\|ability\|task\|chat\|sabotage\|killcd\|protect\|distance\|rpc\|taskburst\|report\|teleport\|killphase\|callout> <#id\|name> [kick]` simulates a detection (only `kick` really removes the player) |
 | `kick <name|id>` | Kicks that player (only while in a lobby or game; the host and anyone of the same or a higher level cannot be kicked) |
 | `ban <name|id>` | Kick plus an entry in `Banlist.txt` (kicked again automatically on the next join); a server-side temporary ban is sent as well |
 | `ban list` / `ban remove <name|code>` / `unban <…>` / `ban reload` | List / lift / re-read bans |
@@ -793,6 +793,7 @@ A way to run the lobby together with friends, managed through four text files in
 | `anticheat` | on / off | `[AntiCheat] Detect` (v0.5.3 cheat detection, unregistered rooms; default on) |
 | `anticheat.kick` (`kick`) | on / off | `[AntiCheat] AutoKick` (removal with a room ban after 1 certain detection or 2 alive chats outside meetings; default on) |
 | `anticheat.announce` | on / off | `[AntiCheat] AnnounceKick` (one public line on removal; default on) |
+| `anticheat.callout` (`callout`) | on / off | `[AntiCheat] Callout` (v0.5.3 callout notice: the host alone is told when someone names, in a meeting, impostors that have done nothing yet; nobody is removed; default on) |
 | `lobby.autorehost` | on / off | `[Lobby] AutoRehost` |
 | `lobby.autopublic` | on / off | `[Lobby] AutoPublic` |
 | `lobby.autopublicdelay` | 0–60 | `[Lobby] AutoPublicDelay` |
@@ -890,6 +891,7 @@ KickOnForgedRpc = false         # reserved (no effect); v0.5.3 uses the three be
 Detect = true                   # v0.5.3 cheat detection (unregistered rooms, during a game: impossible actions shown to the host)
 AutoKick = true                 # remove with a room ban after 1 certain detection or 2 alive chats outside meetings (VIP and above exempt)
 AnnounceKick = true             # one public chat line when someone is removed
+Callout = true                  # callout notice (someone names impostors nobody could know yet; host screen only, held until the host is dead or the game is over while the host is a living crewmate)
 
 [Lobby]
 AutoRehost = false              # recreate the lobby after an unexpected server disconnect
