@@ -62,7 +62,7 @@ namespace AegisApp
             // key                ja                                                   zh-CN                                  en
             { "sub",        new[] { "PocketRoles ホスト用アンチチート", "PocketRoles 主持用反作弊", "Anti-cheat for PocketRoles hosts" } },
             { "engine",     new[] { "Aegis エンジン", "Aegis 引擎", "Aegis engine" } },
-            { "engine.ok",  new[] { "検知ルール {0} 件を準備", "已加载 {0} 条检测规则", "{0} detection rules ready" } },
+            { "engine.ok",  new[] { "検知ルール {0} 件・定義ファイル v{1}", "{0} 条检测规则・定义文件 v{1}", "{0} detection rules · definitions v{1}" } },
             { "game",       new[] { "Among Us", "Among Us", "Among Us" } },
             { "game.ok",    new[] { "{0}（対応版）", "{0}（支持的版本）", "{0} (supported)" } },
             { "game.other", new[] { "{0}（対応版は {1}）", "{0}（支持的版本为 {1}）", "{0} (supported: {1})" } },
@@ -75,11 +75,13 @@ namespace AegisApp
             { "mod.same",   new[] { "v{0}・前回から変更なし", "v{0}・与上次相同", "v{0}, unchanged since last time" } },
             { "mod.first",  new[] { "v{0}・指紋を記録しました", "v{0}・已记录指纹", "v{0}, fingerprint recorded" } },
             { "mod.update", new[] { "v{0}・更新を確認（前回 v{1}）", "v{0}・已更新（上次 v{1}）", "v{0}, updated (was v{1})" } },
-            { "mod.changed",new[] { "v{0}・前回から中身が変わっています", "v{0}・内容与上次不同", "v{0}, contents changed since last time" } },
+            { "mod.changed",new[] { "v{0} の中身が前回と違います（書き換えられた可能性）", "v{0} 的内容与上次不同（可能被改写）", "v{0} differs from last time (possibly modified)" } },
+            { "mod.fix",    new[] { "ランチャーの「更新を確認」で MOD を入れ直してください", "请用启动器的“检查更新”重新安装 MOD", "Reinstall the mod with the launcher's update check" } },
             { "mod.none",   new[] { "PocketRoles.dll が見つかりません", "找不到 PocketRoles.dll", "PocketRoles.dll not found" } },
             { "plug",       new[] { "ほかのプラグイン", "其他插件", "Other plugins" } },
             { "plug.ok",    new[] { "なし（PocketRoles だけ）", "无（只有 PocketRoles）", "none (PocketRoles only)" } },
-            { "plug.warn",  new[] { "見知らぬプラグイン: {0}", "未知插件: {0}", "unknown plugin(s): {0}" } },
+            { "plug.warn",  new[] { "見知らぬプラグイン: {0}", "未知插件: {0}", "unknown plugin: {0}" } },
+            { "plug.fix",   new[] { "BepInEx\\plugins から {0} を外してください", "请从 BepInEx\\plugins 中移除 {0}", "Remove {0} from BepInEx\\plugins" } },
             { "cfg",        new[] { "Aegis の設定", "Aegis 设置", "Aegis settings" } },
             { "cfg.ok",     new[] { "検知 {0}・自動退出 {1}・お知らせ {2}・言い当て {3}", "检测 {0}・自动移出 {1}・公告 {2}・点中提示 {3}", "detect {0} · auto-remove {1} · announce {2} · callout {3}" } },
             { "cfg.off",    new[] { "検知がオフです（/opt anticheat on）", "检测已关闭（/opt anticheat on）", "detection is off (/opt anticheat on)" } },
@@ -88,7 +90,8 @@ namespace AegisApp
             { "ban.ok",     new[] { "{0} 人", "{0} 人", "{0} player(s)" } },
             { "inj",        new[] { "ゲームへの注入", "游戏注入", "Game injection" } },
             { "inj.ok",     new[] { "不審な DLL なし", "没有可疑的 DLL", "no suspicious DLL" } },
-            { "inj.warn",   new[] { "ゲームフォルダに不審な DLL: {0}", "游戏文件夹中有可疑 DLL: {0}", "suspicious DLL in the game folder: {0}" } },
+            { "inj.warn",   new[] { "ゲームフォルダに {0}（チートの読み込みに使われる）", "游戏文件夹中有 {0}（用于加载作弊）", "{0} in the game folder (used to load cheats)" } },
+            { "inj.fix",    new[] { "MOD 用のゲームフォルダから {0} を削除してください", "请从 MOD 用游戏文件夹中删除 {0}", "Delete {0} from the modded game folder" } },
             { "sb",         new[] { "セキュアブート", "安全启动", "Secure Boot" } },
             { "sb.on",      new[] { "有効", "已启用", "on" } },
             { "sb.off",     new[] { "無効（UEFI の設定でオンにできます）", "未启用（可在 UEFI 设置中开启）", "off (can be enabled in UEFI settings)" } },
@@ -99,17 +102,20 @@ namespace AegisApp
             { "kern",       new[] { "カーネルの保護", "内核保护", "Kernel protection" } },
             { "kern.ok",    new[] { "テスト署名・デバッグモードなし{0}", "无测试签名・调试模式{0}", "no test-signing / debug mode{0}" } },
             { "kern.hvci",  new[] { "・メモリ整合性 ON", "・内存完整性 开", " · memory integrity on" } },
-            { "kern.warn",  new[] { "{0} が有効（チート用ドライバーを読み込める状態）", "{0} 已启用（可加载作弊驱动的状态）", "{0} enabled (cheat drivers could load)" } },
+            { "kern.warn",  new[] { "{0} が有効（署名のないドライバーを読み込める状態）", "{0} 已启用（可加载未签名驱动）", "{0} enabled (unsigned drivers can load)" } },
+            { "kern.fix",   new[] { "管理者のコマンドプロンプトで bcdedit /set {0} off を実行して再起動してください", "请在管理员命令提示符中运行 bcdedit /set {0} off 并重启", "Run bcdedit /set {0} off in an admin command prompt and restart" } },
             { "tools",      new[] { "実行中のチートツール", "运行中的作弊工具", "Running cheat tools" } },
             { "tools.ok",   new[] { "なし", "无", "none" } },
-            { "tools.warn", new[] { "{0}（チートに使えるツールが起動中）", "{0}（可用于作弊的工具正在运行）", "{0} (a tool usable for cheating is running)" } },
+            { "tools.warn", new[] { "{0} が起動中（チートに使えるツール）", "{0} 正在运行（可用于作弊的工具）", "{0} is running (usable for cheating)" } },
+            { "tools.fix",  new[] { "{0} を終了してから起動してください", "请先关闭 {0} 再启动", "Close {0}, then start" } },
+            { "fix.head",   new[] { "直し方", "处理方法", "How to fix" } },
             { "on",         new[] { "ON", "开", "on" } },
             { "off",        new[] { "OFF", "关", "off" } },
             { "scanning",   new[] { "スキャン中… {0}/{1}", "扫描中… {0}/{1}", "Scanning… {0}/{1}" } },
             { "done",       new[] { "スキャン完了 — 保護中", "扫描完成 — 保护中", "Scan complete — protected" } },
             { "done.warn",  new[] { "スキャン完了 — 注意 {0} 件", "扫描完成 — 注意 {0} 项", "Scan complete — {0} warning(s)" } },
             { "go",         new[] { "スキャン完了 — 起動します", "扫描完成 — 正在启动", "Scan complete — starting" } },
-            { "blocked",    new[] { "起動を止めました — チートにつながる異常 {0} 件（赤い項目）", "已阻止启动 — {0} 项与作弊相关的异常（红色项目）", "Start blocked — {0} cheat-related problem(s) (red rows)" } },
+            { "blocked",    new[] { "起動を止めました — 赤い項目 {0} 件を直してから起動してください", "已阻止启动 — 请先处理 {0} 个红色项目", "Start blocked — fix the {0} red row(s), then start" } },
             { "tip.wait",   new[] { "Aegis — 待機中", "Aegis — 待机中", "Aegis — standing by" } },
             { "tip.watch",  new[] { "Aegis — 監視中 · 検知 {0} · 退出 {1}", "Aegis — 监视中 · 检测 {0} · 移出 {1}", "Aegis — watching · {0} flagged · {1} removed" } },
             { "b.ready",    new[] { "起動しました。ゲームを始めると監視します。", "已启动。开始游戏后将进行监视。", "Ready. Watching starts when the game runs." } },
@@ -147,6 +153,12 @@ namespace AegisApp
             { "r.ReportForge",  new[] { "ありえない通報", "不可能的举报", "impossible report" } },
             { "r.Teleport",     new[] { "瞬間移動", "瞬间移动", "teleport" } },
             { "r.KillPhase",    new[] { "会議中・追放画面のキル", "会议或放逐画面中击杀", "kill during a meeting" } },
+            { "r.ChatFlood",    new[] { "チャットの連投", "聊天刷屏", "chat flood" } },
+            { "r.NameChange",   new[] { "部屋の中での名前変更", "房间内更改名字", "name change in the room" } },
+            { "r.ColorSpam",    new[] { "色の高速切り替え・試合中の色変更", "快速切换颜色・对局中改色", "colour cycling / change in a game" } },
+            { "r.SpeedHack",    new[] { "スピードハック", "加速外挂", "speed hack" } },
+            { "r.SpeedFast",    new[] { "設定より速い移動", "比设置更快的移动", "faster than the speed setting" } },
+            { "r.VentFar",      new[] { "ベントから遠い位置でのベント", "远离通风管进入通风管", "vent from far away" } },
         };
         static int Idx { get { return Lang == "ja" ? 0 : (Lang == "zh-CN" || Lang == "zh") ? 1 : 2; } }
         public static string Get(string key, params object[] args)
@@ -160,7 +172,7 @@ namespace AegisApp
             string[] v;
             return T.TryGetValue("r." + name, out v) ? v[Idx] : name;
         }
-        public static readonly int RuleCount = 18;   // CheatDetector: 16 rules + 2 callout rules (v0.5.3)
+        public static readonly int RuleCount = 24;   // CheatDetector: 16 rules + 2 callout rules (v0.5.3) + 6 (v0.5.4 AegisMore)
     }
 
     // ------------------------------------------------------------------ art
@@ -235,7 +247,99 @@ namespace AegisApp
         public string Detail = "";
         public int State;   // 0 waiting, 1 running, 2 ok, 3 warning, 4 serious (stops a launch)
         public bool SeriousOnFail;   // cheat-related: an unknown plugin / injected DLL / cheat tool / test-signing / a changed mod
+        public string Fix = "";      // how to fix a failed check (shown under the rows and in the launcher's message)
         public Func<Check, bool> Run;
+    }
+
+    /// <summary>
+    /// aegis\definitions.txt — cheat tool process names, DLL names cheats load through, DLL name keywords. Updated without a
+    /// release: the tray app fetches the newest from GitHub (raw main/aegis/definitions.txt) into %LOCALAPPDATA%; the
+    /// newer of the cached and the bundled file is used.
+    /// </summary>
+    public static class Defs
+    {
+        public const string Url = "https://raw.githubusercontent.com/wakayamachannel/PocketRoles/main/aegis/definitions.txt";
+        public static int Version;
+        public static List<string> Tools = new List<string>(), Dlls = new List<string>(), DllWords = new List<string>();
+        static string bundled, cached;
+
+        public static void Load(string scriptDir, string stateDir)
+        {
+            bundled = string.IsNullOrEmpty(scriptDir) ? null : Path.Combine(scriptDir, "definitions.txt");
+            cached = Path.Combine(stateDir, "definitions.txt");
+            int vb = Peek(bundled), vc = Peek(cached);
+            string use = vc > vb ? cached : bundled;
+            if (!Parse(use)) Parse(vc > vb ? bundled : cached);
+            if (Version == 0)
+            {
+                // nothing readable: the built-in list (v0)
+                Tools = new List<string> { "cheatengine", "artmoney", "wemod", "extremeinjector", "xenos", "ghinjector", "squalr", "cosmos", "speedhack", "gameguardian", "sickomenu", "amongusmenu", "reclass" };
+                Dlls = new List<string> { "version.dll", "dxgi.dll", "d3d11.dll", "dinput8.dll", "winmm.dll", "dsound.dll", "xinput1_3.dll", "xinput1_4.dll", "xinput9_1_0.dll", "opengl32.dll" };
+                DllWords = new List<string> { "menu", "cheat", "inject" };
+            }
+        }
+
+        static int Peek(string file)
+        {
+            try
+            {
+                if (file == null || !File.Exists(file)) return -1;
+                foreach (var line in File.ReadAllLines(file, Encoding.UTF8))
+                    if (line.StartsWith("version=")) { int v; return int.TryParse(line.Substring(8).Trim(), out v) ? v : -1; }
+            }
+            catch (Exception) { }
+            return -1;
+        }
+
+        static bool Parse(string file)
+        {
+            try
+            {
+                if (file == null || !File.Exists(file)) return false;
+                var tools = new List<string>(); var dlls = new List<string>(); var words = new List<string>();
+                int version = 0; List<string> cur = null;
+                foreach (var raw in File.ReadAllLines(file, Encoding.UTF8))
+                {
+                    string line = raw.Trim();
+                    if (line.Length == 0 || line.StartsWith("#")) continue;
+                    if (line.StartsWith("version=")) { int.TryParse(line.Substring(8).Trim(), out version); continue; }
+                    if (line == "[tools]") { cur = tools; continue; }
+                    if (line == "[dlls]") { cur = dlls; continue; }
+                    if (line == "[dllwords]") { cur = words; continue; }
+                    if (line.StartsWith("[")) { cur = null; continue; }
+                    if (cur != null) cur.Add(line.ToLowerInvariant());
+                }
+                if (version <= 0 || tools.Count == 0) return false;
+                Version = version; Tools = tools; Dlls = dlls; DllWords = words;
+                return true;
+            }
+            catch (Exception) { return false; }
+        }
+
+        /// <summary>Background fetch of the newest definitions; saved when newer and well-formed (used from the next scan on).</summary>
+        public static void FetchAsync()
+        {
+            var t = new Thread(() =>
+            {
+                try
+                {
+                    System.Net.ServicePointManager.SecurityProtocol |= System.Net.SecurityProtocolType.Tls12;
+                    var req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(Url);
+                    req.Timeout = 8000; req.ReadWriteTimeout = 8000; req.UserAgent = "Aegis/1.0 (+https://github.com/wakayamachannel/PocketRoles)";
+                    string text;
+                    using (var resp = req.GetResponse())
+                    using (var sr = new StreamReader(resp.GetResponseStream(), Encoding.UTF8)) text = sr.ReadToEnd();
+                    if (text.Length > 64 * 1024 || !text.Contains("[tools]")) return;
+                    string tmp = cached + ".tmp";
+                    File.WriteAllText(tmp, text, new UTF8Encoding(false));
+                    if (Peek(tmp) > Math.Max(Peek(cached), Version)) { if (File.Exists(cached)) File.Delete(cached); File.Move(tmp, cached); }
+                    else File.Delete(tmp);
+                }
+                catch (Exception) { }
+            });
+            t.IsBackground = true;
+            t.Start();
+        }
     }
 
     public static class Scanner
@@ -246,7 +350,7 @@ namespace AegisApp
         {
             var list = new List<Check>();
             string bep = Path.Combine(gameDir, "BepInEx");
-            list.Add(new Check { Title = S.Get("engine"), Run = c => { c.Detail = S.Get("engine.ok", S.RuleCount); return true; } });
+            list.Add(new Check { Title = S.Get("engine"), Run = c => { c.Detail = S.Get("engine.ok", S.RuleCount, Defs.Version); return true; } });
             list.Add(new Check { Title = S.Get("game"), Run = c =>
             {
                 if (!File.Exists(Path.Combine(gameDir, "Among Us.exe"))) { c.Detail = S.Get("game.none"); return false; }
@@ -269,7 +373,8 @@ namespace AegisApp
                     foreach (var f in Directory.GetFiles(dir, "*.dll", SearchOption.AllDirectories))
                         if (!string.Equals(Path.GetFileName(f), "PocketRoles.dll", StringComparison.OrdinalIgnoreCase)) others.Add(Path.GetFileName(f));
                 if (others.Count == 0) { c.Detail = S.Get("plug.ok"); return true; }
-                c.Detail = S.Get("plug.warn", string.Join(", ", others.ToArray())); return false;
+                c.Detail = S.Get("plug.warn", string.Join(", ", others.ToArray()));
+                c.Fix = S.Get("plug.fix", string.Join(", ", others.ToArray())); return false;
             } });
             list.Add(new Check { Title = S.Get("inj"), SeriousOnFail = true, Run = c => Injection(c, gameDir) });
             list.Add(new Check { Title = S.Get("cfg"), Run = c =>
@@ -345,7 +450,12 @@ namespace AegisApp
                 else if (tok == "DEBUG" || tok.StartsWith("DEBUGPORT")) { if (!bad.Contains("DEBUG")) bad.Add("DEBUG"); }
                 else if (tok == "DISABLE_INTEGRITY_CHECKS") bad.Add("NOINTEGRITYCHECKS");
             }
-            if (bad.Count > 0) { c.Detail = S.Get("kern.warn", string.Join(" / ", bad.ToArray())); return false; }
+            if (bad.Count > 0)
+            {
+                string fix = bad.Contains("TESTSIGNING") ? "testsigning" : bad.Contains("DEBUG") ? "debug" : "nointegritychecks";
+                c.Detail = S.Get("kern.warn", string.Join(" / ", bad.ToArray()));
+                c.Fix = S.Get("kern.fix", fix); return false;
+            }
             bool hvci = false;
             using (var k = Hklm(@"SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"))
             {
@@ -355,13 +465,8 @@ namespace AegisApp
         }
 
         // process names of well-known memory editors, trainers, injectors and Among Us cheat menus (names only)
-        static readonly string[] ToolNames =
-        {
-            "cheatengine", "artmoney", "wemod", "extremeinjector", "xenos", "ghinjector", "squalr", "cosmos",
-            "speedhack", "gameguardian", "sickomenu", "amongusmenu", "reclass",
-        };
-
-        static bool CheatTools(Check c)
+        /// <summary>Running processes whose NAME starts with a definitions entry (no handle to any process is opened).</summary>
+        public static List<string> FindTools()
         {
             var found = new List<string>();
             foreach (var p in Process.GetProcesses())
@@ -370,16 +475,21 @@ namespace AegisApp
                 try { n = p.ProcessName; } catch (Exception) { n = ""; }
                 p.Dispose();
                 string key = n.Replace(" ", "").Replace("-", "").Replace("_", "").ToLowerInvariant();
-                foreach (var t in ToolNames)
+                foreach (var t in Defs.Tools)
                     if (key.StartsWith(t) && !found.Contains(n)) { found.Add(n); break; }
             }
+            return found;
+        }
+
+        static bool CheatTools(Check c)
+        {
+            var found = FindTools();
             if (found.Count == 0) { c.Detail = S.Get("tools.ok"); return true; }
-            c.Detail = S.Get("tools.warn", string.Join(", ", found.ToArray())); return false;
+            c.Detail = S.Get("tools.warn", string.Join(", ", found.ToArray()));
+            c.Fix = S.Get("tools.fix", string.Join(", ", found.ToArray())); return false;
         }
 
         // proxy DLLs next to Among Us.exe: BepInEx uses winhttp.dll; menus like AmongUsMenu / SickoMenu load through version.dll and the like
-        static readonly string[] ProxyDlls = { "version.dll", "dxgi.dll", "d3d11.dll", "dinput8.dll", "winmm.dll", "dsound.dll", "xinput1_3.dll", "xinput1_4.dll", "xinput9_1_0.dll", "opengl32.dll" };
-
         static bool Injection(Check c, string gameDir)
         {
             var found = new List<string>();
@@ -388,12 +498,15 @@ namespace AegisApp
                 foreach (var f in Directory.GetFiles(gameDir, "*.dll", SearchOption.TopDirectoryOnly))
                 {
                     string n = Path.GetFileName(f).ToLowerInvariant();
-                    if (Array.IndexOf(ProxyDlls, n) >= 0 || n.Contains("menu") || n.Contains("cheat") || n.Contains("inject")) found.Add(Path.GetFileName(f));
+                    bool hit = Defs.Dlls.Contains(n);
+                    foreach (var w in Defs.DllWords) if (!hit && n.Contains(w)) hit = true;
+                    if (hit) found.Add(Path.GetFileName(f));
                 }
             }
             catch (Exception) { }
             if (found.Count == 0) { c.Detail = S.Get("inj.ok"); return true; }
-            c.Detail = S.Get("inj.warn", string.Join(", ", found.ToArray())); return false;
+            c.Detail = S.Get("inj.warn", string.Join(", ", found.ToArray()));
+            c.Fix = S.Get("inj.fix", string.Join(", ", found.ToArray())); return false;
         }
 
         static string GameVersion(string dir)
@@ -425,7 +538,8 @@ namespace AegisApp
             if (prevSha == null) { c.Detail = S.Get("mod.first", ver); return true; }
             if (prevSha == sha) { c.Detail = S.Get("mod.same", ver); return true; }
             if (prevVer != ver) { c.Detail = S.Get("mod.update", ver, prevVer); return true; }
-            c.Detail = S.Get("mod.changed", ver); return false;
+            c.Detail = S.Get("mod.changed", ver);
+            c.Fix = S.Get("mod.fix"); return false;
         }
 
         static Dictionary<string, string> ReadSection(string file, string section)
@@ -449,9 +563,10 @@ namespace AegisApp
     {
         readonly List<Check> checks;
         readonly System.Windows.Forms.Timer anim = new System.Windows.Forms.Timer();
-        int step = -1, warnings, serious;
+        int step = -1, warnings, serious, fixH;
         public bool PreLaunchMode;
         public int Serious { get { return serious; } }
+        public List<Check> Rows { get { return checks; } }
         double stepStartMs, nowMs, doneAtMs = -1;
         float angle, progress, shownProgress, sweep;
         bool fading;
@@ -504,7 +619,13 @@ namespace AegisApp
                 c.State = ok ? 2 : c.SeriousOnFail ? 4 : 3;
                 if (!ok) { warnings++; if (c.SeriousOnFail) serious++; }
                 if (step + 1 < checks.Count) BeginStep(step + 1);
-                else { step = checks.Count; progress = 1f; doneAtMs = nowMs; }
+                else
+                {
+                    step = checks.Count; progress = 1f; doneAtMs = nowMs;
+                    int fixes = 0;
+                    foreach (var r in checks) if (r.State == 4 && r.Fix.Length > 0) fixes++;
+                    if (fixes > 0) { fixH = 30 + fixes * 24; ClientSize = new Size(ClientSize.Width, ClientSize.Height + fixH); }
+                }
             }
             shownProgress += (progress - shownProgress) * 0.18f;
             double linger = PreLaunchMode ? (serious > 0 ? 9000 : 900) : (warnings > 0 ? 4200 : 1800);
@@ -601,6 +722,21 @@ namespace AegisApp
                     g.FillRectangle(lb, band);
                 }
                 using (var line = new Pen(Color.FromArgb(120, Art.Teal1), 1f)) g.DrawLine(line, 20, top, W - 20, top);
+            }
+
+            // how to fix (the rows a launch was stopped for)
+            if (fixH > 0)
+            {
+                int fy = y0 + checks.Count * 30 + 8;
+                using (var hb = new SolidBrush(Art.Red1)) g.DrawString(S.Get("fix.head"), fRowBold, hb, 40, fy);
+                int k = 0;
+                using (var xb = new SolidBrush(Color.FromArgb(235, 225, 225)))
+                    foreach (var r in checks)
+                    {
+                        if (r.State != 4 || r.Fix.Length == 0) continue;
+                        g.DrawString("・" + r.Fix, fRow, xb, new RectangleF(52, fy + 26 + k * 24, W - 72, 22), new StringFormat { Trimming = StringTrimming.EllipsisCharacter, FormatFlags = StringFormatFlags.NoWrap });
+                        k++;
+                    }
             }
 
             // progress bar + status
@@ -747,6 +883,8 @@ namespace AegisApp
         double alertUntil;
         DateTime lastBalloon = DateTime.MinValue;
         long logPos = -1, logBaseline = -1;
+        int toolTick;
+        readonly HashSet<string> toolsSeen = new HashSet<string>();
         bool firstPoll = true;
         string logRest = "", modVersion = "";
         readonly Stopwatch clock = Stopwatch.StartNew();
@@ -836,6 +974,13 @@ namespace AegisApp
             }
             firstPoll = false;
             if (watching) ReadLog();
+            if (++toolTick >= 30)
+            {
+                // a cheat tool started after the scan (for any game): tell the host once per tool
+                toolTick = 0;
+                foreach (var t in Scanner.FindTools())
+                    if (toolsSeen.Add(t)) { string msg = S.Get("tools.warn", t); AddEvent(msg); Balloon(msg, ToolTipIcon.Warning, true); }
+            }
             UpdateIcon();
             // the launcher is closed and no game runs: done (a manual start stays until Quit, or 15 s after its game)
             if (!game)
@@ -976,15 +1121,25 @@ namespace AegisApp
 
     public static class Entry
     {
+        public static string ScriptDir;
+
         /// <summary>The launcher's "start with mod": a fresh scan on screen; 3 when a cheat-related check failed (do not start), else 0.</summary>
         public static int PreLaunch(string gameDir, string lang, string stateDir)
         {
             S.Lang = string.IsNullOrEmpty(lang) ? "ja" : lang;
+            Defs.Load(ScriptDir, stateDir);
             Application.EnableVisualStyles();
             var splash = new Splash(Scanner.Build(gameDir, stateDir)) { PreLaunchMode = true };
             splash.Finished += (s, e) => splash.Close();
             Application.Run(splash);
             try { File.AppendAllText(Path.Combine(stateDir, "events.log"), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + "  pre-launch scan: " + (splash.Serious > 0 ? "blocked (" + splash.Serious + ")" : "ok") + Environment.NewLine, Encoding.UTF8); } catch (Exception) { }
+            try
+            {
+                var lines = new List<string>();
+                foreach (var c in splash.Rows) if (c.State == 4) lines.Add(c.Title + ": " + c.Detail + (c.Fix.Length > 0 ? " → " + c.Fix : ""));
+                File.WriteAllLines(Path.Combine(stateDir, "prelaunch-result.txt"), lines.ToArray(), new UTF8Encoding(true));
+            }
+            catch (Exception) { }
             return splash.Serious > 0 ? 3 : 0;
         }
 
@@ -995,6 +1150,8 @@ namespace AegisApp
             using (var mutex = new Mutex(true, "Local\\wakayamachannel.Aegis.AntiCheat", out created))
             {
                 if (!created) return;   // one Aegis at a time
+                Defs.Load(ScriptDir, stateDir);
+                if (!scanOnly) Defs.FetchAsync();
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new Tray(gameDir, launcherPid, stateDir, scanOnly));
@@ -1006,6 +1163,7 @@ namespace AegisApp
 
 try {
     Add-Type -TypeDefinition $source -ReferencedAssemblies @('System.Windows.Forms', 'System.Drawing', 'System.Core') -Language CSharp -ErrorAction Stop
+    [AegisApp.Entry]::ScriptDir = $PSScriptRoot
     if ($PreLaunch) { $code = [AegisApp.Entry]::PreLaunch($GameDir, $Lang, $stateDir); exit $code }
     [AegisApp.Entry]::Run($GameDir, $LauncherPid, $Lang, $stateDir, [bool]$ScanOnly)
 } catch {

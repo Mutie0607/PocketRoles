@@ -39,6 +39,7 @@ namespace PocketRoles.Net
             KillDead, SabotageCrew, KillCooldown, ProtectAlive, TaskUnknown, KillDistance, RpcUnknown,
             TaskBurst, ReportForge, Teleport, KillPhase,
             Callout, CalloutRepeat,   // CalloutWatch: meeting chat naming impostors nobody could know yet (notice only)
+            ChatFlood, NameChange, ColorSpam, SpeedHack, SpeedFast, VentFar,   // v0.5.4 AegisMore
         }
         internal enum Level { Certain, Repeat, Notice }
 
@@ -47,7 +48,7 @@ namespace PocketRoles.Net
             switch (r)
             {
                 case Rule.KillRole: case Rule.VentRole: case Rule.AbilityRole: case Rule.TaskImpostor: return Level.Certain;
-                case Rule.ChatAlive: return Level.Repeat;
+                case Rule.ChatAlive: case Rule.ChatFlood: case Rule.NameChange: case Rule.ColorSpam: case Rule.SpeedHack: return Level.Repeat;
                 default: return Level.Notice;
             }
         }
@@ -73,6 +74,12 @@ namespace PocketRoles.Net
                 case Rule.Teleport: return Lang.T("ac.rule.teleport", "試合中に瞬間移動した", "teleported during the game", "在对局中瞬间移动");
                 case Rule.KillPhase: return Lang.T("ac.rule.killphase", "会議中や追放画面でキルした", "killed during a meeting or the exile screen", "在会议或放逐画面中击杀");
                 case Rule.Callout: return Lang.T("ac.rule.callout", "まだ何もしていないインポスターを会議で言い当てた(インポスターが見えるチートの可能性)", "named impostors nobody could know yet (possible role-seeing cheat)", "在会议中点中了尚未行动的内鬼(可能是能看到内鬼的作弊)");
+                case Rule.ChatFlood: return Lang.T("ac.rule.chatflood", "人間には無理な速さでチャットを連投した", "flooded the chat faster than a person can type", "以人类不可能的速度刷屏");
+                case Rule.NameChange: return Lang.T("ac.rule.namechange", "部屋の中で名前を変えた(普通のAmong Usではできない)", "changed their name inside the room (vanilla cannot)", "在房间内更改了名字(原版无法做到)");
+                case Rule.ColorSpam: return Lang.T("ac.rule.colorspam", "試合中の色変更か、色の高速切り替え", "changed colour during a game or cycled colours rapidly", "对局中更改颜色或快速切换颜色");
+                case Rule.SpeedHack: return Lang.T("ac.rule.speedhack", "設定の2.5倍を超える速さで移動した(スピードハック)", "moved faster than 2.5x their speed setting (speed hack)", "以超过设置2.5倍的速度移动(加速外挂)");
+                case Rule.SpeedFast: return Lang.T("ac.rule.speedfast", "設定より明らかに速く移動した(ラグの可能性あり)", "moved clearly faster than their speed setting (could be lag)", "移动明显快于设置(可能是延迟)");
+                case Rule.VentFar: return Lang.T("ac.rule.ventfar", "ベントから遠い位置でベントに入った", "entered a vent from far away", "在远离通风管的位置进入了通风管");
                 case Rule.CalloutRepeat: return Lang.T("ac.rule.calloutrepeat", "何もしていないインポスターを何試合も言い当てている(インポスターが見えるチートの可能性)", "keeps naming impostors nobody could know yet (possible role-seeing cheat)", "多局点中尚未行动的内鬼(可能是能看到内鬼的作弊)");
             }
             return r.ToString();
@@ -239,6 +246,10 @@ namespace PocketRoles.Net
                 if (UnknownRpcLogged.Add(key)) Report(Rule.RpcUnknown, pc, "RPC " + callId, false, false);
                 return;
             }
+            // v0.5.4: lobby-and-game rules (chat flood, renames, colour cycling, forged host-only RPCs)
+            bool inGame = false;
+            try { var c = AmongUsClient.Instance; inGame = c != null && c.IsGameStarted && ShipStatus.Instance != null; } catch (Exception) { }
+            AegisMore.OnAnyRpc(pc, callId, inGame);
             if (!Active()) return;
             switch (callId)
             {
@@ -260,7 +271,7 @@ namespace PocketRoles.Net
                 case 45:
                     if (!pc.Data.IsDead) Report(Rule.ProtectAlive, pc, "ProtectPlayer while alive", false, false);
                     break;
-                case 32: case 51: case 52: LastMoveRpcAt[pc.OwnerId] = Time.time; break;   // platform / zipline
+                case 32: case 51: case 52: LastMoveRpcAt[pc.OwnerId] = Time.time; AegisMore.Pause(pc, 6f); break;   // platform / zipline
             }
         }
 
@@ -392,17 +403,18 @@ namespace PocketRoles.Net
             Pending[pc.OwnerId] = new PendingChat { PlayerId = pc.PlayerId, At = now, Meetings = _meetingCount };
         }
 
-        internal static void OnPhysicsRpc(PlayerPhysics physics, byte callId)
+        internal static void OnPhysicsRpc(PlayerPhysics physics, byte callId, MessageReader reader)
         {
             if (physics == null) return;
             var pc = physics.myPlayer;
             if (!HostWatching() || !Suspectable(pc) || !Active()) return;
-            if (callId == 31 || callId == 32) { LastMoveRpcAt[pc.OwnerId] = Time.time; return; }   // ladder / platform
-            if (callId == 19 || callId == 20) CalloutWatch.OnVisibleAction(pc);   // a vent jump can be seen
+            if (callId == 31 || callId == 32) { LastMoveRpcAt[pc.OwnerId] = Time.time; AegisMore.Pause(pc, 6f); return; }   // ladder / platform
+            if (callId == 19 || callId == 20) { CalloutWatch.OnVisibleAction(pc); AegisMore.Pause(pc, 1.5f); }   // a vent jump can be seen
             if (callId != 19) return;   // EnterVent
             if (pc.Data.IsDead) return;   // a vent press in flight when the player was killed
             if (RoleOf(pc, out var role) && !CanVent(role))
                 Report(Rule.VentRole, pc, $"role {role} (live {Live(pc)})", false, false, !CanVent(Live(pc)));
+            else AegisMore.OnEnterVent(pc, reader);
         }
 
         /// <summary>SnapTo (21) on a player's network transform: vanilla sends it at the intro, at meeting start, for the Airship spawn picker and for vent moves.</summary>
@@ -421,6 +433,7 @@ namespace PocketRoles.Net
             try { inVent = pc.inVent; } catch (Exception) { }
             if (CanVent(role) && inVent) return;   // vent-to-vent move
             Report(Rule.Teleport, pc, $"SnapTo mid-round (role {role}, inVent {inVent})", false, false);
+            AegisMore.Pause(pc, 2f);
         }
 
         internal static void OnUpdateSystem(SystemTypes systemType, PlayerControl player, MessageReader reader)
@@ -538,6 +551,9 @@ namespace PocketRoles.Net
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector.Report: {e}"); }
             return false;
         }
+
+        /// <summary>v0.5.4: a host notice with no suspect (a forged message whose sender cannot be identified).</summary>
+        internal static void NoticeUnattributed(string text) { Notice(text); }
 
         private static void Notice(string text)
         {
@@ -657,6 +673,7 @@ namespace PocketRoles.Net
                         Report(Rule.ReportForge, pc, $"reported the body of living #{r.Target} {Core.Game.NameOf(r.Target)}", false, false);
                 }
             }
+            try { if (Active()) AegisMore.Tick(now, Paused() || now - _lastPauseEnd < 3f); } catch (Exception e) { PocketRolesPlugin.Logger.LogWarning($"AegisMore.Tick: {e.Message}"); }
             RunKicks();
             if (SpoilerBacklog.Count > 0 && SpoilerFlushReady(started, now))
             {
@@ -713,6 +730,7 @@ namespace PocketRoles.Net
             Pending.Clear();
             Reports.Clear();
             CalloutWatch.OnGameStart();
+            AegisMore.OnGameStart();
             foreach (var s in Suspects.Values)
             {
                 s.NoticedThisGame.Clear();
@@ -735,6 +753,7 @@ namespace PocketRoles.Net
             Pending.Clear();
             Reports.Clear();
             CalloutWatch.OnLobbyChanged();
+            AegisMore.OnLobbyChanged();
         }
 
         internal static void OnPlayerLeft(int clientId)
@@ -767,9 +786,9 @@ namespace PocketRoles.Net
         }
 
         private static string Usage() => Lang.T("ac.usage",
-            "使い方: /ac（記録の一覧）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout> <#番号|名前> [kick]",
-            "Usage: /ac (records), /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout> <#id|name> [kick]",
-            "用法: /ac（记录）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout> <#编号|名字> [kick]");
+            "使い方: /ac（記録の一覧）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout|chatflood|name|color|speed|ventfar> <#番号|名前> [kick]",
+            "Usage: /ac (records), /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout|chatflood|name|color|speed|ventfar> <#id|name> [kick]",
+            "用法: /ac（记录）, /ac clear, /ac on|off, /ac kick on|off, /ac test <kill|vent|ability|task|chat|sabotage|killcd|protect|distance|rpc|taskburst|report|teleport|killphase|callout|chatflood|name|color|speed|ventfar> <#编号|名字> [kick]");
 
         private static string TestCommand(string[] tokens)
         {
@@ -792,6 +811,11 @@ namespace PocketRoles.Net
                 case "teleport": rule = Rule.Teleport; break;
                 case "killphase": rule = Rule.KillPhase; break;
                 case "callout": rule = Rule.Callout; break;
+                case "chatflood": rule = Rule.ChatFlood; break;
+                case "name": rule = Rule.NameChange; break;
+                case "color": rule = Rule.ColorSpam; break;
+                case "speed": rule = Rule.SpeedHack; break;
+                case "ventfar": rule = Rule.VentFar; break;
                 default: return Usage();
             }
             bool kick = tokens[tokens.Length - 1].ToLowerInvariant() == "kick";
@@ -855,9 +879,9 @@ namespace PocketRoles.Net
     [HarmonyPriority(Priority.First)]
     internal static class CheatDetector_PlayerPhysicsHandleRpcPatch
     {
-        private static void Prefix(PlayerPhysics __instance, byte callId)
+        private static void Prefix(PlayerPhysics __instance, byte callId, MessageReader reader)
         {
-            try { CheatDetector.OnPhysicsRpc(__instance, callId); }
+            try { CheatDetector.OnPhysicsRpc(__instance, callId, reader); }
             catch (Exception e) { PocketRolesPlugin.Logger.LogError($"CheatDetector_PlayerPhysicsHandleRpcPatch: {e}"); }
         }
     }
