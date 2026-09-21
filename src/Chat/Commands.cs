@@ -174,7 +174,7 @@ namespace PocketRoles.Chat
                         return true;
                     case "about": case "info": case "説明": case "关于":
                         // v0.5.2 (2026-09-14 "modの説明も欲しい"): what the mod does here, in plain words
-                        ReplyThrottled(sender, isHost, AboutText(), 4);   // EN in an unregistered lobby needs 4 public chunks (JA/ZH 2)
+                        ReplyThrottled(sender, isHost, AboutText(), 5);   // EN in an unregistered lobby needs up to 5 public chunks with the anti-cheat line (JA/ZH 2)
                         return true;
                     case "guess": case "g": case "推理":
                         // An alive Assassin is never throttled (the guess itself is limited per meeting); everyone else
@@ -764,9 +764,9 @@ namespace PocketRoles.Chat
         private static string AboutText()
         {
             if (Registration.CompatMode)
-                return Lang.T("about.compat.1", "この部屋(役職なし)でMODがしていること: 入室時の挨拶と案内, 外国語チャットの自動翻訳, 試合後の結果一覧(途中で抜けた人も含む), 部屋の時間切れ防止", "What the mod does in this room (no roles): welcome and guide lines, auto-translation of foreign-language chat, the post-game result list (leavers included), keeping the room from timing out", "本房间(无职业)里MOD做的事: 入房问候和指引, 外语聊天自动翻译, 赛后结果一览(包括中途退出的人), 防止房间超时")
+                return Lang.T("about.compat.1", "この部屋(役職なし)でMODがしていること: 入室時の挨拶と案内, 外国語チャットの自動翻訳, 試合後の結果一覧(途中で抜けた人も含む), 部屋の時間切れ防止, チート対策(ありえない操作をした人はすぐ退出)", "What the mod does in this room (no roles): welcome and guide lines, auto-translation of foreign-language chat, the post-game result list (leavers included), keeping the room from timing out, anti-cheat (players doing impossible things are removed at once)", "本房间(无职业)里MOD做的事: 入房问候和指引, 外语聊天自动翻译, 赛后结果一览(包括中途退出的人), 防止房间超时, 防作弊(做出不可能操作的玩家会被立即移出)")
                        + "\n" + Lang.T("about.compat.2", "ゲームの中身は普通のAmong Usで, 役職や特殊ルールはありません", "The game itself is normal Among Us: no roles, no special rules", "游戏本身就是普通的Among Us, 没有职业和特殊规则");
-            return Lang.T("about.roles", "PocketRoles: ホストだけが入れる役職MOD。参加者は何も入れずに遊べます。役職の一覧は /cmd r、自分の役職は /cmd n", "PocketRoles: a host-only role mod; players install nothing. /cmd r lists the roles, /cmd n shows yours", "PocketRoles: 只需主持安装的职业MOD，玩家无需安装。/cmd r 查看职业列表，/cmd n 查看自己的职业");
+            return Lang.T("about.roles", "PocketRoles: ホストだけが入れる役職MOD。参加者は何も入れずに遊べます。チート対策あり。役職の一覧は /cmd r、自分の役職は /cmd n", "PocketRoles: a host-only role mod; players install nothing; anti-cheat on. /cmd r lists the roles, /cmd n shows yours", "PocketRoles: 只需主持安装的职业MOD，玩家无需安装，有防作弊。/cmd r 查看职业列表，/cmd n 查看自己的职业");
         }
 
         private static string LangStateText(PlayerControl sender, bool isHost)
