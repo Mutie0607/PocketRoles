@@ -41,5 +41,6 @@
 ### ハッシュ（SHA256SUMS.txt）
 
 ```
-HASHES
+180ef03175e237465fb5fa78f9c7af84434da4f797addbb05d5dea27a0434bde  PocketRoles-0.5.4.zip
+4445c9b67e5c6b4da7d61978aeed2e4d33e2a57b32b1777f915663147589b985  PocketRoles-Setup-0.5.4.zip
 ```
